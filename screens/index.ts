@@ -1,4 +1,4 @@
-export * from './LandingScreen';
+export * from './landing/LandingScreen';
 export * from './LogInScreen';
 export * from './SignUpScreen';
 export * from './/HomeScreen';
