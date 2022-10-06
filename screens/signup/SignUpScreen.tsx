@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { TextInput, Button, IconButton } from "react-native-paper";
-import { StyleSheet, View, Image, Text, Pressable } from 'react-native';
+import { View, Image, Text, Pressable } from 'react-native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
