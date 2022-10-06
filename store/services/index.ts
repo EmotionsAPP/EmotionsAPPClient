@@ -1,2 +1,2 @@
-export const API = 'https://evil-wasps-repair-186-149-228-7.loca.lt/api';
-export const WS = 'https://ae7b-186-149-228-7.ngrok.io';
+export const API = 'https://c2f9-190-122-96-78.ngrok.io/api';
+export const WS = 'https://4e4f-190-122-96-78.ngrok.io';

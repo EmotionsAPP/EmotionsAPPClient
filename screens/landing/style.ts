@@ -46,8 +46,8 @@ export const styles = StyleSheet.create({
     },
     mainButton: {
         backgroundColor: '#DB6551',
-        paddingHorizontal: 30,
-        paddingVertical: 13,
+        paddingHorizontal: 25,
+        paddingVertical: 10,
         borderRadius: 10,
         marginTop: 30,
         marginBottom: 15,
@@ -58,8 +58,8 @@ export const styles = StyleSheet.create({
         fontSize: 20,
     },
     secondaryButton: {
-        paddingHorizontal: 30,
-        paddingVertical: 13,
+        paddingHorizontal: 25,
+        paddingVertical: 10,
         marginVertical: 15,
         backgroundColor: 'white',
         borderColor: '#DB6551',

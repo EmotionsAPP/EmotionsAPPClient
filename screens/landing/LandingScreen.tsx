@@ -38,7 +38,7 @@ export const LandingScreen: React.FC<LandingProps> = ({ navigation }) => {
             </Text>
             <Pressable
                 style={ styles.secondaryButton }
-                onPress={() => navigation.navigate<"SignUp">({name: 'SignUp', params: {}})}
+                onPress={() => navigation.navigate<"TypeAccount">({name: 'TypeAccount', params: {}})}
             >
                 <Text style={ styles.secondaryButtonText }>Registrate</Text>
             </Pressable>

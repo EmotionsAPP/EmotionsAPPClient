@@ -28,6 +28,7 @@ export const LoginScreen: React.FC<LoginProps> = ({ navigation }) => {
             />
             <TextInput 
                 value={ password }
+                secureTextEntry={true}
                 onChangeText={ (text) => setPassword(text) }
                 style={ styles.space } 
                 label="Contraseña"

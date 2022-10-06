@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { LandingScreen, SignUpScreen, LoginScreen } from '../screens';
+import { LandingScreen, SignUpScreen, LoginScreen, TypeAccountScreen } from '../screens';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ShellContainer } from '../containers';
 
@@ -8,7 +8,8 @@ export type LandingNavigatorParamList = {
   Landing: {},
   Login: {},
   SignUp: {},
-  Shell: {}
+  Shell: {},
+  TypeAccount: {}
 }
 
 const Stack = createNativeStackNavigator<LandingNavigatorParamList>();
@@ -36,6 +37,10 @@ export const LandingNavigation = () => {
             <Stack.Screen
               name="Shell"
               component={ ShellContainer }
+            />
+            <Stack.Screen
+              name="TypeAccount"
+              component={ TypeAccountScreen }
             />
           </Stack.Navigator>
         </NavigationContainer>
