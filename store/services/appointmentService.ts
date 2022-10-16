@@ -27,15 +27,18 @@ export const saveNewAppointment = (appointment: Appointment) => {
   return fetch(`${API}/appointment/create`, requestInfo)
 }
 
-export const getUserAppointments = (id: string) => {
+export const getUserAppointments = (id: string, date: string) => {
   const requestHeaders: HeadersInit_ = new Headers();
   requestHeaders.set('Content-Type', 'application/json');
 
   const requestInfo: RequestInit = {
-    method: 'POST',
+    method: 'GET',
     headers: requestHeaders,
-    body: JSON.stringify({id: id})
   }
 
-  return fetch(`${API}/appointment/userAppointments`, requestInfo)
+  const url = new URL(`${API}/appointments`);
+  url.searchParams.append('userId', id);
+  url.searchParams.append('date', date);
+
+  return fetch(url, requestInfo);
 }

@@ -6,7 +6,7 @@ export interface AuthState {
     signingUp: boolean;
     loggingIn: boolean;
     signedUp: boolean;
-    user?: string;
+    user?: any;
     loginError: boolean;
 }
 
@@ -28,7 +28,7 @@ export const reducer: Reducer<AuthState> = (state: AuthState | undefined, incomi
             return {
                 ...state,
                 loggedIn: action.logged ? true : false,
-                user: action.logged,
+                user: action.logged.user,
                 loginError: false,
                 loggingIn: false,
             };

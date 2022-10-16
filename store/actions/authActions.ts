@@ -12,7 +12,7 @@ interface RequestLogin {
 
 interface ResponseLogin {
     type: 'RESPONSE_LOGIN';
-    logged: string;
+    logged: any;
 }
 
 interface RequestSignUp {

@@ -59,8 +59,8 @@ export const newAppointmentAction = (appointment: Appointment, dispatch: Dispatc
     dispatch({ type: 'REQUEST_NEW_APPOINTMENT', appointment: appointment });
 }
 
-export const userAppointmentsAction = (user_id: string, dispatch: Dispatch) => {
-    getUserAppointments(user_id)
+export const userAppointmentsAction = (user_id: string, date: string, dispatch: Dispatch) => {
+    getUserAppointments(user_id, date)
         .then(response => response.json() as Promise<boolean>)
         .then(data => {
             dispatch({ type: 'RESPONSE_USER_APPOINTMENTS', appointments: data });
