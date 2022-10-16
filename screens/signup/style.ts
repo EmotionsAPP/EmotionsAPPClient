@@ -98,5 +98,10 @@ export const styles = StyleSheet.create({
         color: '#DB6551',
         fontWeight: '600',
         fontSize: 16
+    },
+    bottomView: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
     }
 });

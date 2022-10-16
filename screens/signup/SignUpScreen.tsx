@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { TextInput, Button, IconButton, HelperText } from "react-native-paper";
-import { View, Image, Text, Pressable } from 'react-native';
+import { View, Image, Text, Pressable, ActivityIndicator } from 'react-native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
@@ -83,6 +83,34 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                     theme={{roundness: 30}}
                     label="Apellido"
                 />
+                {
+                    physicianFlag ? 
+                        <TextInput 
+                            value={ taxId }
+                            onChangeText={ (text) => setTaxId(text) }
+                            style={ styles.textInput } 
+                            mode="outlined"
+                            outlineColor="#DB6551"
+                            activeOutlineColor="#DB6551"
+                            theme={{roundness: 30}}
+                            maxLength={11}
+                            label="Cédula"
+                        />
+                    : 
+                        <></>
+                }
+                {
+                    physicianFlag && taxId.length < 11 && taxId.length > 0 ?
+                        <HelperText
+                            type="error"
+                            visible={physicianFlag && taxId.length < 11 && taxId.length > 0}
+                            style={ { marginTop: -20 } } 
+                        >
+                            Debe contener 11 numeros.
+                        </HelperText>
+                    :
+                        <></>
+                }
                 <TextInput 
                     value={ formData.email }
                     onChangeText={ (text) => setFormData({ ...formData, email: text}) }
@@ -154,34 +182,41 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                     :
                         <></>
                 }
-                <Pressable
-                    style={ styles.mainButton }
-                    disabled={ !validForm() || validEmail() || validPassword() || formData.password != confirmPassowrd }
-                    onPress={ () => { 
-                        signUpAction(physicianFlag ? { 
-                                ...formData, psychologist: { idCardNo: taxId } 
-                            }
-                            :
-                            {
-                                ...formData, patient: {}
-                            },
-                            dispatch,
-                            appState,
-                            props.navigation,
-                            physicianFlag
-                        )
-                    }}
-                >
-                    <Text style={ styles.mainButtonText }>Registrate</Text>
-                </Pressable>
-                <View style={ styles.bottomTextView }>
-                    <Text style={ styles.bottomText }>
-                        ¿Ya tienes una cuenta?&nbsp;
-                    </Text>
-                    <Pressable>
-                        <Text style={ styles.bottomTextLink }>Inicia sesión</Text>
-                    </Pressable>
-                </View>
+                {
+                    appState.auth?.signingUp ?
+                        <ActivityIndicator size="large" color="#DB6551" />
+                    :
+                    <View style={ styles.bottomView }>
+                        <Pressable
+                            style={ styles.mainButton }
+                            disabled={ !validForm() || validEmail() || validPassword() || formData.password != confirmPassowrd }
+                            onPress={ () => { 
+                                signUpAction(physicianFlag ? { 
+                                        ...formData, psychologist: { idCardNo: taxId } 
+                                    }
+                                    :
+                                    {
+                                        ...formData, patient: {}
+                                    },
+                                    dispatch,
+                                    appState,
+                                    props.navigation,
+                                    physicianFlag
+                                )
+                            }}
+                        >
+                            <Text style={ styles.mainButtonText }>Registrate</Text>
+                        </Pressable>
+                        <View style={ styles.bottomTextView }>
+                            <Text style={ styles.bottomText }>
+                                ¿Ya tienes una cuenta?&nbsp;
+                            </Text>
+                            <Pressable>
+                                <Text style={ styles.bottomTextLink }>Inicia sesión</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                }
             </View>
         </ScrollView>
     )
