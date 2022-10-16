@@ -64,10 +64,12 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
 
     const saveAppointment = () => {
         const appointment = {
-            participants: [appState.auth?.user ?? '', physician],
+            patient: appState.auth?.user._id,
+            psychologist: physician,
             start: formData.startTime?.toUTCString() ?? '',
             end: formData.endTime?.toUTCString() ?? '',
-            description: formData.description
+            description: formData.description,
+            status: 'Scheduled'
         }
         newAppointmentAction(appointment, dispatch, closeModal);
     }

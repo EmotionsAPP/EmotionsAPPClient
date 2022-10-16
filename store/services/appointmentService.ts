@@ -6,12 +6,11 @@ export const availablePhysicians = (time: Date): Promise<Response> => {
   requestHeaders.set('Content-Type', 'application/json');
 
   const requestInfo: RequestInit = {
-    method: 'POST',
+    method: 'GET',
     headers: requestHeaders,
-    body: JSON.stringify({time: time})
   }
 
-  return fetch(`${API}/appointment/availablePhysicians`, requestInfo)
+  return fetch(`${API}/users`, requestInfo)
 }
 
 export const saveNewAppointment = (appointment: Appointment) => {
@@ -24,7 +23,7 @@ export const saveNewAppointment = (appointment: Appointment) => {
     body: JSON.stringify(appointment)
   }
 
-  return fetch(`${API}/appointment/create`, requestInfo)
+  return fetch(`${API}/appointments`, requestInfo)
 }
 
 export const getUserAppointments = (id: string, date: string) => {

@@ -2,6 +2,7 @@ import { Dispatch } from "redux";
 import { ApplicationState } from "..";
 import { Appointment, User } from "../../models";
 import { availablePhysicians, getUserAppointments, saveNewAppointment } from "../services/appointmentService";
+import { openNotificationSnackbar } from "./inAppActions";
 
 interface RequestAvailablePhysicians {
     type: 'REQUEST_AVAILABLE_PHYSICIANS';
@@ -50,10 +51,17 @@ export const availablePhysiciansAction = (time: Date, dispatch: Dispatch,  appSt
 
 export const newAppointmentAction = (appointment: Appointment, dispatch: Dispatch, callback: () => void) => {
     saveNewAppointment(appointment)
-        .then(response => response.json() as Promise<boolean>)
+        .then(response => response.json() as Promise<any>)
         .then(data => {
-            dispatch({ type: 'RESPONSE_NEW_APPOINTMENT', appointment: data });
-            callback();
+            console.log(data);
+            
+            if(!data.statusCode) {
+                dispatch({ type: 'RESPONSE_NEW_APPOINTMENT', appointment: data });
+                callback();
+                openNotificationSnackbar("basic", dispatch, "saved");
+            }else{
+                openNotificationSnackbar("basic", dispatch, "error");
+            }
         })
 
     dispatch({ type: 'REQUEST_NEW_APPOINTMENT', appointment: appointment });
@@ -62,7 +70,7 @@ export const newAppointmentAction = (appointment: Appointment, dispatch: Dispatc
 export const userAppointmentsAction = (user_id: string, date: string, dispatch: Dispatch) => {
     getUserAppointments(user_id, date)
         .then(response => response.json() as Promise<boolean>)
-        .then(data => {
+        .then(data => {            
             dispatch({ type: 'RESPONSE_USER_APPOINTMENTS', appointments: data });
         })
 

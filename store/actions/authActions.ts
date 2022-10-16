@@ -36,7 +36,7 @@ export const logInAction = (login: LoginBody, dispatch: Dispatch, appState: Appl
         signIn(login)
             .then(response => response.json() as Promise<any>)
             .then(data => {
-                if(data.statusCode != 400){
+                if(!data.statusCode){
                     dispatch({ type: 'RESPONSE_LOGIN', logged: data });
                     navigation.navigate('Shell', {screen: 'Home'});
                 }else{
@@ -53,7 +53,7 @@ export const signUpAction = (user: SignUpBody, dispatch: Dispatch, appState: App
         signUp(user, physician ? 'psychologists' : 'patients')
             .then(response => response.json() as Promise<any>)
             .then(data => {
-                if(data.statusCode != 400){
+                if(!data.statusCode){
                     dispatch({ type: 'RESPONSE_SIGNUP', createdUser: data });
                     navigation.navigate('Login');
                     openNotificationSnackbar("basic", dispatch, "saved");

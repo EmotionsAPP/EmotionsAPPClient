@@ -44,7 +44,7 @@ export const AppointmentSmallCard: React.FC<AppointmentSmallCardProps> = (props)
                         size={15}
                         color="#000"
                     />
-                    <Text style={styles.descriptionText}>{props.appointment.participants[1]}</Text>
+                    <Text style={styles.descriptionText}>{props.appointment.patient.firstName}</Text>
                 </View>
             </View>
             <IconButton 

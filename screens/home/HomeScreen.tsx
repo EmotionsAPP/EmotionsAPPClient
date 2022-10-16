@@ -20,7 +20,7 @@ export const HomeScreen: React.FC<HomeProps> = ({ navigation }) => {
     const today = new Date();
     
     useEffect(() => {
-        userAppointmentsAction(appState.auth?.user?._id ?? '', today.toString(), dispatch);
+        userAppointmentsAction(appState.auth?.user?._id ?? '', today.toISOString(), dispatch);
     }, [])
 
     return (

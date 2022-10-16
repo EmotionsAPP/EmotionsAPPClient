@@ -27,7 +27,11 @@ export const ShellNavigator = () => {
                     header: (props) => <ScreenHeader {...props} title="Bienvenido" />
                 }}
             />
-            <Drawer.Screen name="Calendar" component={CalendarScreen} />
+            <Drawer.Screen name="Calendar" component={CalendarScreen} 
+                options={{
+                    header: (props) => <ScreenHeader {...props} title="Calendario" />
+                }}
+            />
             <Drawer.Screen name="AppointmentHistory" component={AppointmentHistoryScreen} />
             <Drawer.Screen name="Chat" component={Chat} />
 

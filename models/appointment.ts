@@ -1,6 +1,7 @@
 export interface Appointment {
     _id?: string;
-    participants: string[];
+    psychologist: any;
+    patient: any; 
     start: string;
     end: string;
     description?: string;
@@ -11,4 +12,5 @@ export interface Appointment {
     created_at?: Date; 
     updated_at?: Date;
     updated_by?: string;
+    status: string;
 }
