@@ -4,5 +4,12 @@ export interface User {
     firstName: string;
     lastName: string;
     taxId: string;
-    physician: boolean
+    physician: boolean;
+    patient?: {
+        _id?: string;
+    },
+    psychologist?: {
+        _id?: string;
+        taxId?: string;
+    }
 }

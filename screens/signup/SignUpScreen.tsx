@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextInput, Button, IconButton } from "react-native-paper";
+import { TextInput, Button, IconButton, HelperText } from "react-native-paper";
 import { View, Image, Text, Pressable } from 'react-native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,18 +20,26 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
         password: '',
         firstName: '',
         lastName: '',
-        taxId: '',
     });
 
     const physicianFlag: boolean = props.route.params.physician;
 
     const [confirmPassowrd, setConfirm] = useState('');
+    const [taxId, setTaxId] = useState('');
     
     const dispatch = useDispatch();
     const appState = useSelector((state: ApplicationState) => state);
 
     const validForm = () : boolean => {
         return Object.values(formData).filter((value) => value == '').length < 1;
+    }
+
+    const validEmail = () => {
+        return !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(formData.email);
+    }
+
+    const validPassword = () => {
+        return !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g.test(formData.password);
     }
 
     return (
@@ -83,6 +91,18 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                     theme={{roundness: 30}}
                     label="Correo electrónico"
                 />
+                {
+                    validEmail() && formData.email.length > 0 ?
+                        <HelperText
+                            type="error"
+                            visible={validEmail()}
+                            style={ { marginTop: -20 } } 
+                        >
+                            Correo electrónico incorrecto.
+                        </HelperText>
+                    :
+                        <></>
+                }
                 <TextInput 
                     value={ formData.password }
                     onChangeText={ (text) => setFormData({ ...formData, password: text}) }
@@ -94,6 +114,21 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                     theme={{roundness: 30}}
                     label="Contraseña"
                 />
+                {
+                    (validPassword() && formData.password.length > 0) ?
+                    <HelperText
+                        type="error"
+                        style={ { marginTop: -20, textAlign: 'center' } } 
+                        visible={validPassword() || (formData.password.length < 8)}
+                    >
+                        {
+                            formData.password.length < 8 ? 'Debe de incluir mas de 8 caracteres.'
+                            : 'Debe incluir almenos una letra mayuscula [A-Z], una letra minuscula [a-z], un numero [0-9] y un signo especial [@$!%*?&].'
+                        }
+                    </HelperText> 
+                    : 
+                    <></>
+                }
                 <TextInput 
                     value={ confirmPassowrd }
                     onChangeText={ (text) => setConfirm(text) }
@@ -105,8 +140,34 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                     theme={{roundness: 30}}
                     label="Confirma la contraseña"
                 />
+                {
+                    confirmPassowrd.length > 0 && formData.password != confirmPassowrd ?
+                        <HelperText
+                            type="error"
+                            style={ { marginTop: -20 } } 
+                            visible={formData.password != confirmPassowrd}
+                        >
+                            Contraseñas no coinciden.
+                        </HelperText>
+                    :
+                        <></>
+                }
                 <Pressable
                     style={ styles.mainButton }
+                    disabled={ !validForm() || validEmail() || validPassword() || formData.password != confirmPassowrd }
+                    onPress={ () => { 
+                        signUpAction(physicianFlag ? { 
+                                ...formData, psychologist: { idCardNo: taxId } 
+                            }
+                            :
+                            {
+                                ...formData, patient: {}
+                            },
+                            dispatch,
+                            appState,
+                            navigator
+                        )
+                    }}
                 >
                     <Text style={ styles.mainButtonText }>Registrate</Text>
                 </Pressable>

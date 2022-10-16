@@ -24,16 +24,24 @@ interface ResponseSignUp {
     createdUser: SignUpBody;
 }
 
-export type KnownAction = RequestLogin | ResponseLogin | RequestSignUp | ResponseSignUp
+interface LoginError {
+    type: 'LOGIN_ERROR';
+}
+
+export type KnownAction = RequestLogin | ResponseLogin | RequestSignUp | ResponseSignUp | LoginError;
 
 export const logInAction = (login: LoginBody, dispatch: Dispatch, appState: ApplicationState, navigation: any) => {    
     if (appState) {
         signIn(login)
-            .then(response => response.json() as Promise<boolean>)
+            .then(response => response.json() as Promise<any>)
             .then(data => {
-                dispatch({ type: 'RESPONSE_LOGIN', logged: data });
-                navigation.navigate('Shell', {screen: 'Home'});
-            });
+                if(data.statusCode != 400){
+                    dispatch({ type: 'RESPONSE_LOGIN', logged: data });
+                    navigation.navigate('Shell', {screen: 'Home'});
+                }else{
+                    dispatch({ type: 'LOGIN_ERROR' });
+                }
+            })
 
         dispatch({ type: 'REQUEST_LOGIN', login: login });
     }

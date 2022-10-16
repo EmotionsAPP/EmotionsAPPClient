@@ -7,9 +7,10 @@ export interface AuthState {
     loggingIn: boolean;
     signedUp: boolean;
     user?: string;
+    loginError: boolean;
 }
 
-const unloadedState: AuthState = { loggedIn: false, signingUp: false, loggingIn: false, signedUp: false };
+const unloadedState: AuthState = { loggedIn: false, signingUp: false, loggingIn: false, signedUp: false, loginError: false };
 
 export const reducer: Reducer<AuthState> = (state: AuthState | undefined, incomingAction: Action): AuthState => {
     if (state === undefined) {
@@ -27,8 +28,16 @@ export const reducer: Reducer<AuthState> = (state: AuthState | undefined, incomi
             return {
                 ...state,
                 loggedIn: action.logged ? true : false,
-                user: action.logged
+                user: action.logged,
+                loginError: false,
+                loggingIn: false,
             };
+        case 'LOGIN_ERROR': 
+            return {
+                ...state,
+                loginError: true,
+                loggingIn: false,
+            }
         case 'REQUEST_SIGNUP': 
             return {
                 ...state,

@@ -11,7 +11,7 @@ export const signUp = (body: SignUpBody): Promise<Response> => {
     body: JSON.stringify(body)
   }
 
-  return fetch(`${API}/register`, requestInfo)
+  return fetch(`${API}/auth`, requestInfo)
 }
   
 export const signIn = (body: LoginBody): Promise<Response> => {
@@ -24,5 +24,5 @@ export const signIn = (body: LoginBody): Promise<Response> => {
     body: JSON.stringify(body)
   }
 
-  return fetch(`${API}/auth`, requestInfo)
+  return fetch(`${API}/auth/login`, requestInfo)
 }

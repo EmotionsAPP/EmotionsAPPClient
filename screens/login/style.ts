@@ -99,5 +99,27 @@ export const styles = StyleSheet.create({
         color: '#DB6551',
         fontWeight: '600',
         fontSize: 16
+    },
+    loginErrorView: {
+        backgroundColor: 'rgba(245, 36, 36, 0.34)',
+        borderColor: '#F52424',
+        borderWidth: 1,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingRight: 5,
+        marginBottom: 15
+    },
+    loginErrorText: {
+        color: 'white',
+        fontSize: 10
+    },
+    formView: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%'
     }
 });
