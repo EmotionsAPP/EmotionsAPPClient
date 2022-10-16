@@ -3,6 +3,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { LandingScreen, SignUpScreen, LoginScreen, TypeAccountScreen } from '../screens';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ShellContainer } from '../containers';
+import { NotificationSnackbar } from '../components';
+import { useDispatch, useSelector } from 'react-redux';
+import { ApplicationState } from '../store';
+import { dismissNotificationSnackbar } from '../store/actions/inAppActions';
 
 export type LandingNavigatorParamList = {
   Landing: {},
@@ -44,5 +48,5 @@ export const LandingNavigation = () => {
             />
           </Stack.Navigator>
         </NavigationContainer>
-      );
+        );
 }

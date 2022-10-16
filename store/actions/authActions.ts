@@ -3,6 +3,7 @@ import { Dispatch } from "redux";
 import { ApplicationState } from "..";
 import { LoginBody, SignUpBody } from "../../models";
 import { signIn, signUp } from "../services/authService";
+import { openNotificationSnackbar } from "./inAppActions";
 
 interface RequestLogin {
     type: 'REQUEST_LOGIN';
@@ -47,13 +48,18 @@ export const logInAction = (login: LoginBody, dispatch: Dispatch, appState: Appl
     }
 }
     
-export const signUpAction = (user: SignUpBody, dispatch: Dispatch, appState: ApplicationState, navigation: any) => {
+export const signUpAction = (user: SignUpBody, dispatch: Dispatch, appState: ApplicationState, navigation: any, physician: boolean) => {
     if (appState) {
-        signUp(user)
-            .then(response => response.json() as Promise<SignUpBody>)
+        signUp(user, physician ? 'psychologists' : 'patients')
+            .then(response => response.json() as Promise<any>)
             .then(data => {
-                dispatch({ type: 'RESPONSE_SIGNUP', createdUser: data });
-                navigation.navigate('Landing');
+                if(data.statusCode != 400){
+                    dispatch({ type: 'RESPONSE_SIGNUP', createdUser: data });
+                    navigation.navigate('Login');
+                    openNotificationSnackbar("basic", dispatch, "saved");
+                }else {
+                    openNotificationSnackbar("basic", dispatch, "error");
+                }
             });
 
         dispatch({ type: 'REQUEST_SIGNUP', user: user });

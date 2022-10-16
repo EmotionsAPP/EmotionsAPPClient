@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TextInput, Button, IconButton, HelperText } from "react-native-paper";
 import { View, Image, Text, Pressable } from 'react-native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack/lib/typescript/src/types";
@@ -9,6 +9,8 @@ import { LandingNavigatorParamList } from "../../navigation";
 import { SignUpBody } from "../../models";
 import { styles } from './style';
 import { ScrollView } from "react-native-gesture-handler";
+import { openNotificationSnackbar } from "../../store/actions/inAppActions";
+import { NotificationSnackbar } from "../../components";
 
 interface SignUpProps {
     navigation: NativeStackNavigationProp<LandingNavigatorParamList, 'SignUp'>;
@@ -165,7 +167,8 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                             },
                             dispatch,
                             appState,
-                            navigator
+                            props.navigation,
+                            physicianFlag
                         )
                     }}
                 >
