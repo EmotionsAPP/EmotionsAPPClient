@@ -23,6 +23,13 @@ export const HomeScreen: React.FC<HomeProps> = ({ navigation }) => {
     const today = new Date();
 
     useEffect(() => {
+        navigation.addListener('beforeRemove', (e: any) => {
+            e.preventDefault();
+            if(e.data.action.type == 'NAVIGATE') navigation.dispatch(e.data.action)
+        });
+    }, [navigation])
+
+    useEffect(() => {
         isFocused && userAppointmentsAction(appState.auth?.user?._id ?? '', today.toISOString(), dispatch);
         if(!appState.auth?.user?.hasOwnProperty('patient'))
             lastContactedUsersAction(appState.auth?.user?._id, dispatch)

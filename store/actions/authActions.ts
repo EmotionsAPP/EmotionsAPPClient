@@ -29,16 +29,18 @@ interface LoginError {
     type: 'LOGIN_ERROR';
 }
 
-export type KnownAction = RequestLogin | ResponseLogin | RequestSignUp | ResponseSignUp | LoginError;
+interface LogOut {
+    type: 'LOGOUT'
+}
+
+export type KnownAction = RequestLogin | ResponseLogin | RequestSignUp | ResponseSignUp | LoginError | LogOut;
 
 export const logInAction = (login: LoginBody, dispatch: Dispatch, appState: ApplicationState, navigation: any) => {    
     if (appState) {
         signIn(login)
             .then(response => response.json() as Promise<any>)
             .then(data => {
-                if(!data.statusCode){
-                    console.log(data);
-                    
+                if(!data.statusCode){                    
                     dispatch({ type: 'RESPONSE_LOGIN', logged: data });
                     navigation.navigate('Shell', {screen: 'Home'});
                 }else{
@@ -66,4 +68,9 @@ export const signUpAction = (user: SignUpBody, dispatch: Dispatch, appState: App
 
         dispatch({ type: 'REQUEST_SIGNUP', user: user });
     }
+}
+
+export const logOutAction = (dispatch: Dispatch, navigation: any) => {
+    dispatch({type: 'LOGOUT'});
+    navigation.navigate('Landing', { screen: 'Landing' });    
 }

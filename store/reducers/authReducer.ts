@@ -46,8 +46,15 @@ export const reducer: Reducer<AuthState> = (state: AuthState | undefined, incomi
         case 'RESPONSE_SIGNUP':
             return {
                 ...state,
+                signingUp: false,
                 signedUp: true
             };
+        case 'LOGOUT': 
+            return {
+                ...state,
+                loggedIn: false, 
+                user: undefined,
+            }
     }
 
     return state;
