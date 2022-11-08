@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 import { ApplicationState } from "..";
 import { Appointment, User } from "../../models";
-import { availablePhysicians, getUserAppointments, saveNewAppointment } from "../services/appointmentService";
+import { availablePhysicians, getUserAppointments, lastContactedUsers, saveNewAppointment } from "../services/appointmentService";
 import { openNotificationSnackbar } from "./inAppActions";
 
 interface RequestAvailablePhysicians {
@@ -35,7 +35,16 @@ interface ResponseUserAppointments {
     appointments: Appointment[];
 }
 
-export type KnownAction = RequestAvailablePhysicians | ResponseAvailablePhysicians | RequestNewAppointment | ResponseNewAppointment | RequestUserAppointments | ResponseUserAppointments;
+interface RequestLastContactedUsers {
+    type: 'REQUEST_LAST_CONTACTED_USERS'
+}
+
+interface ResponseLastContactedUsers {
+    type: 'RESPONSE_LAST_CONTACTED_USERS',
+    lastContactedUsers: User[];
+}
+
+export type KnownAction = RequestAvailablePhysicians | ResponseAvailablePhysicians | RequestNewAppointment | ResponseNewAppointment | RequestUserAppointments | ResponseUserAppointments | RequestLastContactedUsers | ResponseLastContactedUsers;
 
 export const availablePhysiciansAction = (time: Date, dispatch: Dispatch,  appState: ApplicationState) => {
     if(appState.appointment?.lastFetchedDatePhysicians !== time){
@@ -52,9 +61,7 @@ export const availablePhysiciansAction = (time: Date, dispatch: Dispatch,  appSt
 export const newAppointmentAction = (appointment: Appointment, dispatch: Dispatch, callback: () => void) => {
     saveNewAppointment(appointment)
         .then(response => response.json() as Promise<any>)
-        .then(data => {
-            console.log(data);
-            
+        .then(data => {            
             if(!data.statusCode) {
                 dispatch({ type: 'RESPONSE_NEW_APPOINTMENT', appointment: data });
                 callback();
@@ -70,9 +77,19 @@ export const newAppointmentAction = (appointment: Appointment, dispatch: Dispatc
 export const userAppointmentsAction = (user_id: string, date: string, dispatch: Dispatch) => {
     getUserAppointments(user_id, date)
         .then(response => response.json() as Promise<boolean>)
-        .then(data => {            
+        .then(data => {                        
             dispatch({ type: 'RESPONSE_USER_APPOINTMENTS', appointments: data });
         })
 
     dispatch({ type: 'REQUEST_USER_APPOINTMENTS', user_id: user_id });
+}
+
+export const lastContactedUsersAction = (user_id: string, dispatch: Dispatch) => {
+    lastContactedUsers(user_id)
+        .then(response => response.json() as Promise<any>)
+        .then(data => {            
+            dispatch({ type: 'RESPONSE_LAST_CONTACTED_USERS', lastContactedUsers: data });
+        })
+
+    dispatch({ type: 'REQUEST_LAST_CONTACTED_USERS' });
 }

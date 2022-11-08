@@ -37,6 +37,8 @@ export const logInAction = (login: LoginBody, dispatch: Dispatch, appState: Appl
             .then(response => response.json() as Promise<any>)
             .then(data => {
                 if(!data.statusCode){
+                    console.log(data);
+                    
                     dispatch({ type: 'RESPONSE_LOGIN', logged: data });
                     navigation.navigate('Shell', {screen: 'Home'});
                 }else{

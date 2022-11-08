@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
     mainView: {
         display: 'flex',
         flexDirection: 'column',
-        paddingTop: 10,
+        paddingVertical: 10,
         backgroundColor: 'white',
         height: '100%'
     },
@@ -89,6 +89,7 @@ export const styles = StyleSheet.create({
     bottomTextView: {
         display: 'flex',
         flexDirection: 'row',
+        paddingBottom: 20
     },
     bottomText: {
         fontSize: 16,

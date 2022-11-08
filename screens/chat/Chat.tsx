@@ -15,7 +15,7 @@ import { IconButton } from 'react-native-paper';
 
 interface ChatProps {
     navigation: DrawerNavigationProp<ShellNavigatorParamList, 'Chat'>;
-    route: any
+    route: any;
 }
 
 export const Chat: React.FC<ChatProps> = (props) => {    

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
-import { Text, View, StyleSheet } from "react-native"
-import { IconButton } from "react-native-paper"
+import { Text, View, StyleSheet, SafeAreaView, Modal } from "react-native"
+import { IconButton, Portal } from "react-native-paper"
 import { mediaDevices, MediaStream, RTCView, RTCPeerConnection, RTCSessionDescription, RTCIceCandidate } from "react-native-webrtc";
 import InCallManager from 'react-native-incall-manager';
 import { io } from "socket.io-client";
@@ -17,31 +17,34 @@ interface AudioCallProps {
 export const AudioCall: React.FC<AudioCallProps> = (props) => {
     const [remoteStream, setRemoteStream] = useState<MediaStream>();
     const [localStream, setLocalStream] = useState<MediaStream>();
-    const socket = io(WS);
-    const peerRef = useRef<any>();
-    const socketRef = useRef<any>();
-    const otherUser = useRef<any>();
+    const socketAudio = io(WS);
+    const peerRefAudio = useRef<any>();
+    const socketRefAudio = useRef<any>();
+    const otherUserAudio = useRef<any>();
+    const [called, setCalled] = useState(false);
+
+    const [modal, setModal] = useState(true);
 
     const remote = new MediaStream(undefined);
     
-    useEffect(() => {
-        socketRef.current = socket.connect();
-        socketRef.current.emit('join room', props.roomId+'Audio');
+    useEffect(() => {    
+        socketRefAudio.current = socketAudio.connect();
+        socketRefAudio.current.emit('join room', props.roomId+'Audio');
 
-        socketRef.current.on('other user', (userId: string) => {
+        socketRefAudio.current.on('other user', (userId: string) => {
             callUser(userId);
-            otherUser.current = userId;
+            otherUserAudio.current = userId;
         });
 
-        socketRef.current.on('user joined', (userId: string) => {
-            otherUser.current = userId;
+        socketRefAudio.current.on('user joined', (userId: string) => {
+            otherUserAudio.current = userId;
         });
 
-        socketRef.current.on('offer', handleOffer);
+        socketRefAudio.current.on('offer', handleOffer);
 
-        socketRef.current.on('answer', handleAnswer);
+        socketRefAudio.current.on('answer', handleAnswer);
 
-        socketRef.current.on('ice-candidate', handleNewICECandidateMsg);
+        socketRefAudio.current.on('ice-candidate', handleNewICECandidateMsg);
 
         props.socketConnection.on('accept audio call', audioCallAccepted);
 
@@ -49,25 +52,25 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     }, []);
 
     const callUser = (userId: string) => {
-        console.log("Initiated an audio call", socketRef.current.id);
-        peerRef.current = Peer(userId);
+        console.log("Initiated an audio call", socketRefAudio.current.id);
+        peerRefAudio.current = Peer(userId);
 
         mediaDevices.getUserMedia({
             audio: true
         }).then((local: any) => {
-            
-            peerRef.current.addStream(local);
             setLocalStream(local);
-            
             setRemoteStream(remote);
-    
-            local.getTracks().forEach((track: any) => {             
-                peerRef.current.getLocalStreams()[0].addTrack(track);
-            });
+            peerRefAudio.current.addStream(local);
 
-            peerRef.current.ontrack = handleTrack;
-            peerRef.current.onaddstream = handleAddStream;
+            local?.getTracks().forEach((track: any) => {             
+                peerRefAudio.current.getLocalStreams()[0].addTrack(track);
+            });
         });
+
+        setCalled(true);
+
+        peerRefAudio.current.ontrack = handleTrack;
+        peerRefAudio.current.onaddstream = handleAddStream;
     }
 
     const Peer = (userId?: string) => {
@@ -101,52 +104,65 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     }
 
     const handleOffer = (incoming: any) => {
-        console.log('Handling offer', socketRef.current.id);
+        console.log('Handling offer', socketRefAudio.current.id);
         
-        peerRef.current = Peer();
-        peerRef.current.ontrack = handleTrack;
-        peerRef.current.onaddstream = handleAddStream;
+        peerRefAudio.current = Peer();
+
+        if(!called) mediaDevices.getUserMedia({
+            audio: true
+        }).then((local: any) => {
+            setLocalStream(local);
+            setRemoteStream(remote);
+            peerRefAudio.current.addStream(local);
+
+            local?.getTracks().forEach((track: any) => {             
+                peerRefAudio.current.getLocalStreams()[0].addTrack(track);
+            });
+        });
+
+        peerRefAudio.current.ontrack = handleTrack;
+        peerRefAudio.current.onaddstream = handleAddStream;
 
         const desc = new RTCSessionDescription(incoming.sdp);
         
-        peerRef.current.setRemoteDescription(desc)
+        peerRefAudio.current.setRemoteDescription(desc)
         .then(() => {})
         .then(() => {            
-            return peerRef.current.createAnswer()
+            return peerRefAudio.current.createAnswer()
         }).then((answer: any) => {            
-            return peerRef.current.setLocalDescription(answer)
+            return peerRefAudio.current.setLocalDescription(answer)
         }).then(() => {
             const payload = {
                 target: incoming.caller,
-                caller: socketRef.current.id,
-                sdp: peerRef.current.localDescription
+                caller: socketRefAudio.current.id,
+                sdp: peerRefAudio.current.localDescription
             }
-            socketRef.current.emit('answer', payload);
+            socketRefAudio.current.emit('answer', payload);
         })
     }
 
     const handleAnswer = (message: any) => {
-        console.log('Handling answer', socketRef.current.id);
+        console.log('Handling answer', socketRefAudio.current.id);
         
         const description = new RTCSessionDescription(message.sdp);
-        peerRef.current.setRemoteDescription(description)
+        peerRefAudio.current.setRemoteDescription(description)
         .catch((error: any) => console.log('Error handling answer', error));
     }
 
     const handleNegotiationNeeded = (userId?: string) => {
-        console.log('Handling negotiation needed', socketRef.current.id);
+        console.log('Handling negotiation needed', socketRefAudio.current.id);
                 
-        peerRef.current.createOffer()
+        peerRefAudio.current.createOffer()
         .then((offer: any) => {
-            return peerRef.current.setLocalDescription(offer)
+            return peerRefAudio.current.setLocalDescription(offer)
         })
         .then(() => {
             const payload = {
                 target: userId,
-                caller: socketRef.current.id,
-                sdp: peerRef.current.localDescription
+                caller: socketRefAudio.current.id,
+                sdp: peerRefAudio.current.localDescription
             };            
-            socketRef.current.emit('offer', payload);
+            socketRefAudio.current.emit('offer', payload);
         }).catch((error: any) => {
             console.log('Error handling negotiation needed', error);
         });
@@ -156,21 +172,21 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     const handleICECandidateEvent = (event: any) => {
         if(event.candidate){
             const payload = {
-                target: otherUser.current,
+                target: otherUserAudio.current,
                 candidate: event.candidate
             }
-            socketRef.current.emit('ice-candidate', payload);
+            socketRefAudio.current.emit('ice-candidate', payload);
         }
     }
 
     const handleNewICECandidateMsg = (incoming: any) => {
         const candidate = new RTCIceCandidate(incoming);
-        peerRef.current.addIceCandidate(candidate)
+        peerRefAudio.current.addIceCandidate(candidate)
         .catch((error: any) => console.log(error));
     }
 
     const handleTrack = (event: any) => {
-        console.log("Handling Track", socketRef.current.id);
+        console.log("Handling Track", socketRefAudio.current.id);
         
         event.streams[0].getTracks().forEach((track: any) => {
             remote.addTrack(track);
@@ -178,7 +194,7 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     }
 
     const handleAddStream = (event: any) => {
-        console.log("Handling Add Stream", socketRef.current.id);
+        console.log("Handling Add Stream", socketRefAudio.current.id);
         setRemoteStream(event.stream);
     }
     
@@ -192,33 +208,42 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     }
 
     return (
-        <View style={styles.screen}>
-            <IconButton
-                icon="phone"
-                color="#bebebe"
-                size={150}
-                style={styles.centerButton}
-            />
-            <View style={styles.footerButtons}>
-                <IconButton
-                    icon="phone-hangup"
-                    color="white"
-                    style={styles.hangupButton}
-                    size={40}
-                />
-            </View>
+        <Portal>
+            <Modal
+                visible={modal}
+                onDismiss={() => setModal(false)}
+            >
+                <SafeAreaView>
+                    <View style={styles.screen}>
+                        <IconButton
+                            icon="phone"
+                            color="#bebebe"
+                            size={150}
+                            style={styles.centerButton}
+                        />
+                        <View style={styles.footerButtons}>
+                            <IconButton
+                                icon="phone-hangup"
+                                color="white"
+                                style={styles.hangupButton}
+                                size={40}
+                            />
+                        </View>
 
-            { localStream && 
-            (   <RTCView 
-                    streamURL={localStream.toURL()}
-                /> 
-            ) }
-            { remoteStream && 
-            (   <RTCView 
-                    streamURL={remoteStream.toURL()}
-                /> 
-            ) }
-        </View>
+                        { localStream && 
+                        (   <RTCView 
+                                streamURL={localStream.toURL()}
+                            /> 
+                        ) }
+                        { remoteStream && 
+                        (   <RTCView 
+                                streamURL={remoteStream.toURL()}
+                            /> 
+                        ) }
+                    </View>
+                </SafeAreaView>
+            </Modal>
+        </Portal>
     )
 }
 

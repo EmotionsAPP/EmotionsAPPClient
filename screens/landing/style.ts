@@ -72,8 +72,9 @@ export const styles = StyleSheet.create({
     },
     termsAndConditionsText: {
         fontSize: 14,
-        position: 'absolute',
-        bottom: 30,
+        // position: 'absolute',
+        // bottom: 30,
+        paddingVertical: 30,
         paddingHorizontal: 40,
         textAlign: 'center'
     },

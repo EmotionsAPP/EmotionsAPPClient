@@ -7,6 +7,7 @@ export interface User {
     physician: boolean;
     patient?: {
         _id?: string;
+        birthday?: Date;
     },
     psychologist?: {
         _id?: string;

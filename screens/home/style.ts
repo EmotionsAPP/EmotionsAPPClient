@@ -32,10 +32,6 @@ export const styles = StyleSheet.create({
     actionBgImage: {
         height: '100%', 
         width: '100%', 
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center'
     },
     newMeetingAction: {
         backgroundColor: '#E6896B',
@@ -63,4 +59,17 @@ export const styles = StyleSheet.create({
         fontWeight: '400',
         fontSize: 18,
     },
+    centerImg: {
+        width: 282,
+        height: 205,
+        resizeMode: 'stretch'
+    },
+    nothingToShowView: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%'
+    }
 })

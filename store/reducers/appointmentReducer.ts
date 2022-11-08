@@ -9,6 +9,8 @@ export interface AppointmentState {
     savingNewAppointment: boolean;
     userAppointments: Appointment[];
     fetchingUserAppointments: boolean;
+    fetchingLastContactedUsers: boolean;
+    lastContactedUsers: User[];
 }
 
 const unloadedState: AppointmentState = { 
@@ -17,7 +19,9 @@ const unloadedState: AppointmentState = {
     lastFetchedDatePhysicians: undefined, 
     savingNewAppointment: false,
     userAppointments: [],
-    fetchingUserAppointments: false, 
+    fetchingUserAppointments: false,
+    fetchingLastContactedUsers: false, 
+    lastContactedUsers: []
 };
 
 export const reducer: Reducer<AppointmentState> = (state: AppointmentState | undefined, incomingAction: Action): AppointmentState => {
@@ -59,6 +63,17 @@ export const reducer: Reducer<AppointmentState> = (state: AppointmentState | und
                 ...state,
                 fetchingUserAppointments: false, 
                 userAppointments: action.appointments
+            }
+        case 'REQUEST_LAST_CONTACTED_USERS':
+            return {
+                ...state,
+                fetchingLastContactedUsers: true
+            }
+        case 'RESPONSE_LAST_CONTACTED_USERS':
+            return {
+                ...state,
+                fetchingLastContactedUsers: false,
+                lastContactedUsers: action.lastContactedUsers
             }
     }
 
