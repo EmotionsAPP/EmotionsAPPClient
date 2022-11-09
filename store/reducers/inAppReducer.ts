@@ -5,6 +5,7 @@ export interface InAppState {
     notificationSnackbarVisible: boolean;
     snackbarNotificationType: any;
     snackbarNotificationType2?: any;
+    snackbarNotificationCustomText?: string;
 }
 
 const unloadedState: InAppState = { 
@@ -24,7 +25,8 @@ export const reducer: Reducer<InAppState> = (state: InAppState | undefined, inco
                 ...state,
                 notificationSnackbarVisible: true,
                 snackbarNotificationType: action.notificationType,
-                snackbarNotificationType2: action.notificationType2
+                snackbarNotificationType2: action.notificationType2,
+                snackbarNotificationCustomText: action.customText,
             };
         case 'DISMISS_NOTIFICATION_SNACKBAR':
             return unloadedState;

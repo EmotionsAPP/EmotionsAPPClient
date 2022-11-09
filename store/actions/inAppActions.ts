@@ -5,6 +5,7 @@ interface OpenNotificationSnackbar {
     type: 'OPEN_NOTIFICATION_SNACKBAR';
     notificationType: any;
     notificationType2?: string;
+    customText?: string;
 }
 
 interface DismissNotificationSnackbar {
@@ -13,8 +14,8 @@ interface DismissNotificationSnackbar {
 
 export type KnownAction = OpenNotificationSnackbar | DismissNotificationSnackbar
 
-export const openNotificationSnackbar = (notificationType: "basic" | "emergency", dispatch: Dispatch, notificationType2?: string) => {
-    dispatch({ type: 'OPEN_NOTIFICATION_SNACKBAR', notificationType: notificationType, notificationType2: notificationType2});
+export const openNotificationSnackbar = (notificationType: "basic" | "emergency", dispatch: Dispatch, notificationType2?: string, customText?: string) => {
+    dispatch({ type: 'OPEN_NOTIFICATION_SNACKBAR', notificationType: notificationType, notificationType2: notificationType2, customText: customText});
 }
 
 export const dismissNotificationSnackbar = (dispatch: Dispatch) => {

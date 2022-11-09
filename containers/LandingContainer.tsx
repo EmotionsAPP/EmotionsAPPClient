@@ -21,6 +21,7 @@ export const LandingContainer = () => {
                 visible={appState.inApp?.notificationSnackbarVisible ?? false}
                 type={appState.inApp?.snackbarNotificationType ?? ''}
                 basicType={appState.inApp?.snackbarNotificationType2}
+                customText={appState.inApp?.snackbarNotificationCustomText}
                 dismiss={dismissNotif}
             />
         </PaperProvider>

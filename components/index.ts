@@ -1,3 +1,3 @@
 export * from './DrawerMenu';
-export * from './AppointmentForm';
+export * from './appointmentForm/AppointmentForm';
 export * from './snackbar/NotificationSnackbar';

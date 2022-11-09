@@ -5,6 +5,8 @@ import { DrawerNavigationProp } from "@react-navigation/drawer/lib/typescript/sr
 import { Button, FAB, Portal, Provider } from "react-native-paper";
 import { AppointmentForm } from "../components";
 import { StyleSheet } from 'react-native';
+import { useSelector } from "react-redux";
+import { ApplicationState } from "../store";
 
 interface CalendarProps {
     navigation: DrawerNavigationProp<ShellNavigatorParamList, 'Calendar'>;
@@ -15,17 +17,24 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
 
     const showAppointmentModal = () => visibleAppointmentModal(true);
     const hideAppointmentModal = () => visibleAppointmentModal(false);
+
+    const appState = useSelector((state: ApplicationState) => state);
     return (
         <Provider>
             <AppointmentForm visible={appointmentModal} hide={hideAppointmentModal} />
             <View style={{height: '100%', width: '100%'}}>
-                <FAB 
-                    icon="plus"
-                    style={ styles.fab }
-                    visible={true}
-                    color="white"
-                    onPress={() => showAppointmentModal()} 
-                />
+                {
+                    appState.auth?.user?.hasOwnProperty('patient') ? 
+                        <FAB 
+                            icon="plus"
+                            style={ styles.fab }
+                            visible={true}
+                            color="white"
+                            onPress={() => showAppointmentModal()} 
+                        />
+                    : 
+                        <></>
+                }
             </View>
         </Provider>
     )

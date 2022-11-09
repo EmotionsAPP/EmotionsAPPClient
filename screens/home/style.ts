@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     action: {
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     actionText: {
         fontSize: 18,

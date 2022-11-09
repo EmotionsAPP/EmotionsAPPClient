@@ -4,8 +4,10 @@ import DatePicker from "react-native-date-picker";
 import DropDownPicker from "react-native-dropdown-picker";
 import { Button, IconButton, Modal, Portal, Provider, Text } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { ApplicationState } from "../store";
-import { availablePhysiciansAction, newAppointmentAction } from "../store/actions/appointmentActions";
+import { ApplicationState } from "../../store";
+import { availablePhysiciansAction, newAppointmentAction } from "../../store/actions/appointmentActions";
+import { openNotificationSnackbar } from "../../store/actions/inAppActions";
+import { styles } from './style';
 
 interface AppointmentFormProps {
     visible: boolean;
@@ -51,6 +53,40 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
             })
         );
     }, [appState.appointment?.availablePhysicians])
+
+    const setStartTime = (date: Date) => {
+        if(formData.endTime && 
+            (
+                (formData.endTime.getTime() < date.getTime()) || 
+                (Math.abs(Math.round((formData.endTime.getTime() - date.getTime()) / 60000)) < 15) ||
+                (Math.abs(Math.round((formData.endTime.getTime() - date.getTime()) / 60000)) > 120 )
+            )
+        ){
+            openNotificationSnackbar("basic", dispatch, "error", "La hora de inicio debe ser menor a la de final, tener un minimo de 15 minutos de diferencia y no mayor a 2 horas.")
+            return;
+        }
+        setFormData({
+            ...formData,
+            startTime: date
+        })
+    }
+
+    const setEndTime = (date: Date) => {
+        if(formData.startTime && 
+            (
+                (formData.startTime.getTime() > date.getTime()) || 
+                (Math.abs(Math.round((formData.startTime.getTime() - date.getTime()) / 60000)) < 15) ||
+                (Math.abs(Math.round((formData.startTime.getTime() - date.getTime()) / 60000)) > 120 )
+            )
+        ){
+            openNotificationSnackbar("basic", dispatch, "error", "La hora de inicio debe ser menor a la de final, tener un minimo de 15 minutos de diferencia y no mayor a 2 horas.")
+            return;
+        }
+        setFormData({
+            ...formData,
+            endTime: date
+        })
+    }
 
     const closeModal = () => {
         setFormData({
@@ -115,7 +151,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                             <Text>Inicio</Text>
                             <Text>
                                 { formData.startTime ? (
-                                    `${formData.startTime.toDateString()} ${formData.startTime.getHours()}:${formData.startTime.getMinutes()}`
+                                    `${formData.startTime.toDateString()} ${String(((formData.startTime.getHours() % 12) || 12)).padStart(2,'0')}:${String(formData.startTime.getMinutes()).padStart(2,'0')} ${formData.startTime.getHours() > 12 ? 'PM' : 'AM'}`
                                 ) : '-' }
                             </Text>
                             <DatePicker
@@ -123,10 +159,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                                 date={new Date()}
                                 open={timePickerStart}
                                 onConfirm={(date) => {
-                                    setFormData({
-                                        ...formData,
-                                        startTime: date
-                                    })
+                                    setStartTime(date);
                                     visibleTimePickerStart(false);
                                 }}
                                 onCancel={() => {
@@ -141,7 +174,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                             <Text>Termina</Text>
                             <Text>
                                 { formData.endTime ? (
-                                    `${formData.endTime.toDateString()} ${formData.endTime.getHours()}:${formData.endTime.getMinutes()}`
+                                    `${formData.endTime.toDateString()} ${String(((formData.endTime.getHours() % 12) || 12)).padStart(2,'0')}:${String(formData.endTime.getMinutes()).padStart(2,'0')} ${formData.endTime.getHours() > 12 ? 'PM' : 'AM'}`
                                 ) : '-' }
                             </Text>
                             <DatePicker
@@ -149,10 +182,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                                 date={new Date()}
                                 open={timePickerEnd}
                                 onConfirm={(date) => {
-                                    setFormData({
-                                        ...formData,
-                                        endTime: date
-                                    })
+                                    setEndTime(date);
                                     visibleTimePickerEnd(false);
                                 }}
                                 onCancel={() => {
@@ -204,67 +234,3 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
     )
 }
 
-const styles = StyleSheet.create({
-    header: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingBottom: 30
-    },
-    headerButtons: {
-        marginHorizontal: 0,
-        marginVertical: 0,
-        textTransform: 'none',
-        fontWeight: 'bold'
-    },
-    modal: {
-        backgroundColor: 'white',
-        position: 'absolute',
-        bottom: 0,
-        left: 0, 
-        right: 0,
-        padding: 20,
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10
-    },
-    dropdown: {
-        borderWidth: 0,
-        height: 5
-    },
-    dropdownContainer: {
-        width: '78%'
-    },
-    view: {
-        paddingLeft: 45,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    pressView: {
-        paddingLeft: 45,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-    icon: {
-        position: 'absolute',
-        left: 0,
-        top: 2,
-        color: '#db6551'
-    },
-    divider: {
-        paddingVertical: 15,
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
-        borderColor: '#db6551',
-        marginBottom: 20
-    },
-    input: {
-        borderWidth: 0,
-        marginVertical: 0,
-        paddingVertical: 0,
-        width: '72%',
-        marginLeft: 10,
-        height: 20
-    }
-})

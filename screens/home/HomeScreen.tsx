@@ -63,7 +63,7 @@ export const HomeScreen: React.FC<HomeProps> = ({ navigation }) => {
                                 require('../../assets/images/Topographic.png')
                             }
                             resizeMode='cover'
-                            style={ styles.actionBgImage }
+                            style={ [styles.actionBgImage, { justifyContent: 'center' } ] }
                         >
                             <View style={ styles.action }>
                                 <Text style={ styles.actionText }>{ appState.appointment?.userAppointments && appState.appointment?.userAppointments.length > 0 ? '¿Necesitas otra reunión?' : '¡Nada que mostrar por ahora! \n Agenda tu primera cita para ver información aquí. :)'}</Text>

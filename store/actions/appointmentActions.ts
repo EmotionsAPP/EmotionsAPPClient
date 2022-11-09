@@ -65,9 +65,9 @@ export const newAppointmentAction = (appointment: Appointment, dispatch: Dispatc
             if(!data.statusCode) {
                 dispatch({ type: 'RESPONSE_NEW_APPOINTMENT', appointment: data });
                 callback();
-                openNotificationSnackbar("basic", dispatch, "saved");
-            }else{
-                openNotificationSnackbar("basic", dispatch, "error");
+                openNotificationSnackbar("basic", dispatch, "saved", "Su reunion fue creada con exito");
+            }else{               
+                openNotificationSnackbar("basic", dispatch, "error", "Existe un conflicto en las fechas de esta reunion");
             }
         })
 
