@@ -12,13 +12,23 @@ export const ScreenHeader = (props: any) => {
     const closeMenu = () => setVisibleMenu(false);
     const dispatch = useDispatch();
 
+    const back = () => {props.navigation.goBack(null)}
+
     return (
         <View style={ styles.header }>
-            <IconButton 
-                icon='menu'
-                onPress={props.navigation.openDrawer}
-                size={30}
-            />
+            {props.goBack ? 
+                    <IconButton 
+                        icon='chevron-left'
+                        onPress={back}
+                        size={30}
+                    />
+                :
+                    <IconButton 
+                        icon='menu'
+                        onPress={props.navigation.openDrawer}
+                        size={30}
+                    />
+            }
             <Text style={ styles.title }>{props.title ?? props.route.name}</Text>
             <Menu
                 visible={visibleMenu}

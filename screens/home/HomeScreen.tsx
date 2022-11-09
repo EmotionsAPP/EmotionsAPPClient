@@ -5,7 +5,7 @@ import { DrawerNavigationProp } from "@react-navigation/drawer/lib/typescript/sr
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
 import { lastContactedUsersAction, userAppointmentsAction } from "../../store/actions/appointmentActions";
-import { AppointmentSmallCard } from "../../components/AppointmentSmallCard";
+import { AppointmentSmallCard } from "../../components/appointmentSmallCard/AppointmentSmallCard";
 import { ScrollView } from "react-native-gesture-handler";
 import { styles } from './style';
 import { useIsFocused } from '@react-navigation/native';

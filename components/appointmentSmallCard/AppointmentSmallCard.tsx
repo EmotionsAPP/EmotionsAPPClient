@@ -1,11 +1,12 @@
 import React from "react";
-import { Appointment } from "../models";
+import { Appointment } from "../../models";
 import { Pressable, StyleSheet, View } from 'react-native';
 import { IconButton, Text } from "react-native-paper";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { useSelector } from "react-redux";
-import { ApplicationState } from "../store";
+import { ApplicationState } from "../../store";
+import { styles } from './style';
 
 interface AppointmentSmallCardProps {
     appointment: Appointment;
@@ -17,14 +18,14 @@ export const AppointmentSmallCard: React.FC<AppointmentSmallCardProps> = (props)
     const dateEnd = new Date(props.appointment.end);
     const diff = dateEnd.getTime() - dateStart.getTime();
     
-    const openChat = () => {
-        props.navigation.navigate('Shell', {screen: 'Chat', params: { roomId: props.appointment._id } },);
+    const openMeeting = () => {
+        props.navigation.navigate('Shell', {screen: 'Appointment', params: { appointment: props.appointment } });
     }    
 
     const appState = useSelector((state: ApplicationState) => state);
     
     return (
-        <Pressable style={styles.container} onPress={openChat}>
+        <Pressable style={styles.container} onPress={openMeeting}>
             <View style={styles.time}>
                 <IconButton 
                     style={styles.icon} 
@@ -71,56 +72,3 @@ export const AppointmentSmallCard: React.FC<AppointmentSmallCardProps> = (props)
     )
 }
 
-const styles = StyleSheet.create({
-    container: {
-        borderRadius: 10,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 20,
-        width: '99.8%',
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 1,
-        },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        elevation: 5,
-        backgroundColor: 'white'
-    },
-    time: {
-        borderTopLeftRadius: 10,
-        borderBottomLeftRadius: 10,
-        paddingVertical: 20,
-        paddingLeft: 50,
-        backgroundColor: '#DB6551FC',
-        width: '40%',
-        height: '100%'
-    },
-    timeText: {
-        color: 'white',
-        fontSize: 13,
-        fontWeight: '600'
-    },
-    description: {
-        display: 'flex',
-        flexDirection: 'column',
-        paddingHorizontal: 10,
-    },
-    descriptionView: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    descriptionText: {
-        fontSize: 11,
-        fontWeight: 'bold'
-    },
-    icon: {
-        position: 'absolute',
-        left: 0,
-        top: 2,
-        color: '#db6551'
-    }
-})
