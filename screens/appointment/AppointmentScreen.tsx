@@ -24,6 +24,10 @@ export const AppointmentScreen: React.FC<AppointmentProps> = (props: any) => {
     const diffNowStart = dateStart.getTime() - now.getTime();
     const diffNowEnd = dateEnd.getTime() - now.getTime();
 
+    const openChat = () => {
+        props.navigation.push('Shell', {screen: 'Chat', params: { roomId: props.route.params.appointment._id, appointment: props.route.params.appointment } });
+    }
+
     return (
         <View style={{backgroundColor: 'white'}}>
             <ImageBackground 
@@ -72,6 +76,7 @@ export const AppointmentScreen: React.FC<AppointmentProps> = (props: any) => {
                         <View style={styles.joinView}>
                             <Pressable
                                 style={ styles.emergencyAction }
+                                onPress={ openChat }
                             >
                                 <Text style={ styles.emergencyActionText }>Únete a la reunión</Text>
                             </Pressable>

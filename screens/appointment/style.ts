@@ -34,6 +34,7 @@ export const styles = StyleSheet.create({
         padding: 20,
         display: 'flex',
         flexDirection: 'column',
+        height: '70%'
     },
     infoView: {
         paddingBottom: 30,

@@ -1,6 +1,6 @@
 import React, {useState, useRef, useEffect, useCallback} from 'react';
 import { RTCPeerConnection, RTCSessionDescription, RTCIceCandidate } from 'react-native-webrtc'
-import { GiftedChat } from 'react-native-gifted-chat';
+import { Composer, GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
 import io from "socket.io-client";
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { ShellNavigatorParamList } from '../../navigation';
@@ -8,11 +8,12 @@ import { WS } from '../../store/services';
 import { useSelector } from 'react-redux';
 import { ApplicationState } from '../../store';
 import InCallManager from 'react-native-incall-manager';
-import { View, StyleSheet } from 'react-native';
-import { RequestCallModal } from './RequestCallModal';
+import { View, StyleSheet, Text, ActivityIndicator, Pressable } from 'react-native';
+import { RequestModal } from './RequestCallModal';
 import { AudioCall } from './AudioCall';
-import { IconButton } from 'react-native-paper';
-
+import { IconButton, Menu, Modal, Portal } from 'react-native-paper';
+import { MessageBubble } from './MessageBubble';
+import { useIsFocused } from '@react-navigation/native';
 interface ChatProps {
     navigation: DrawerNavigationProp<ShellNavigatorParamList, 'Chat'>;
     route: any;
@@ -27,33 +28,103 @@ export const Chat: React.FC<ChatProps> = (props) => {
     const sendChannel = useRef<any>(); // Data channel
     const roomId = props.route.params.roomId;
     const [messages, setMessages] = useState<any>([]); // Chats between the peers will be stored here
-    const socket = io(WS);
     
     const [requestModal, setRequestModal] = useState(false);
     const [requestModalText, setRequestModalText] = useState("");
+    const [requestModalButtons, setRequestModalButtons] = useState<string[]>([]);
+    const [requestModalCanDismiss, setRequestModalCanDismiss] = useState(false);
+    const [requestModalOnOk, setRequestModalOnOk] = useState<() => void>(() => () => {});
+    const [requestModalOnCancel, setRequestModalOnCancel] = useState<() => void>(() => () => {});
+    const [requestModalOnAccept, setRequestModalOnAccept] = useState<() => void>(() => () => {});
+
+    const [waitingModal, setWaitingModalVisible] = useState(false);
+    const [waitingModalText, setWaitingModalText] = useState("Esperando que alguien mas se una...");
+    
     const [audioCallStarted, setAudioCallStarted] = useState(false);
+    
+    const[callMenu, setCallMenuVisible] = useState(false);
+    const openCallMenu = () => setCallMenuVisible(true);
+    const closeCallMenu = () => setCallMenuVisible(false);
+
+    const isFocused = useIsFocused();
 
     useEffect(() => {
-        socketRef.current = socket.connect();
-        socketRef.current.emit('join room', roomId);
+        props.navigation.addListener('beforeRemove', (e: any) => {
+            e.preventDefault();
 
-        socketRef.current.on('other user', (userId: string) => {
-            callUser(userId);
-            otherUser.current = userId;
+            if(otherUser.current) {
+                setRequestModalButtons(['cancel', 'accept']);
+                setRequestModalText("¿Quieres terminar esta reunion?");
+                setRequestModalCanDismiss(false);
+        
+                const cancel = () => () => {            
+                    setRequestModal(false);
+                }
+
+                const accept = () => () => {            
+                    setRequestModal(false);
+                    socketRef.current.disconnect();
+                    props.navigation.dispatch(e.data.action);
+                }
+        
+                setRequestModalOnCancel(cancel);
+                setRequestModalOnAccept(accept);
+                setRequestModal(true);
+            }else{
+                props.navigation.dispatch(e.data.action);
+            }
+
         });
-
-        socketRef.current.on('user joined', (userId: string) => {
-            otherUser.current = userId;
-        });
-
-        socketRef.current.on('offer', handleOffer);
-
-        socketRef.current.on('answer', handleAnswer);
-
-        socketRef.current.on('ice-candidate', handleNewICECandidateMsg);
-
-        socketRef.current.on('request audio call', requestingAudioCall);
     }, [])
+    
+    useEffect(() => {
+        if(isFocused) {
+            const socket = io(WS);
+    
+            socketRef.current = socket.connect();
+    
+            socketRef.current.emit('join room', roomId);
+
+            setWaitingModalVisible(true);
+            setWaitingModalText("Esperando que alguien mas se una...");
+
+            socketRef.current.on('other user', (userId: string) => {
+                callUser(userId);
+                setWaitingModalText('Conectando...');
+                otherUser.current = userId;
+            });
+    
+            socketRef.current.on('user joined', (userId: string) => {
+                setWaitingModalText('Conectando...');
+                otherUser.current = userId;
+            });
+    
+            socketRef.current.on('offer', handleOffer);
+    
+            socketRef.current.on('answer', handleAnswer);
+    
+            socketRef.current.on('ice-candidate', handleNewICECandidateMsg);
+    
+            socketRef.current.on('request audio call', requestingAudioCall);
+    
+            socketRef.current.on('other user left', handleUserLeft)
+    
+            setRequestModal(false);
+            setMessages([]);
+    
+            const msg = {
+                _id: 1,
+                text: 'Los mensajes compartidos en este chat son confidenciales. Nadie fuera de la conversación puede leerlos o descifrarlos.',
+                createdAt: new Date(),
+                system: true,
+                user: {
+                    _id: 'system'
+                }
+            }
+            setMessages((previousMessages: any) => GiftedChat.append(previousMessages, [msg]));
+        }
+
+    }, [isFocused])
 
     const callUser = (userId: string) => {
         console.log("Initiated a call", socketRef.current.id);
@@ -120,6 +191,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
         peerRef.current.ondatachannel = (event: any) => {
             sendChannel.current = event.channel;
             sendChannel.current.onmessage = handleReceiveMessage;
+            setWaitingModalVisible(false);
             console.log('Connection established');
         }
 
@@ -146,7 +218,13 @@ export const Chat: React.FC<ChatProps> = (props) => {
         
         const description = new RTCSessionDescription(message.sdp);
         peerRef.current.setRemoteDescription(description)
-        .catch((error: any) => console.log('Error handling answer', error));
+        .then(() => {
+            setWaitingModalVisible(false);
+        })
+        .catch((error: any) => {
+            setWaitingModalVisible(true);
+            console.log('Error handling answer', error)
+        });
     }
 
     const handleReceiveMessage = (event: any) => {
@@ -226,15 +304,110 @@ export const Chat: React.FC<ChatProps> = (props) => {
         setRequestModal(false);
     }
 
+    const handleUserLeft = (event: any) => {
+        setRequestModalButtons(['ok']);
+        setRequestModalText("El usuario contraparte ha salido de esta reunion");
+        setRequestModalCanDismiss(false);
+
+        const ok = () => () => {            
+            setRequestModal(false);
+            socketRef.current.disconnect()
+            otherUser.current = null;
+            props.navigation.goBack();
+        }
+
+        setRequestModalOnOk(ok);
+        setRequestModal(true);
+    }
+
+    const cancelJoin = () => {
+        setRequestModal(false);
+        socketRef.current.disconnect();
+        otherUser.current = null;
+        props.navigation.goBack();
+        setWaitingModalVisible(false);
+    }
+
     return (
         <View style={styles.screen}>
-            <IconButton 
-                icon="phone"
-                onPress={requestAudioCall}
-            />
+            <View style={styles.header}>
+                <IconButton 
+                    icon='chevron-left'
+                    onPress={() => props.navigation.goBack()}
+                    size={30}
+                />
+                <View style={styles.headerTitle}>
+                    <IconButton
+                        icon="account-circle-outline"
+                        color="#F38673"
+                        size={40}
+                    />
+                    <Text style={styles.headerName}>{ appState.auth?.user?.hasOwnProperty('patient') ? `${props.route.params.appointment.psychologist.firstName} ${props.route.params.appointment.psychologist.lastName}` : `${props.route.params.appointment.patient.firstName} ${props.route.params.appointment.patient.lastName}` }</Text>
+                </View>
+            </View>
             <GiftedChat 
                 messages={messages}
                 onSend={messages => sendMessage(messages)}
+                alignTop={true}
+                alwaysShowSend={true}
+                renderBubble={(props) => {
+                    return <MessageBubble {...props} />
+                }}
+                renderSend={(props) => {
+                    return <Send {...props} containerStyle={styles.sendButton}>
+                            <IconButton
+                                icon="send"
+                                color="#DB6551"
+                            />
+                        </Send>
+                }}
+                renderAvatar={() => null}
+                placeholder="Escribe un mensaje..."
+                showAvatarForEveryMessage={true}
+                textInputProps={
+                    {
+                        placeholderTextColor: '#DB6551',
+                        style: styles.textInput
+                    }
+                }
+                renderSystemMessage={(props) => {
+                    return (
+                        <View style={styles.systemMessageView}>
+                            <IconButton 
+                                icon="lock"
+                                size={35}
+                                color="#6b6b6b"
+                            />
+                            <Text style={{width: '80%', color: '#6b6b6b', textAlign: 'center'}}>{props.currentMessage?.text}</Text>
+                        </View>
+                    )
+                }}
+                renderActions={(props) => {
+                    return (
+                        <Menu
+                            visible={callMenu}
+                            onDismiss={closeCallMenu}
+                            anchor={
+                                <View style={styles.sendButton}>
+                                    <IconButton 
+                                        icon="phone"
+                                        onPress={openCallMenu}
+                                        color="#DB6551"
+                                        />
+                                </View>
+                            }
+                            style={{paddingBottom: 90}}
+                        >
+                            <Menu.Item icon="phone" title="Llamada de audio" titleStyle={{color: '#DB6551'}}></Menu.Item>
+                            <Menu.Item icon="video" title="Videollamada" titleStyle={{color: '#DB6551'}}></Menu.Item>
+                        </Menu>
+                    )
+                }}
+                renderInputToolbar={(props) => {
+                    return (
+                        <InputToolbar {...props} containerStyle={styles.composerView}/>
+                    )
+                }}
                 user={{
                     _id: appState.auth?.user ?? ''
                 }}
@@ -249,13 +422,36 @@ export const Chat: React.FC<ChatProps> = (props) => {
                 />
                 : null
             }
-            <RequestCallModal 
+            <RequestModal 
                 text={requestModalText}
                 visible={requestModal}
-                onAccept={acceptAudioCall}
-                onCancel={rejectAudioCall}
+                onAccept={requestModalOnAccept}
+                onCancel={requestModalOnCancel}
+                onOk={requestModalOnOk}
                 closeModal={() => setRequestModal(false)}
-            />    
+                canDismiss={requestModalCanDismiss}
+                buttons={requestModalButtons}
+            /> 
+
+            <Portal>
+                <Modal 
+                    visible={waitingModal}
+                    dismissable={false}
+                    style={styles.waitingModal}
+                    contentContainerStyle={styles.waitingModalContainer}
+                >
+                    <View style={styles.waitingModalView}>
+                        <ActivityIndicator size="small" color="#DB6551" />
+                        <Text style={styles.waitingModalText}>{waitingModalText}</Text>
+                    </View>
+                    <Pressable 
+                        onPress={() => {cancelJoin()}}
+                        style={styles.okButton}
+                    >
+                        <Text style={styles.okButtonText}>Cancelar</Text>
+                    </Pressable>
+                </Modal>
+            </Portal>
         </View>
     )
 }
@@ -264,5 +460,92 @@ const styles = StyleSheet.create({
     screen: {
         width: '100%',
         height: '100%',
+        backgroundColor: 'white'
+    },
+    systemMessageView: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    composerView: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 65,
+        backgroundColor: '#F5F5F5'
+    },
+    textInput: {
+        backgroundColor: 'white',
+        borderRadius: 10,
+        marginBottom: 3,
+        width: '66%',
+        paddingVertical: 10,
+        paddingLeft: 15,
+    },
+    sendButton: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 48,
+        width: 48,
+        marginHorizontal: 8,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        marginBottom: 3,
+    },
+    waitingModal: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    waitingModalContainer: {
+        backgroundColor: 'white',
+        width: '90%',
+        height: '20%',
+        padding: 20,
+        borderRadius: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    waitingModalText: {
+        paddingLeft: 10,
+    },
+    waitingModalView: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    okButton: {
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        backgroundColor: '#DB6551',
+        width: '40%',
+        marginTop: 15
+    },
+    okButtonText: {
+        textAlign: 'center',
+        color: 'white'
+    },
+    header: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    headerTitle: {
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+    headerName: {
+        fontSize: 20,
+        fontWeight: '600'
     }
+
 })

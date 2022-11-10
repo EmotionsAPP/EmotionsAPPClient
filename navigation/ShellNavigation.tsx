@@ -36,7 +36,11 @@ export const ShellNavigator = () => {
                 }}
             />
             <Drawer.Screen name="AppointmentHistory" component={AppointmentHistoryScreen} />
-            <Drawer.Screen name="Chat" component={Chat} />
+            <Drawer.Screen name="Chat" component={Chat} 
+                options={{
+                    header: (props) => <></>
+                }}
+            />
             <Drawer.Screen name="Appointment" component={AppointmentScreen} 
                 options={{
                     header: (props) => <ScreenHeader {...props} title="Reunión" goBack={true} />
