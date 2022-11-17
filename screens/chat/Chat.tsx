@@ -1,6 +1,6 @@
-import React, {useState, useRef, useEffect, useCallback} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import { RTCPeerConnection, RTCSessionDescription, RTCIceCandidate } from 'react-native-webrtc'
-import { Composer, GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
+import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
 import io from "socket.io-client";
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { ShellNavigatorParamList } from '../../navigation';
@@ -8,12 +8,15 @@ import { WS } from '../../store/services';
 import { useSelector } from 'react-redux';
 import { ApplicationState } from '../../store';
 import InCallManager from 'react-native-incall-manager';
-import { View, StyleSheet, Text, ActivityIndicator, Pressable } from 'react-native';
+import { View, Text, ActivityIndicator, Pressable } from 'react-native';
 import { RequestModal } from './RequestCallModal';
-import { AudioCall } from './AudioCall';
+import { AudioCall } from '../audioCall/AudioCall';
 import { IconButton, Menu, Modal, Portal } from 'react-native-paper';
 import { MessageBubble } from './MessageBubble';
 import { useIsFocused } from '@react-navigation/native';
+import { styles } from './style';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 interface ChatProps {
     navigation: DrawerNavigationProp<ShellNavigatorParamList, 'Chat'>;
     route: any;
@@ -107,7 +110,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
     
             socketRef.current.on('request audio call', requestingAudioCall);
     
-            socketRef.current.on('other user left', handleUserLeft)
+            socketRef.current.on('other user left', handleUserLeft);
     
             setRequestModal(false);
             setMessages([]);
@@ -262,9 +265,8 @@ export const Chat: React.FC<ChatProps> = (props) => {
     }
 
     const requestAudioCall = () => {
-        InCallManager.start({media: 'audio', ringback: '_BUNDLE_'});
-        InCallManager.setForceSpeakerphoneOn(true);
-        InCallManager.setSpeakerphoneOn(true);
+        InCallManager.startRingback('_BUNDLE_');
+        closeCallMenu();
 
         const payload = {
             target: otherUser.current,
@@ -279,11 +281,26 @@ export const Chat: React.FC<ChatProps> = (props) => {
         InCallManager.setForceSpeakerphoneOn(true);
         InCallManager.setSpeakerphoneOn(true);
 
+        setRequestModalButtons(['cancel', 'accept']);
+        setRequestModalText("Llamada de audio entrante");
+        setRequestModalCanDismiss(false);
+
+        const cancel = () => () => {    
+            rejectAudioCall();        
+        }
+
+        const accept = () => () => {            
+            acceptAudioCall();
+        }
+
+        setRequestModalOnCancel(cancel);
+        setRequestModalOnAccept(accept);
         setRequestModal(true);
     }
 
     const acceptAudioCall = () => {
         InCallManager.stopRingtone();
+        InCallManager.start({media: 'audio'});
         const payload = {
             target: otherUser.current,
             caller: socketRef.current.id
@@ -398,8 +415,29 @@ export const Chat: React.FC<ChatProps> = (props) => {
                             }
                             style={{paddingBottom: 90}}
                         >
-                            <Menu.Item icon="phone" title="Llamada de audio" titleStyle={{color: '#DB6551'}}></Menu.Item>
-                            <Menu.Item icon="video" title="Videollamada" titleStyle={{color: '#DB6551'}}></Menu.Item>
+                            <Menu.Item 
+                                icon={({ color, size }) => (
+                                    <MaterialCommunityIcons
+                                        name="phone"
+                                        color="#DB6551"
+                                        size={size}
+                                    />
+                                )}
+                                title="Llamada de audio" 
+                                titleStyle={{color: '#DB6551'}}
+                                onPress={() => requestAudioCall()}
+                            ></Menu.Item>
+                            <Menu.Item 
+                                icon={({ color, size }) => (
+                                    <MaterialCommunityIcons
+                                        name="video"
+                                        color="#DB6551"
+                                        size={size}
+                                    />
+                                )} 
+                                title="Videollamada" 
+                                titleStyle={{color: '#DB6551'}}
+                            ></Menu.Item>
                         </Menu>
                     )
                 }}
@@ -417,6 +455,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
                     peerConnection={peerRef.current}
                     socketConnection={socketRef.current}
                     otherUser={otherUser.current}
+                    appointment={props.route.params.appointment}
                     roomId={roomId}
                     closeAudioCall={() => setAudioCallStarted(false)}
                 />
@@ -456,96 +495,3 @@ export const Chat: React.FC<ChatProps> = (props) => {
     )
 }
 
-const styles = StyleSheet.create({
-    screen: {
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'white'
-    },
-    systemMessageView: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    composerView: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: 65,
-        backgroundColor: '#F5F5F5'
-    },
-    textInput: {
-        backgroundColor: 'white',
-        borderRadius: 10,
-        marginBottom: 3,
-        width: '66%',
-        paddingVertical: 10,
-        paddingLeft: 15,
-    },
-    sendButton: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 48,
-        width: 48,
-        marginHorizontal: 8,
-        backgroundColor: 'white',
-        borderRadius: 10,
-        marginBottom: 3,
-    },
-    waitingModal: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    waitingModalContainer: {
-        backgroundColor: 'white',
-        width: '90%',
-        height: '20%',
-        padding: 20,
-        borderRadius: 10,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    waitingModalText: {
-        paddingLeft: 10,
-    },
-    waitingModalView: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    okButton: {
-        borderRadius: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        backgroundColor: '#DB6551',
-        width: '40%',
-        marginTop: 15
-    },
-    okButtonText: {
-        textAlign: 'center',
-        color: 'white'
-    },
-    header: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    headerTitle: {
-        display: 'flex',
-        alignItems: 'center',
-        flexDirection: 'row'
-    },
-    headerName: {
-        fontSize: 20,
-        fontWeight: '600'
-    }
-
-})
