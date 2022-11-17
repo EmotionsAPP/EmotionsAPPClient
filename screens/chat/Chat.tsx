@@ -16,6 +16,7 @@ import { MessageBubble } from './MessageBubble';
 import { useIsFocused } from '@react-navigation/native';
 import { styles } from './style';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { VideoCall } from '../videoCall/VideoCall';
 
 interface ChatProps {
     navigation: DrawerNavigationProp<ShellNavigatorParamList, 'Chat'>;
@@ -44,6 +45,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
     const [waitingModalText, setWaitingModalText] = useState("Esperando que alguien mas se una...");
     
     const [audioCallStarted, setAudioCallStarted] = useState(false);
+    const [videoCallStarted, setVideoCallStarted] = useState(false);
     
     const[callMenu, setCallMenuVisible] = useState(false);
     const openCallMenu = () => setCallMenuVisible(true);
@@ -109,6 +111,8 @@ export const Chat: React.FC<ChatProps> = (props) => {
             socketRef.current.on('ice-candidate', handleNewICECandidateMsg);
     
             socketRef.current.on('request audio call', requestingAudioCall);
+
+            socketRef.current.on('request video call', requestingVideoCall);
     
             socketRef.current.on('other user left', handleUserLeft);
     
@@ -276,6 +280,17 @@ export const Chat: React.FC<ChatProps> = (props) => {
         setAudioCallStarted(true);
     }
 
+    const requestVideoCall = () => {
+        closeCallMenu();
+
+        const payload = {
+            target: otherUser.current,
+            caller: socketRef.current.id
+        }
+        socketRef.current.emit('request video call', payload);
+        setVideoCallStarted(true);
+    }
+
     const requestingAudioCall = () => {
         InCallManager.startRingtone('_BUNDLE_');
         InCallManager.setForceSpeakerphoneOn(true);
@@ -291,6 +306,28 @@ export const Chat: React.FC<ChatProps> = (props) => {
 
         const accept = () => () => {            
             acceptAudioCall();
+        }
+
+        setRequestModalOnCancel(cancel);
+        setRequestModalOnAccept(accept);
+        setRequestModal(true);
+    }
+
+    const requestingVideoCall = () => {
+        InCallManager.startRingtone('_BUNDLE_');
+        InCallManager.setForceSpeakerphoneOn(true);
+        InCallManager.setSpeakerphoneOn(true);
+
+        setRequestModalButtons(['cancel', 'accept']);
+        setRequestModalText("Llamada de video entrante");
+        setRequestModalCanDismiss(false);
+
+        const cancel = () => () => {    
+            rejectVideoCall();        
+        }
+
+        const accept = () => () => {            
+            acceptVideoCall();
         }
 
         setRequestModalOnCancel(cancel);
@@ -318,6 +355,29 @@ export const Chat: React.FC<ChatProps> = (props) => {
         }
         socketRef.current.emit('reject audio call', payload);
         setAudioCallStarted(false);
+        setRequestModal(false);
+    }
+
+    const acceptVideoCall = () => {
+        InCallManager.stopRingtone();
+        InCallManager.start({media: 'audio'});
+        const payload = {
+            target: otherUser.current,
+            caller: socketRef.current.id
+        }
+        socketRef.current.emit('accept video call', payload);
+        setVideoCallStarted(true);
+        setRequestModal(false);
+    }
+
+    const rejectVideoCall = () => {
+        InCallManager.stopRingtone();
+        const payload = {
+            target: otherUser.current,
+            caller: socketRef.current.id
+        }
+        socketRef.current.emit('reject video call', payload);
+        setVideoCallStarted(false);
         setRequestModal(false);
     }
 
@@ -437,6 +497,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
                                 )} 
                                 title="Videollamada" 
                                 titleStyle={{color: '#DB6551'}}
+                                onPress={() => requestVideoCall()}
                             ></Menu.Item>
                         </Menu>
                     )
@@ -458,6 +519,17 @@ export const Chat: React.FC<ChatProps> = (props) => {
                     appointment={props.route.params.appointment}
                     roomId={roomId}
                     closeAudioCall={() => setAudioCallStarted(false)}
+                />
+                : null
+            }
+            {
+                videoCallStarted ? <VideoCall
+                    peerConnection={peerRef.current}
+                    socketConnection={socketRef.current}
+                    otherUser={otherUser.current}
+                    appointment={props.route.params.appointment}
+                    roomId={roomId}
+                    closeVideoCall={() => setVideoCallStarted(false)}
                 />
                 : null
             }

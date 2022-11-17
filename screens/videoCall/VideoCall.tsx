@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
-import { Text, View, StyleSheet, SafeAreaView, Modal } from "react-native"
+import { Text, View, StyleSheet, SafeAreaView, Modal, KeyboardAvoidingView } from "react-native"
 import { IconButton, Portal } from "react-native-paper"
 import { mediaDevices, MediaStream, RTCView, RTCPeerConnection, RTCSessionDescription, RTCIceCandidate } from "react-native-webrtc";
 import InCallManager from 'react-native-incall-manager';
@@ -9,25 +9,25 @@ import { useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
 import { styles } from './style';
 
-interface AudioCallProps {
+interface VideoCallProps {
     peerConnection: any;
     socketConnection: any;
     otherUser: string;
     roomId: string;
     appointment: any;
-    closeAudioCall: () => void;
+    closeVideoCall: () => void;
 }
 
-export const AudioCall: React.FC<AudioCallProps> = (props) => {
+export const VideoCall: React.FC<VideoCallProps> = (props) => {
     const appState = useSelector((state: ApplicationState) => state);
     
     const [remoteStream, setRemoteStream] = useState<MediaStream>();
     const [localStream, setLocalStream] = useState<MediaStream>();
-    const socketAudio = io(WS);
-    const peerRefAudio = useRef<any>();
+    const socketVideo = io(WS);
+    const peerRefVideo = useRef<any>();
     const otherPeer = useRef<any>();
-    const socketRefAudio = useRef<any>();
-    const otherUserAudio = useRef<any>();
+    const socketRefVideo = useRef<any>();
+    const otherUserVideo = useRef<any>();
     const called = useRef<boolean>(false);
 
     const [modal, setModal] = useState(true);
@@ -45,42 +45,42 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     useEffect(() => {    
 
         InCallManager.start({media: 'audio'})
-        socketRefAudio.current = socketAudio.connect();
-        socketRefAudio.current.emit('join room', props.roomId+'Audio');
+        socketRefVideo.current = socketVideo.connect();
+        socketRefVideo.current.emit('join room', props.roomId+'Video');
 
-        socketRefAudio.current.on('other user', (userId: string) => {
+        socketRefVideo.current.on('other user', (userId: string) => {
             callUser(userId);
-            otherUserAudio.current = userId;
+            otherUserVideo.current = userId;
             setCounterText('Conectando...');
         });
 
-        socketRefAudio.current.on('user joined', (userId: string) => {
-            otherUserAudio.current = userId;
+        socketRefVideo.current.on('user joined', (userId: string) => {
+            otherUserVideo.current = userId;
             setCounterText('Conectando...');
         });
 
-        socketRefAudio.current.on('offer', handleOffer);
+        socketRefVideo.current.on('offer', handleOffer);
 
-        socketRefAudio.current.on('answer', handleAnswer);
+        socketRefVideo.current.on('answer', handleAnswer);
 
-        socketRefAudio.current.on('offer-other', handleOtherOffer);
+        socketRefVideo.current.on('offer-other', handleOtherOffer);
 
-        socketRefAudio.current.on('answer-other', handleOtherAnswer);
+        socketRefVideo.current.on('answer-other', handleOtherAnswer);
 
-        socketRefAudio.current.on('ice-candidate', handleNewICECandidateMsg);
+        socketRefVideo.current.on('ice-candidate', handleNewICECandidateMsg);
 
-        socketRefAudio.current.on('ice-candidate-other', handleOtherNewICECandidateMsg);
+        socketRefVideo.current.on('ice-candidate-other', handleOtherNewICECandidateMsg);
 
-        socketRefAudio.current.on('other user left', handleUserLeft);
+        socketRefVideo.current.on('other user left', handleUserLeft);
 
-        props.socketConnection.on('accept audio call', audioCallAccepted);
+        props.socketConnection.on('accept video call', videoCallAccepted);
 
-        props.socketConnection.on('reject audio call', audioCallRejected);
+        props.socketConnection.on('reject video call', videoCallRejected);
 
     }, []);
 
     useEffect(() => {
-        let local = peerRefAudio.current?.getLocalStreams()[0];
+        let local = peerRefVideo.current?.getLocalStreams()[0];
         if(!local){
             local = otherPeer.current?.getLocalStreams()[0]
         }
@@ -96,8 +96,8 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
 
     const callUser = (userId: string) => {
         called.current = true;
-        console.log("Initiated an audio call", socketRefAudio.current.id);
-        peerRefAudio.current = Peer(userId);
+        console.log("Initiated an video call", socketRefVideo.current.id);
+        peerRefVideo.current = Peer(userId);
 
         addStream();
     }
@@ -190,13 +190,14 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     const addStream = () => {
         mediaDevices.getUserMedia({
             audio: !muteAudio,
+            video: true
         }).then((local: any) => {
             setLocalStream(local);
-            
-            peerRefAudio.current.addStream(local);
+
+            peerRefVideo.current.addStream(local);
 
             local?.getTracks().forEach((track: any) => {             
-                peerRefAudio.current.getLocalStreams()[0].addTrack(track);
+                peerRefVideo.current.getLocalStreams()[0].addTrack(track);
             });
         });
     }
@@ -206,6 +207,7 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
 
         mediaDevices.getUserMedia({
             audio: !muteAudio,
+            video: true
         }).then((local: any) => {
             setLocalStream(local);
 
@@ -218,53 +220,53 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     }
 
     const handleOffer = (incoming: any) => {        
-        console.log('Handling offer', socketRefAudio.current.id);
+        console.log('Handling offer', socketRefVideo.current.id);
             
-        peerRefAudio.current = Peer(incoming.caller);
+        peerRefVideo.current = Peer(incoming.caller);
 
         const desc = new RTCSessionDescription(incoming.sdp);
         
-        peerRefAudio.current.setRemoteDescription(desc)
+        peerRefVideo.current.setRemoteDescription(desc)
         .then(() => {         
             addTrack(incoming.caller);   
         })
         .then(() => {            
-            return peerRefAudio.current.createAnswer()
+            return peerRefVideo.current.createAnswer()
         }).then((answer: any) => {            
-            return peerRefAudio.current.setLocalDescription(answer)
+            return peerRefVideo.current.setLocalDescription(answer)
         }).then(() => {
             const payload = {
                 target: incoming.caller,
-                caller: socketRefAudio.current.id,
-                sdp: peerRefAudio.current.localDescription
+                caller: socketRefVideo.current.id,
+                sdp: peerRefVideo.current.localDescription
             }
-            socketRefAudio.current.emit('answer', payload);
+            socketRefVideo.current.emit('answer', payload);
         })
     }
 
     const handleAnswer = (message: any) => {
-        console.log('Handling answer', socketRefAudio.current.id);
+        console.log('Handling answer', socketRefVideo.current.id);
          
         const description = new RTCSessionDescription(message.sdp);
-        peerRefAudio.current.setRemoteDescription(description)
+        peerRefVideo.current.setRemoteDescription(description)
         .then(() => { counterStart() })
         .catch((error: any) => console.log('Error handling answer', error));
     }
 
     const handleNegotiationNeeded = (props: any, userId?: string) => {
-        console.log('Handling negotiation needed', socketRefAudio.current.id);
+        console.log('Handling negotiation needed', socketRefVideo.current.id);
                 
-        peerRefAudio.current.createOffer()
+        peerRefVideo.current.createOffer()
         .then((offer: any) => {
-            return peerRefAudio.current.setLocalDescription(offer)
+            return peerRefVideo.current.setLocalDescription(offer)
         })
         .then(() => {            
             const payload = {
                 target: userId,
-                caller: socketRefAudio.current.id,
-                sdp: peerRefAudio.current.localDescription
+                caller: socketRefVideo.current.id,
+                sdp: peerRefVideo.current.localDescription
             };            
-            socketRefAudio.current.emit('offer', payload);
+            socketRefVideo.current.emit('offer', payload);
         }).catch((error: any) => {
             console.log('Error handling negotiation needed', error);
         });
@@ -274,21 +276,21 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     const handleICECandidateEvent = (event: any) => {
         if(event.candidate){
             const payload = {
-                target: otherUserAudio.current,
+                target: otherUserVideo.current,
                 candidate: event.candidate
             }
-            socketRefAudio.current.emit('ice-candidate', payload);
+            socketRefVideo.current.emit('ice-candidate', payload);
         }
     }
 
     const handleNewICECandidateMsg = (incoming: any) => {
         const candidate = new RTCIceCandidate(incoming);
-        peerRefAudio.current.addIceCandidate(candidate)
+        peerRefVideo.current.addIceCandidate(candidate)
         .catch((error: any) => console.log(error));
     }
 
     const handleOtherOffer = (incoming: any) => {        
-        console.log('Handling other offer', socketRefAudio.current.id);
+        console.log('Handling other offer', socketRefVideo.current.id);
             
         otherPeer.current = OtherPeer(incoming.caller);
 
@@ -304,15 +306,15 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
         }).then(() => {
             const payload = {
                 target: incoming.caller,
-                caller: socketRefAudio.current.id,
+                caller: socketRefVideo.current.id,
                 sdp: otherPeer.current.localDescription
             }
-            socketRefAudio.current.emit('answer-other', payload);
+            socketRefVideo.current.emit('answer-other', payload);
         })
     }
 
     const handleOtherAnswer = (message: any) => {
-        console.log('Handling other answer', socketRefAudio.current.id);
+        console.log('Handling other answer', socketRefVideo.current.id);
          
         const description = new RTCSessionDescription(message.sdp);
         otherPeer.current.setRemoteDescription(description)
@@ -321,7 +323,7 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     }
 
     const handleOtherNegotiationNeeded = (props: any, userId?: string) => {
-        console.log('Handling other negotiation needed', socketRefAudio.current.id);
+        console.log('Handling other negotiation needed', socketRefVideo.current.id);
                 
         otherPeer.current.createOffer()
         .then((offer: any) => {
@@ -330,10 +332,10 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
         .then(() => {            
             const payload = {
                 target: userId,
-                caller: socketRefAudio.current.id,
+                caller: socketRefVideo.current.id,
                 sdp: otherPeer.current.localDescription
             };            
-            socketRefAudio.current.emit('offer-other', payload);
+            socketRefVideo.current.emit('offer-other', payload);
         }).catch((error: any) => {
             console.log('Error handling negotiation needed', error);
         });
@@ -343,10 +345,10 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     const handleOtherICECandidateEvent = (event: any) => {
         if(event.candidate){
             const payload = {
-                target: otherUserAudio.current,
+                target: otherUserVideo.current,
                 candidate: event.candidate
             }
-            socketRefAudio.current.emit('ice-candidate-other', payload);
+            socketRefVideo.current.emit('ice-candidate-other', payload);
         }
     }
 
@@ -357,7 +359,7 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     }
 
     const handleTrack = (event: any) => {
-        console.log("Handling Track", socketRefAudio.current.id);
+        console.log("Handling Track", socketRefVideo.current.id);
         
         event.streams[0].getTracks().forEach((track: any) => {
             remote.addTrack(track);
@@ -365,24 +367,24 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     }
 
     const handleAddStream = (event: any) => {
-        console.log("Handling Add Stream", socketRefAudio.current.id);
+        console.log("Handling Add Stream", socketRefVideo.current.id);
         setRemoteStream(event.stream);
 
     }
     
-    const audioCallAccepted = () => {
+    const videoCallAccepted = () => {
         InCallManager.stopRingback();
     }
 
-    const audioCallRejected = () => {
+    const videoCallRejected = () => {
         setRemoteStream(undefined);
         setLocalStream(undefined);
-        peerRefAudio.current?.close();
+        peerRefVideo.current?.close();
         otherPeer.current?.close();
         InCallManager.stopRingback();
-        socketRefAudio.current.disconnect();
-        otherUserAudio.current = null;
-        props.closeAudioCall();
+        socketRefVideo.current.disconnect();
+        otherUserVideo.current = null;
+        props.closeVideoCall();
     }
 
     const handleUserLeft = (event: any) => {
@@ -392,12 +394,12 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
         setTimeout(() => {
             setRemoteStream(undefined);
             setLocalStream(undefined);
-            peerRefAudio.current.close();
+            peerRefVideo.current.close();
             otherPeer.current.close();
             InCallManager.stopRingback();
-            socketRefAudio.current.disconnect();
-            otherUserAudio.current = null;
-            props.closeAudioCall();
+            socketRefVideo.current.disconnect();
+            otherUserVideo.current = null;
+            props.closeVideoCall();
         }, 500);
     }
 
@@ -408,59 +410,33 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
                 onDismiss={() => setModal(false)}
             >
                 <SafeAreaView>
-                    <View style={styles.screen}>
-                        <View>
-                            <IconButton
-                                icon="account-circle-outline"
-                                color="#F38673"
-                                size={150}
-                                style={styles.centerButton}
-                            />
-                            <Text style={styles.personName}>{ appState.auth?.user?.hasOwnProperty('patient') ? `${props.appointment.psychologist.firstName} ${props.appointment.psychologist.lastName}` : `${props.appointment.patient.firstName} ${props.appointment.patient.lastName}` }</Text>
-                            <Text style={{textAlign: 'center', paddingTop: 10}}>{ callStarted ? counter : counterText}</Text>
-                        </View>
-                        <View style={styles.middleButtons}>
-                            <View style={styles.middleButtonView}>
-                                <IconButton
-                                    icon="microphone-off"
-                                    color="white"
-                                    style={muteAudio ? styles.middleButtonActive : styles.middleButton}
-                                    size={40}
-                                    onPress={() => setMute(!muteAudio)}
-                                />
-                                <Text style={styles.middleButtonText}>Mute</Text>
-                            </View>
-                            <View style={styles.middleButtonView}>
-                                <IconButton
-                                    icon="volume-high"
-                                    color="white"
-                                    style={speaker ? styles.middleButtonActive : styles.middleButton}
-                                    size={40}
-                                    onPress={() => setSpeaker(!speaker)}
-                                />
-                                <Text style={styles.middleButtonText}>Speaker</Text>
-                            </View>
-                            <View style={styles.middleButtonView}>
-                                <IconButton
-                                    icon="video-outline"
-                                    color="white"
-                                    style={styles.middleButton}
-                                    size={40}
-                                />
-                                <Text style={styles.middleButtonText}>Video Call</Text>
-                            </View>
-                        </View>
-                        <View style={styles.footerButtons}>
-                            <IconButton
-                                icon="phone-hangup-outline"
-                                color="white"
-                                style={styles.hangupButton}
-                                size={40}
-                                onPress={() => audioCallRejected()}
-                            />
-                        </View>
-                    </View>
+                    {localStream && (
+                        <RTCView
+                            streamURL={localStream?.toURL()}
+                            style={styles.stream}
+                            objectFit="cover"
+                            mirror
+                        />
+                    )}
+
+                    {remoteStream && (
+                        <RTCView
+                            streamURL={remoteStream?.toURL()}
+                            style={styles.stream}
+                            objectFit="cover"
+                            mirror
+                        />
+                    )}
                 </SafeAreaView>
+                <View style={styles.footerButtons}>
+                    <IconButton
+                        icon="phone-hangup-outline"
+                        color="white"
+                        style={styles.hangupButton}
+                        size={40}
+                        onPress={() => videoCallRejected()}
+                    />
+                </View>
             </Modal>
         </Portal>
     )
