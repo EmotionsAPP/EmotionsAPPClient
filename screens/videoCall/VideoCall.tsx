@@ -38,13 +38,14 @@ export const VideoCall: React.FC<VideoCallProps> = (props) => {
     const counterIntervalId = useRef<any>();
 
     const [muteAudio, setMute] = useState(false);
-    const [speaker, setSpeaker] = useState(false);
+    const [frontCamera, setFrontCamera] = useState(false);
+
     
     const remote = new MediaStream(undefined);
     
     useEffect(() => {    
-
-        InCallManager.start({media: 'audio'})
+        InCallManager.start({media: 'audio'});
+        InCallManager.setForceSpeakerphoneOn(true);
         socketRefVideo.current = socketVideo.connect();
         socketRefVideo.current.emit('join room', props.roomId+'Video');
 
@@ -87,12 +88,19 @@ export const VideoCall: React.FC<VideoCallProps> = (props) => {
 
         if(!local) return;
 
-        local.getTracks()[0].enabled = !muteAudio;        
+        local.getTracks().find((track: any) => track.kind == 'audio').enabled = !muteAudio;        
     }, [muteAudio]);
 
     useEffect(() => {
-        InCallManager.setForceSpeakerphoneOn(speaker);
-    }, [speaker]);
+        let local = peerRefVideo.current?.getLocalStreams()[0];
+        if(!local){
+            local = otherPeer.current?.getLocalStreams()[0]
+        }
+
+        if(!local) return;
+        
+        local.getTracks().find((track: any) => track.kind == 'video')._switchCamera();      
+    }, [frontCamera]);
 
     const callUser = (userId: string) => {
         called.current = true;
@@ -410,15 +418,6 @@ export const VideoCall: React.FC<VideoCallProps> = (props) => {
                 onDismiss={() => setModal(false)}
             >
                 <SafeAreaView>
-                    {localStream && (
-                        <RTCView
-                            streamURL={localStream?.toURL()}
-                            style={styles.stream}
-                            objectFit="cover"
-                            mirror
-                        />
-                    )}
-
                     {remoteStream && (
                         <RTCView
                             streamURL={remoteStream?.toURL()}
@@ -427,14 +426,36 @@ export const VideoCall: React.FC<VideoCallProps> = (props) => {
                             mirror
                         />
                     )}
+                    {localStream && (
+                        <RTCView
+                            streamURL={localStream?.toURL()}
+                            style={styles.stream}
+                            objectFit="cover"
+                            mirror
+                        />
+                    )}
                 </SafeAreaView>
                 <View style={styles.footerButtons}>
+                    <IconButton
+                        icon="microphone-off"
+                        color="white"
+                        style={muteAudio ? styles.middleButtonActive : styles.middleButton}
+                        size={40}
+                        onPress={() => setMute(!muteAudio)}
+                    />
                     <IconButton
                         icon="phone-hangup-outline"
                         color="white"
                         style={styles.hangupButton}
                         size={40}
                         onPress={() => videoCallRejected()}
+                    />
+                    <IconButton
+                        icon="camera-flip-outline"
+                        color="white"
+                        style={frontCamera ? styles.middleButtonActive : styles.middleButton}
+                        size={40}
+                        onPress={() => setFrontCamera(!frontCamera)}
                     />
                 </View>
             </Modal>

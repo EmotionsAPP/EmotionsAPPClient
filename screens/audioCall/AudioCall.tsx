@@ -192,7 +192,7 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
             audio: !muteAudio,
         }).then((local: any) => {
             setLocalStream(local);
-            
+
             peerRefAudio.current.addStream(local);
 
             local?.getTracks().forEach((track: any) => {             
