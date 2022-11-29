@@ -3,14 +3,14 @@ import { Text, View } from 'react-native';
 import { Avatar, IconButton, Menu, Snackbar } from "react-native-paper";
 import { styles } from './style';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logOutAction } from "../../store/actions/authActions";
+import { ApplicationState } from "../../store";
 
 export const ScreenHeader = (props: any) => {
+    const appState = useSelector((state: ApplicationState) => state);
+    
     const [visibleMenu, setVisibleMenu] = React.useState(false);
-    const openMenu = () => setVisibleMenu(true);
-    const closeMenu = () => setVisibleMenu(false);
-    const dispatch = useDispatch();
 
     const back = () => {props.navigation.goBack(null)}
 
@@ -30,20 +30,12 @@ export const ScreenHeader = (props: any) => {
                     />
             }
             <Text style={ styles.title }>{props.title ?? props.route.name}</Text>
-            <Menu
-                visible={visibleMenu}
-                onDismiss={closeMenu}
-                anchor={
-                    <IconButton
-                        icon="account-circle" 
-                        size={30} 
-                        style={{backgroundColor: 'white'}} 
-                        onPress={openMenu}
-                    />
-                }
-            >
-                <Menu.Item onPress={() => logOutAction(dispatch, props.navigation)} title="Cerrar sesion"/>
-            </Menu>
+            <IconButton
+                icon="account-circle" 
+                size={30} 
+                style={{backgroundColor: 'white'}} 
+                onPress={() => props.navigation.push('Shell', { screen: 'PatientProfile', params: { patient: appState.auth, logout: true } })} 
+            />
         </View>
     )
 }

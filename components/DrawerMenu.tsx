@@ -60,6 +60,17 @@ export const DrawerMenu = (props: DrawerContentComponentProps) => {
                         label="Historial de citas"
                         onPress={() => props.navigation.navigate('Shell', {screen: 'AppointmentHistory'})}
                     />
+                    <DrawerItem
+                        icon={({ color, size }) => (
+                        <MaterialCommunityIcons
+                                name="text-box"
+                                color="#DB6551"
+                                size={size}
+                            />
+                        )}
+                        label="Articulos"
+                        onPress={() => props.navigation.navigate('Shell', {screen: 'ArticleList'})}
+                    />
                 </DrawerContentScrollView>
             </ImageBackground>
         </View>
