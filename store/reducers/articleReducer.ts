@@ -6,12 +6,16 @@ export interface ArticleState {
     articles: Article[];
     loadingArticles: boolean;
     savingNewArticle: boolean;
+    deletingArticle: boolean;
+    editingArticle: boolean;
 }
 
 const unloadedState: ArticleState = { 
     articles: [],
     loadingArticles: false,
     savingNewArticle: false,
+    deletingArticle: false,
+    editingArticle: false
 };
 
 export const reducer: Reducer<ArticleState> = (state: ArticleState | undefined, incomingAction: Action): ArticleState => {
@@ -41,6 +45,26 @@ export const reducer: Reducer<ArticleState> = (state: ArticleState | undefined, 
             return {
                 ...state,
                 savingNewArticle: false
+            }
+        case 'REQUEST_EDIT_ARTICLE': 
+            return {
+                ...state,
+                editingArticle: true
+            }
+        case 'RESPONSE_EDIT_ARTICLE': 
+            return {
+                ...state,
+                editingArticle: false
+            }
+        case 'REQUEST_DELETE_ARTICLE': 
+            return {
+                ...state,
+                deletingArticle: true
+            }
+        case 'RESPONSE_DELETE_ARTICLE': 
+            return {
+                ...state, 
+                deletingArticle: false
             }
     }
 

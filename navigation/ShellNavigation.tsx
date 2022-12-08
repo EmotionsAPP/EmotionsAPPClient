@@ -6,6 +6,7 @@ import { Chat } from "../screens/chat";
 import { ScreenHeader } from "../components/header/ScreenHeader";
 import { PatientProfileScreen } from "../screens/patientProfile/PatientProfileScreen";
 import { ArticleListScreen } from "../screens/articleList/ArticleListScreen";
+import { ArticleScreen } from "../screens/article/ArticleScreen";
 
 export type ShellNavigatorParamList = {
     Home: {},
@@ -13,14 +14,15 @@ export type ShellNavigatorParamList = {
     AppointmentHistory: {},
     Chat: {
         room: string
-    }
+    },
     Appointment: {
         appointment: any
     },
     PatientProfile: {
         patient: any
-    }
-    ArticleList: {}
+    },
+    ArticleList: {},
+    Article: {}
 }
 
 const Drawer = createDrawerNavigator<ShellNavigatorParamList>();
@@ -60,6 +62,11 @@ export const ShellNavigator = () => {
             <Drawer.Screen name="ArticleList" component={ArticleListScreen} 
                 options={{
                     header: (props) => <ScreenHeader {...props} title="Articulos" />
+                }}
+            />
+            <Drawer.Screen name="Article" component={ArticleScreen} 
+                options={{
+                    header: (props) => <ScreenHeader {...props} title="Articulos" goBack={true} />
                 }}
             />
         </Drawer.Navigator>

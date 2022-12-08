@@ -1,20 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView, View, TextInput, ScrollView } from "react-native";
 import { Button, IconButton, Modal, Portal, Text } from "react-native-paper";
 import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 import { useDispatch, useSelector } from "react-redux";
+import { Article } from "../../models";
 import { ApplicationState } from "../../store";
-import { newArticleAction } from "../../store/actions/articleActions";
+import { editArticleAction, getArticlesAction, newArticleAction } from "../../store/actions/articleActions";
+import { ConfirmDialog } from "../confirmDialog/ConfirmDialog";
 import { styles } from './style';
 
 interface AppointmentFormProps {
     visible: boolean;
     hide: () => void;
+    edit?: boolean;
+    editArticle?: Article;
+    edited?: (article: Article) => void;
 }
 
 interface FormData {
-    title: string;
-    body: string;
+    title?: string;
+    body?: string;
     psychologist: string;
 }
 
@@ -24,25 +29,53 @@ export const CreateArticle: React.FC<AppointmentFormProps> = (props) => {
     const richText = React.useRef();
 
     const [formData, setFormData] = useState<FormData>({
-        title: '',
-        body: '',
+        title: props.edit ? props.editArticle?.title : '',
+        body: props.edit ? props.editArticle?.body : '',
         psychologist: appState.auth?.user?._id
     })
+
+    const [confirmDialog, setConfirmDialogVisible] = useState(false);
+    const [confirmDialogText, setConfirmDialogText] = useState('');
+    const [confirmDialogButtons, setConfirmDialogButtons] = useState(['cancel', 'accept']);
+    const [confirmDialogOnAccept, setConfirmDialogOnAccept] = useState<() => void>(() => {});
+    const [confirmDialogOnCancel, setConfirmDialogOnCancel] = useState<() => void>(() => {});
 
     const dispatch = useDispatch();
 
     const closeModal = () => {
-        setFormData({
-            title: '',
-            body: '',
-            psychologist: ''
-        });
+        getArticlesAction(dispatch, appState, appState.auth?.user?._id)   
         props.hide()
     }
 
     const saveArticle = () => {
         newArticleAction(formData, dispatch, closeModal);
     }
+    
+    const confirmEditArticle = () => {
+        setConfirmDialogText('¿Quieres guardar estos cambios?');
+        setConfirmDialogOnAccept(onAcceptEdit);
+        setConfirmDialogOnCancel(onCancel);
+        setConfirmDialogVisible(true);
+    }
+    
+    const onCancel = () => () => setConfirmDialogVisible(false);
+    const onAcceptEdit = () => () => {        
+        editArticleAction(formData, dispatch, closeModalEdit, props.editArticle?._id);
+    }
+
+    const closeModalEdit = (article: Article) => {
+        if(props.edited) props.edited(article);
+        setConfirmDialogVisible(false);
+    }
+
+    useEffect(() => {
+        if(props.visible)
+            setFormData({
+                title: props.edit ? props.editArticle?.title : '',
+                body: props.edit ? props.editArticle?.body : '',
+                psychologist: appState.auth?.user?._id
+            })
+    }, [props.visible])
 
     return (
         <Portal>
@@ -61,13 +94,13 @@ export const CreateArticle: React.FC<AppointmentFormProps> = (props) => {
                         >
                             Cancelar
                         </Button>
-                        <Text>Nuevo artículo</Text>
+                        <Text>{ props.edit ? 'Editar articulo' : 'Nuevo artículo'}</Text>
                         <Button 
                             mode="text" 
                             color="#000" 
                             disabled={ (formData.title && formData.body) ? false : true }
                             labelStyle={styles.headerButtons}
-                            onPress={() => saveArticle()}
+                            onPress={() => props.edit ? confirmEditArticle() : saveArticle() }
                         >
                             Completar
                         </Button>
@@ -84,6 +117,7 @@ export const CreateArticle: React.FC<AppointmentFormProps> = (props) => {
                                 value={ formData.title }
                                 onChangeText={ (text) => setFormData({ ...formData, title: text }) }
                                 placeholder=""
+                                maxLength={50}
                                 style={styles.input}
                             />
                         </View>
@@ -97,10 +131,20 @@ export const CreateArticle: React.FC<AppointmentFormProps> = (props) => {
                             />
                             <RichEditor
                                 ref={richText as any}
+                                initialContentHTML={formData.body}
                                 onChange={ (text) => setFormData({ ...formData, body: text })}
                             />
                         </View>
                     </ScrollView>
+                    <ConfirmDialog 
+                            text={confirmDialogText} 
+                            visible={confirmDialog} 
+                            buttons={confirmDialogButtons} 
+                            onAccept={confirmDialogOnAccept} 
+                            onCancel={confirmDialogOnCancel}
+                            closeModal={onCancel}
+                            canDismiss={true}
+                        />
                 </SafeAreaView>
             </Modal>
         </Portal>

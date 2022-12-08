@@ -1,19 +1,19 @@
 import { API } from ".";
 import { Article } from "../../models";
 
-export const getArticles = (psychologistId: string): Promise<Response> => {
+export const getArticles = (psychologistId?: string): Promise<Response> => {
   const requestHeaders: HeadersInit_ = new Headers();
   requestHeaders.set('Content-Type', 'application/json');
 
   const requestInfo: RequestInit = {
     method: 'GET',
     headers: requestHeaders,
-  }
+  };
 
   const url = new URL(`${API}/articles`);
-  url.searchParams.append('psychologistId', psychologistId);
+  if(psychologistId) url.searchParams.append('psychologistId', psychologistId);
 
-  return fetch(url, requestInfo)
+  return fetch(url, requestInfo);
 }
 
 export const saveNewArticle = (article: Article) => {
@@ -24,7 +24,32 @@ export const saveNewArticle = (article: Article) => {
     method: 'POST',
     headers: requestHeaders,
     body: JSON.stringify(article)
-  }
+  };
 
-  return fetch(`${API}/articles`, requestInfo)
+  return fetch(`${API}/articles`, requestInfo);
+}
+
+export const deleteArticle = (articleId: string) => {
+  const requestHeaders: HeadersInit_ = new Headers();
+  requestHeaders.set('Content-Type', 'application/json');
+
+  const requestInfo: RequestInit = {
+    method: 'DELETE',
+    headers: requestHeaders,
+  };
+
+  return fetch(`${API}/articles/${articleId}`, requestInfo);
+}
+
+export const editArticle = (article: Article, articleId?: string) => {
+  const requestHeaders: HeadersInit_ = new Headers();
+  requestHeaders.set('Content-Type', 'application/json');
+
+  const requestInfo: RequestInit = {
+    method: 'PATCH',
+    headers: requestHeaders,
+    body: JSON.stringify(article)
+  };
+
+  return fetch(`${API}/articles/${articleId}`, requestInfo);
 }
