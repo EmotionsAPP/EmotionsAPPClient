@@ -18,7 +18,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "android.expo.client"
     },
     "android": {
       "adaptiveIcon": {
@@ -30,6 +31,8 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["@config-plugins/react-native-webrtc"]
+    "plugins": [
+      "@config-plugins/react-native-webrtc"
+    ]
   }
 }

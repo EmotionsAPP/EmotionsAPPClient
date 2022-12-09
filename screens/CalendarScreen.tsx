@@ -1,52 +1,160 @@
-import React from "react"
-import { Text, View } from "react-native"
+import React, { useEffect, useState } from "react";
+import { Text, TouchableOpacity, StyleSheet, View } from "react-native";
 import { ShellNavigatorParamList } from "../navigation";
 import { DrawerNavigationProp } from "@react-navigation/drawer/lib/typescript/src/types";
-import { Button, FAB, Portal, Provider } from "react-native-paper";
+import {
+  Avatar,
+  Button,
+  Card,
+  FAB,
+  Portal,
+  Provider,
+} from "react-native-paper";
 import { AppointmentForm } from "../components";
-import { StyleSheet } from 'react-native';
-import { useSelector } from "react-redux";
+import { Agenda, AgendaEntry, Calendar } from "react-native-calendars";
+import { userAppointmentsAction } from "../store/actions/appointmentActions";
 import { ApplicationState } from "../store";
+import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 
 interface CalendarProps {
-    navigation: DrawerNavigationProp<ShellNavigatorParamList, 'Calendar'>;
+  navigation: DrawerNavigationProp<ShellNavigatorParamList, "Calendar">;
 }
 
 export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
-    const [appointmentModal, visibleAppointmentModal] = React.useState(false);
+  const appState = useSelector((state: ApplicationState) => state);
 
-    const showAppointmentModal = () => visibleAppointmentModal(true);
-    const hideAppointmentModal = () => visibleAppointmentModal(false);
+  const [appointmentModal, visibleAppointmentModal] = useState(false);
+  const showAppointmentModal = () => visibleAppointmentModal(true);
+  const hideAppointmentModal = () => visibleAppointmentModal(false);
 
-    const appState = useSelector((state: ApplicationState) => state);
-    return (
-        <Provider>
-            <AppointmentForm visible={appointmentModal} hide={hideAppointmentModal} />
-            <View style={{height: '100%', width: '100%'}}>
-                {
-                    appState.auth?.user?.hasOwnProperty('patient') ? 
-                        <FAB 
-                            icon="plus"
-                            style={ styles.fab }
-                            visible={true}
-                            color="white"
-                            onPress={() => showAppointmentModal()} 
-                        />
-                    : 
-                        <></>
-                }
-            </View>
-        </Provider>
-    )
-}
+  const [items, setItems] = useState<any>([]);
+  const currentDate = new Date();
+  const dispatch = useDispatch();
 
+  const timeToString = (time: any): string => {
+    const date = new Date(time);
+    return date.toISOString().split("T")[0];
+  };
+  
 
-export const styles = StyleSheet.create({
-    fab: {
-        position: "absolute",
-        right: 0,
-        bottom: 0,
-        margin: 16,
-        backgroundColor: '#DB6551'
+  const titleStyle = StyleSheet.compose(styles.title, null);
+  const participantTitleStyle = StyleSheet.compose(
+    styles.participantTittle,
+    null
+  );
+
+  const onSelectDay = async (day: any) => {
+    let dateToGet = '';
+    if(day.dateString === undefined){
+      dateToGet = moment(day).format("MM-DD-YYYY"); 
+    }else{
+      dateToGet = moment(day.dateString).format("MM-DD-YYYY");  
     }
-})
+    console.log(dateToGet)
+    userAppointmentsAction(
+      appState.auth?.user?._id ?? "",
+      dateToGet,
+      dispatch
+    );  
+    if (!items[day.dateString]) {
+      items[day.dateString] = [];
+      appState.appointment?.userAppointments.map((appointmentItem, index) => {
+        const newAppointment = {
+          name: "Encuentro",
+          with: "",
+        };
+
+        if (appState.auth?.user.role === "Patient") {
+          newAppointment.with = `${appointmentItem.psychologist.firstName} ${appointmentItem.psychologist.lastName}`;
+        } else {
+          newAppointment.with = `${appointmentItem.patient.firstName} ${appointmentItem.patient.lastName}`;
+        }
+        items[day.dateString].push(newAppointment);
+      });
+    }
+ 
+    const newItems: any = {};
+    Object.keys(items).forEach((key) => {
+      newItems[key] = items[key];
+    }); 
+    setItems(newItems);
+
+  };
+
+  useEffect(() => { 
+    onSelectDay(currentDate.toISOString());
+  }, []);  
+
+  const renderItem = (item: any) => {
+    return (
+      <TouchableOpacity style={{ marginRight: 10, marginTop: 17 }}>
+        <Card style={{ backgroundColor: "#E5A186" }}>
+          <Card.Content>
+            <View>
+              <Text style={titleStyle}>{item.name}</Text>
+              <Text style={participantTitleStyle}>{item.with}</Text>
+            </View>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
+    );
+  }; 
+
+  return (
+    <View style={{ flex: 1 }}>
+      <AppointmentForm visible={appointmentModal} hide={hideAppointmentModal} />
+
+      <Agenda
+        items={items} 
+        selected={currentDate.toJSON().slice(0, 10).toString()}
+        renderItem={renderItem}
+        theme={{
+          agendaDayTextColor: "rgba(219, 101, 81, 0.99)",
+          agendaDayNumColor: "rgba(219, 101, 81, 0.99)",
+          agendaTodayColor: "#FFF0E4",
+          agendaKnobColor: "#F38673",
+          dotColor: "#FFF0E4",
+          selectedDayBackgroundColor: "#FFF0E4",
+          selectedDayTextColor: "#DB6551",
+        }}
+        onDayPress={(day) => {
+          onSelectDay(day);
+        }}
+      />
+      <View>
+        {appState.auth?.user?.hasOwnProperty("patient") ? (
+          <FAB
+            icon="plus"
+            style={styles.fab}
+            visible={true}
+            color="white"
+            onPress={() => showAppointmentModal()}
+          />
+        ) : (
+          <></>
+        )}
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  title: {
+    fontWeight: "400",
+    fontSize: 12,
+    letterSpacing: 0.3,
+    color: "#FFFF",
+  },
+  participantTittle: {
+    fontWeight: "600",
+    color: "#FFFF",
+  },
+  fab: {
+    position: "absolute",
+    right: 0,
+    bottom: 0,
+    margin: 16,
+    backgroundColor: "#DB6551",
+  },
+});
