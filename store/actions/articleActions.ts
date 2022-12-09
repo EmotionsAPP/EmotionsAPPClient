@@ -98,9 +98,7 @@ export const deleteArticleAction = (articleId: string, dispatch: Dispatch, callb
 export const editArticleAction = (article: any, dispatch: Dispatch, callback: (article: Article) => void, articleId?: string) => {
     editArticle(article, articleId)
         .then(response => response.json() as Promise<any>)
-        .then(data => {      
-            console.log(data, article);
-                       
+        .then(data => {                             
             if(!data.statusCode) {
                 dispatch({ type: 'RESPONSE_EDIT_ARTICLE', article: data });
                 callback(data);

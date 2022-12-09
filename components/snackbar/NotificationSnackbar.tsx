@@ -53,6 +53,7 @@ export const NotificationSnackbar = (props: NotificationSnackbarProps) => {
                 <Snackbar
                     visible={props.visible}
                     onDismiss={props.dismiss}
+                    duration={1000}
                     style={basicTypesSwitch(props.basicType ?? '')?.style}
                     wrapperStyle={ { alignItems: 'center' } }
                     action={{

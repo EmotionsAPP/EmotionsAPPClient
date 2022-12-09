@@ -32,6 +32,7 @@ export const ArticleScreen: React.FC<ArticleProps> = (props) => {
     const [confirmDialog, setConfirmDialogVisible] = useState(false);
     const [confirmDialogText, setConfirmDialogText] = useState('');
     const [confirmDialogButtons, setConfirmDialogButtons] = useState(['cancel', 'accept']);
+    const [confirmDialogLoading, setConfirmDialogLoading] = useState(false);
     const [confirmDialogOnAccept, setConfirmDialogOnAccept] = useState<() => void>(() => {});
     const [confirmDialogOnCancel, setConfirmDialogOnCancel] = useState<() => void>(() => {});
 
@@ -62,6 +63,10 @@ export const ArticleScreen: React.FC<ArticleProps> = (props) => {
         props.route.params.article = article;
         hideArticleModal();
     }
+
+    useEffect(() => {
+        setConfirmDialogLoading(appState.article?.deletingArticle ?? false)
+    }, [appState.article?.deletingArticle])
 
     return (
         <View style={styles.view}>
@@ -101,19 +106,19 @@ export const ArticleScreen: React.FC<ArticleProps> = (props) => {
                     <View style={ styles.actionsView }>
                         <Pressable style={ styles.action } onPress={() => deleteArticle()}>
                             <IconButton 
-                                icon="delete-outline"
-                                color="#C6594A"
-                                size={20}
+                                icon="delete"
+                                color="#DD0A35"
+                                size={22}
                             />
-                            <Text style={{color: '#C6594A', fontSize: 10}}>Borrar Artículo</Text>
+                            <Text style={{fontWeight: 'bold', fontSize: 13}}>Borrar Artículo</Text>
                         </Pressable>
                         <Pressable style={ styles.action } onPress={() => showArticleModal()}>
                             <IconButton 
                                 icon="pencil-outline"
                                 color="#DB6551FC"
-                                size={20}
+                                size={22}
                             />
-                            <Text style={{color: '#C6594A', fontSize: 10}}>Editar Artículo</Text>
+                            <Text style={{fontWeight: 'bold', fontSize: 13}}>Editar Artículo</Text>
                         </Pressable>
                         <ConfirmDialog 
                             text={confirmDialogText} 
@@ -122,6 +127,7 @@ export const ArticleScreen: React.FC<ArticleProps> = (props) => {
                             onAccept={confirmDialogOnAccept} 
                             onCancel={confirmDialogOnCancel}
                             closeModal={onCancel}
+                            loading={confirmDialogLoading}
                             canDismiss={true}
                         />
                     </View>

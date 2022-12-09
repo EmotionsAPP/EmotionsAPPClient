@@ -38,9 +38,14 @@ export const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 0
+        marginBottom: 0,
+        borderTopColor: '#DB6551FC',
+        borderTopWidth: 0.6,
+        paddingRight: 10
     },
     action: {
-        alignItems: 'center'
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'row'
     }
 });

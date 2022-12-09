@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Modal, Portal, Text } from "react-native-paper";
-import { Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { styles } from './style';
+import { useSelector } from "react-redux";
+import { ApplicationState } from "../../store";
 
 interface RequestModal {
     text: string;
@@ -13,6 +15,7 @@ interface RequestModal {
     canDismiss: boolean;
     cancelButtonText?: string;
     acceptButtonText?: string;
+    loading?: boolean;
 }
 
 export const ConfirmDialog: React.FC<RequestModal> = (props) => {
@@ -28,28 +31,33 @@ export const ConfirmDialog: React.FC<RequestModal> = (props) => {
                 <Text style={{textAlign: 'center'}}>
                     {props.text}
                 </Text>
-                <View style={styles.buttons}>
-                    {
-                        props.buttons.includes('cancel') ?
-                        <Pressable 
-                            onPress={() => props.onCancel()}
-                            style={styles.cancelButton}
-                        >
-                            <Text style={styles.cancelButtonText}>{props.cancelButtonText ?? 'Cancelar'}</Text>
-                        </Pressable>
-                        : <></>
-                    }
-                    {
-                        props.buttons.includes('accept') ?
-                        <Pressable 
-                            onPress={() => props.onAccept()}
-                            style={styles.okButton}
-                        >
-                            <Text style={styles.okButtonText}>{props.acceptButtonText ?? 'Aceptar'}</Text>
-                        </Pressable>
-                        : <></>
-                    }
-                </View>
+                {
+                    props.loading ? 
+                        <ActivityIndicator size="large" color="#DB6551" />
+                    :
+                        <View style={styles.buttons}>
+                            {
+                                props.buttons.includes('cancel') ?
+                                <Pressable 
+                                    onPress={() => props.onCancel()}
+                                    style={styles.cancelButton}
+                                >
+                                    <Text style={styles.cancelButtonText}>{props.cancelButtonText ?? 'Cancelar'}</Text>
+                                </Pressable>
+                                : <></>
+                            }
+                            {
+                                props.buttons.includes('accept') ?
+                                <Pressable 
+                                    onPress={() => props.onAccept()}
+                                    style={styles.okButton}
+                                >
+                                    <Text style={styles.okButtonText}>{props.acceptButtonText ?? 'Aceptar'}</Text>
+                                </Pressable>
+                                : <></>
+                            }
+                        </View>
+                }
             </Modal>
         </Portal>
     )

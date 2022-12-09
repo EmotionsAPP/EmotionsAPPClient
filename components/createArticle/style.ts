@@ -71,5 +71,31 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#db6551',
         minHeight: 400
-    } 
+    },
+    waitingModal: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    waitingModalContainer: {
+        backgroundColor: 'white',
+        width: '90%',
+        height: '20%',
+        padding: 20,
+        borderRadius: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    waitingModalText: {
+        paddingLeft: 10,
+    },
+    waitingModalView: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 })
