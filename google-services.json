@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "121774737355",
+    "project_id": "emotionsapp-dc143",
+    "storage_bucket": "emotionsapp-dc143.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:121774737355:android:bbb1b69a6682d560da984e",
+        "android_client_info": {
+          "package_name": "android.expo.client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "121774737355-fn5ivba2asrork1d8ebdisvh29tf1epf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeeoAgMBWUa9c8vp62SnUchrTxKjU0f8U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "121774737355-fn5ivba2asrork1d8ebdisvh29tf1epf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

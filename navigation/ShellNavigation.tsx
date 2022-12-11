@@ -1,7 +1,7 @@
 import React from "react";
 import { createDrawerNavigator, DrawerContentComponentProps } from '@react-navigation/drawer';
 import { DrawerMenu } from "../components";
-import { CalendarScreen, HomeScreen, AppointmentHistoryScreen, AppointmentScreen, PatientProfileScreen, ArticleListScreen, ArticleScreen, EditPatientProfileScreen, PsychologistProfileScreen, EditPsychologistProfileScreen, PsychologistListScreen } from "../screens"; 
+import { CalendarScreen, HomeScreen, AppointmentHistoryScreen, AppointmentScreen, PatientProfileScreen, ArticleListScreen, ArticleScreen, EditPatientProfileScreen, PsychologistProfileScreen, EditPsychologistProfileScreen, PsychologistListScreen, EmergencyPsychologistScreen } from "../screens"; 
 import { Chat } from "../screens/chat";
 import { ScreenHeader } from "../components/header/ScreenHeader";
 
@@ -32,6 +32,7 @@ export type ShellNavigatorParamList = {
         patient: any
     },
     PsychologistList: {},
+    EmergencyPsychologists: {}
 }
 
 const Drawer = createDrawerNavigator<ShellNavigatorParamList>();
@@ -52,7 +53,11 @@ export const ShellNavigator = () => {
                     header: (props) => <ScreenHeader {...props} title="Calendario" />
                 }}
             />
-            <Drawer.Screen name="AppointmentHistory" component={AppointmentHistoryScreen} />
+            <Drawer.Screen name="AppointmentHistory" component={AppointmentHistoryScreen} 
+                options={{
+                    header: (props) => <ScreenHeader {...props} title="Historial de citas" />
+                }}
+            />
             <Drawer.Screen name="Chat" component={Chat} 
                 options={{
                     header: (props) => <></>
@@ -96,6 +101,11 @@ export const ShellNavigator = () => {
             <Drawer.Screen name="PsychologistList" component={PsychologistListScreen}
                 options={{
                     header: (props) => <ScreenHeader {...props} title="Especialistas" />
+                }}
+            />
+            <Drawer.Screen name="EmergencyPsychologists" component={EmergencyPsychologistScreen}
+                options={{
+                    header: (props) => <ScreenHeader {...props} title="Disponibles" />
                 }}
             />
             

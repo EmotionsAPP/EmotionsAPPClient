@@ -67,6 +67,7 @@ export const PsychologistProfileScreen: React.FC<PsychologistProfileProps> = (pr
                         }
                         <View style={styles.headerText}>
                             <Text style={styles.headerName}>{`${props.route.params.psychologist.firstName} ${props.route.params.psychologist.lastName}`}</Text>
+                            <Text style={{paddingTop: 5}}>Psicologo</Text>
                         </View>
                         <View style={styles.navBar}>
                             <Pressable 

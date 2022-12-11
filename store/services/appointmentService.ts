@@ -57,3 +57,18 @@ export const lastContactedUsers = (id: string) => {
 
   return fetch(url, requestInfo);
 }
+
+export const getAppointmentHistory = (id: string) => {
+  const requestHeaders: HeadersInit_ = new Headers();
+  requestHeaders.set('Content-Type', 'application/json');
+
+  const requestInfo: RequestInit = {
+    method: 'GET',
+    headers: requestHeaders,
+  }
+
+  const url = new URL(`${API}/appointments/history`);
+  url.searchParams.append('userId', id);
+
+  return fetch(url, requestInfo);
+}

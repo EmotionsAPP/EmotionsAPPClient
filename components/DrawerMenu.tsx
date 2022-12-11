@@ -89,6 +89,21 @@ export const DrawerMenu = (props: DrawerContentComponentProps) => {
                         label="Articulos"
                         onPress={() => props.navigation.navigate('Shell', {screen: 'ArticleList'})}
                     />
+                                        {
+                        appState.auth?.user?.hasOwnProperty('patient') ? 
+                            <DrawerItem
+                                icon={({ color, size }) => (
+                                <MaterialCommunityIcons
+                                        name="alert-circle"
+                                        color="#DB6551"
+                                        size={size}
+                                    />
+                                )}
+                                label="Emergencias"
+                                onPress={() => props.navigation.navigate('Shell', {screen: 'EmergencyPsychologists'})}
+                            />
+                        : <></>                
+                    }
                 </DrawerContentScrollView>
             </ImageBackground>
         </View>

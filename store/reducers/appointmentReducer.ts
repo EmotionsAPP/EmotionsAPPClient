@@ -11,6 +11,8 @@ export interface AppointmentState {
     fetchingUserAppointments: boolean;
     fetchingLastContactedUsers: boolean;
     lastContactedUsers: User[];
+    fetchingAppointmentHistory: boolean;
+    appointmentHistory: any;
 }
 
 const unloadedState: AppointmentState = { 
@@ -21,7 +23,9 @@ const unloadedState: AppointmentState = {
     userAppointments: [],
     fetchingUserAppointments: false,
     fetchingLastContactedUsers: false, 
-    lastContactedUsers: []
+    lastContactedUsers: [],
+    fetchingAppointmentHistory: false,
+    appointmentHistory: []
 };
 
 export const reducer: Reducer<AppointmentState> = (state: AppointmentState | undefined, incomingAction: Action): AppointmentState => {
@@ -74,6 +78,22 @@ export const reducer: Reducer<AppointmentState> = (state: AppointmentState | und
                 ...state,
                 fetchingLastContactedUsers: false,
                 lastContactedUsers: action.lastContactedUsers
+            }
+        case 'REQUEST_HISTORY_APPOINTMENTS':
+            return {
+                ...state,
+                fetchingUserAppointments: true,
+            }
+        case 'RESPONSE_HISTORY_APPOINTMENTS':
+            return {
+                ...state,
+                fetchingAppointmentHistory: false,
+                appointmentHistory: action.history
+            }
+        case 'ERROR_HISTORY_APPOINTMENTS':
+            return {
+                ...state,
+                fetchingAppointmentHistory: false,
             }
     }
 

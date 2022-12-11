@@ -49,4 +49,16 @@ export const getPsychologists = (): Promise<Response> => {
   }
 
   return fetch(`${API}/users`, requestInfo)
+}
+
+export const getEmergencyPsychologists = (): Promise<Response> => {
+  const requestHeaders: HeadersInit_ = new Headers();
+  requestHeaders.set('Content-Type', 'application/json');
+
+  const requestInfo: RequestInit = {
+    method: 'GET',
+    headers: requestHeaders,
+  }
+
+  return fetch(`${API}/users/psychologists/emergency-availables`, requestInfo)
 } 

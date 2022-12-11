@@ -1,7 +1,3 @@
-import { registerRootComponent } from 'expo';
-
-import App from './App';
-
 import { initializeApp } from 'firebase/app';
 
 // Optionally import the services that you want to use
@@ -27,8 +23,5 @@ console.log('firebase');
 
 
 const app = initializeApp(firebaseConfig);
-
-// registerRootComponent calls AppRegistry.registerComponent('main', () => App);
-// It also ensures that whether you load the app in Expo Go or in a native build,
-// the environment is set up appropriately
-registerRootComponent(App);
+// For more information on how to access Firebase in your project,
+// see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase

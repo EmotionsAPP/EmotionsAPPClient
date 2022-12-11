@@ -11,14 +11,14 @@ import { ArticleSmallCard } from "../../components/articleSmallCard/ArticleSmall
 import { getArticlesAction } from "../../store/actions/articleActions";
 import { useIsFocused } from '@react-navigation/native';
 import { ScrollView } from "react-native-gesture-handler";
-import { getPsychologistsAction } from "../../store/actions/authActions";
+import { getEmergencyPsychologistsAction, getPsychologistsAction } from "../../store/actions/authActions";
 import { User } from "../../models";
 
-interface PsychologistListProps {
+interface EmergencyPsychologistProps {
     navigation: any;
 }
 
-export const PsychologistListScreen: React.FC<PsychologistListProps> = ({ navigation }) => {
+export const EmergencyPsychologistScreen: React.FC<EmergencyPsychologistProps> = ({ navigation }) => {
     const appState = useSelector((state: ApplicationState) => state);
 
     const dispatch = useDispatch();
@@ -32,19 +32,19 @@ export const PsychologistListScreen: React.FC<PsychologistListProps> = ({ naviga
     }
 
     useEffect(() => {
-        if(isFocused) getPsychologistsAction(dispatch);
+        if(isFocused) getEmergencyPsychologistsAction(dispatch);
     }, [isFocused]);
 
     useEffect(() => {
-        setPsychologists(appState.auth?.psychologists)
-    }, [appState.auth?.psychologists]);
+        setPsychologists(appState.auth?.emergencyPsychologists)
+    }, [appState.auth?.emergencyPsychologists]);
 
     useEffect(() => {
         if(searchPsychologists)
             setPsychologists(
-                appState.auth?.psychologists.filter((psy) => `${psy.firstName} ${psy.lastName}`.toLocaleLowerCase().includes(searchPsychologists.toLocaleLowerCase()))
+                appState.auth?.emergencyPsychologists.filter((psy) => `${psy.firstName} ${psy.lastName}`.toLocaleLowerCase().includes(searchPsychologists.toLocaleLowerCase()))
             )
-        else setPsychologists(appState.auth?.psychologists)
+        else setPsychologists(appState.auth?.emergencyPsychologists)
     }, [searchPsychologists]);
 
     return (
@@ -93,11 +93,11 @@ export const PsychologistListScreen: React.FC<PsychologistListProps> = ({ naviga
                                         }
                                         <View>
                                             <Text style={styles.psyName}>{`${psychologist.firstName} ${psychologist.lastName}`}</Text>
-                                            <Text>Lic. En Psicologia</Text>
+                                            <Text>Envia un mensaje...</Text>
                                         </View>
                                     </View>
                                     <IconButton 
-                                        icon="chevron-right"
+                                        icon="chat-processing"
                                         size={30}
                                         color="#F38673"
                                     />

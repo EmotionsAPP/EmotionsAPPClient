@@ -4,7 +4,7 @@ export * from './signup/SignUpScreen';
 export * from './signup/TypeAccountScreen';
 export * from './home/HomeScreen';
 export * from './CalendarScreen';
-export * from './AppointmentHistoryScreen';
+export * from './appointmentHistory/AppointmentHistoryScreen';
 export * from './appointment/AppointmentScreen';
 export * from './editPatientProfile/EditPatientProfileScreen';
 export * from './patientProfile/PatientProfileScreen';
@@ -13,3 +13,4 @@ export * from './article/ArticleScreen';
 export * from './psychologistProfile/PsychologistProfileScreen';
 export * from './editPsychologistProfile/EditPsychologistProfile';
 export * from './psychologistList/PsychologistListScreen';
+export * from './emergencyPsychologists/EmergencyPsychologistScreen'

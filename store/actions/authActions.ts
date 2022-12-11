@@ -2,8 +2,9 @@ import { NativeStackNavigatorProps } from "@react-navigation/native-stack/lib/ty
 import { Dispatch } from "redux";
 import { ApplicationState } from "..";
 import { LoginBody, SignUpBody, User } from "../../models";
-import { getPsychologists, getUser, signIn, signUp } from "../services/authService";
-import { openNotificationSnackbar } from "./inAppActions";
+import { getEmergencyPsychologists, getPsychologists, getUser, signIn, signUp } from "../services/authService";
+import { openNotificationSnackbar, requestPushTokenAction } from "./inAppActions";
+import { editProfileAction } from "./profileActions";
 
 interface RequestLogin {
     type: 'REQUEST_LOGIN';
@@ -61,6 +62,20 @@ interface ErrorPsychologists {
     type: 'ERROR_PSYS';
 }
 
+interface RequestEmPsychologists {
+    type: 'REQUEST_EM_PSYS';
+    userId: string;
+}
+
+interface ResponseEmPsychologists {
+    type: 'RESPONSE_EM_PSYS';
+    psychologists: User[];
+}
+
+interface ErrorEmPsychologists {
+    type: 'ERROR_EM_PSYS';
+}
+
 export type KnownAction = RequestLogin 
 | ResponseLogin 
 | RequestSignUp 
@@ -72,14 +87,27 @@ export type KnownAction = RequestLogin
 | ErrorUser
 | RequestPsychologists
 | ResponsePsychologists
-| ErrorPsychologists;
+| ErrorPsychologists
+| RequestEmPsychologists
+| ResponseEmPsychologists
+| ErrorEmPsychologists;
 
 export const logInAction = (login: LoginBody, dispatch: Dispatch, appState: ApplicationState, navigation: any) => {    
     if (appState) {
         signIn(login)
             .then(response => response.json() as Promise<any>)
             .then(data => {
-                if(!data.statusCode){                    
+                if(!data.statusCode){ 
+                    if(data.user.hasOwnProperty('psychologist') && !(data.user.psychologist.connectionId)){
+                        requestPushTokenAction().then((val: any) => {
+                            const user = {
+                                psychologist: {
+                                    connectionId: val
+                                }
+                            }
+                            editProfileAction(user, true, dispatch, (user) => dispatch({ type: 'RESPONSE_LOGIN', logged: {token: data.token, user: user} }), data.user._id)
+                        })
+                    }           
                     dispatch({ type: 'RESPONSE_LOGIN', logged: data });
                     navigation.navigate('Shell', {screen: 'Home'});
                 }else{
@@ -142,4 +170,19 @@ export const getPsychologistsAction = (dispatch: Dispatch) => {
         })
 
     dispatch({ type: 'REQUEST_PSYS'});
+}
+
+export const getEmergencyPsychologistsAction = (dispatch: Dispatch) => {
+    getEmergencyPsychologists()
+        .then(response => response.json() as Promise<any>)
+        .then(data => { 
+            if(!data.statusCode){                    
+                dispatch({ type: 'RESPONSE_EM_PSYS', psychologists: data });
+            }else{
+                dispatch({ type: 'ERROR_EM_PSYS' });
+                openNotificationSnackbar("basic", dispatch, "error", "Ha ocurrido un error buscando los psicologos");
+            }
+        })
+
+    dispatch({ type: 'REQUEST_EM_PSYS'});
 }

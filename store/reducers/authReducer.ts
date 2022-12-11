@@ -12,6 +12,8 @@ export interface AuthState {
     updatingUser: boolean;
     searchingPsychologists: boolean;
     psychologists: User[];
+    searchingEmPsychologists: boolean;
+    emergencyPsychologists: User[];
 }
 
 const unloadedState: AuthState = { 
@@ -22,7 +24,9 @@ const unloadedState: AuthState = {
     loginError: false,
     updatingUser: false,
     searchingPsychologists: false,
-    psychologists: []
+    psychologists: [],
+    searchingEmPsychologists: false, 
+    emergencyPsychologists: [],
 };
 
 export const reducer: Reducer<AuthState> = (state: AuthState | undefined, incomingAction: Action): AuthState => {
@@ -99,6 +103,22 @@ export const reducer: Reducer<AuthState> = (state: AuthState | undefined, incomi
             return {
                 ...state,
                 searchingPsychologists: false
+            }
+        case 'REQUEST_EM_PSYS': 
+            return {
+                ...state, 
+                searchingEmPsychologists: true
+            }
+        case 'RESPONSE_EM_PSYS':
+            return {
+                ...state,
+                emergencyPsychologists: action.psychologists,
+                searchingEmPsychologists: false
+            }
+        case 'ERROR_EM_PSYS': 
+            return {
+                ...state,
+                searchingEmPsychologists: false
             }
     }
 
