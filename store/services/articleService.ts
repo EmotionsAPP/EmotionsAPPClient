@@ -16,7 +16,7 @@ export const getArticles = (psychologistId?: string): Promise<Response> => {
   return fetch(url, requestInfo);
 }
 
-export const saveNewArticle = (article: Article) => {
+export const saveNewArticle = (article: Article): Promise<Response> => {
   const requestHeaders: HeadersInit_ = new Headers();
   requestHeaders.set('Content-Type', 'application/json');
 
@@ -29,7 +29,7 @@ export const saveNewArticle = (article: Article) => {
   return fetch(`${API}/articles`, requestInfo);
 }
 
-export const deleteArticle = (articleId: string) => {
+export const deleteArticle = (articleId: string): Promise<Response> => {
   const requestHeaders: HeadersInit_ = new Headers();
   requestHeaders.set('Content-Type', 'application/json');
 
@@ -41,7 +41,7 @@ export const deleteArticle = (articleId: string) => {
   return fetch(`${API}/articles/${articleId}`, requestInfo);
 }
 
-export const editArticle = (article: Article, articleId?: string) => {
+export const editArticle = (article: Article, articleId?: string): Promise<Response> => {
   const requestHeaders: HeadersInit_ = new Headers();
   requestHeaders.set('Content-Type', 'application/json');
 

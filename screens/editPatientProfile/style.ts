@@ -6,8 +6,6 @@ export const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderBottomWidth: 1.5,
-        borderBottomColor: '#E5A186',
     },
     headerText: {
         display: 'flex',
@@ -95,12 +93,91 @@ export const styles = StyleSheet.create({
     textInput: {
         width: '100%',
         marginBottom: 20,
-        paddingLeft: 5
+        height: 50,
+        backgroundColor: 'white',
+    },
+    customInput: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 50,
+        borderRadius: 30,
+        borderWidth: 1,
+        borderColor: '#DB6551',
+        width: '100%',
+        marginBottom: 20
+    },
+    customInputPressable: {
+        width: '100%',
+        paddingRight: 10,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    customInputText: {
+        position: 'absolute',
+        top: -8,
+        left: 15,
+        fontSize: 12,
+        backgroundColor: 'white',
+        zIndex: 9000000
+    },
+    dropInput: {
+        height: 50,
+        marginBottom: 20
+    },
+    cameraIcon: {
+        position: 'absolute',
+        bottom: 40, 
+        right: 50,
+        backgroundColor: '#DB6551'
+    },
+    cameraIconImg: {
+        position: 'absolute',
+        bottom: 20, 
+        right: 5,
+        backgroundColor: '#DB6551'
+    },
+    dropdown: {
+        borderWidth: 1,
+        borderRadius: 30,
+        height: 5,
+        borderColor: '#DB6551'
+    },
+    dropdownContainer: {
+        width: '100%',
     },
     profileImg: {
         height: 170,
         width: 170,
-        marginBottom: 20,
+        marginBottom: 30,
         borderRadius: 100
-    }
+    },
+    waitingModal: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    waitingModalContainer: {
+        backgroundColor: 'white',
+        width: '90%',
+        height: '20%',
+        padding: 20,
+        borderRadius: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    waitingModalText: {
+        paddingLeft: 10,
+    },
+    waitingModalView: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 })

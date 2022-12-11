@@ -36,12 +36,22 @@ export const reducer: Reducer<ArticleState> = (state: ArticleState | undefined, 
                 articles: action.articles,
                 loadingArticles: false,
             };
+        case 'ERROR_REQUEST_ARTICLES':
+            return {
+                ...state,
+                loadingArticles: false
+            };
         case 'REQUEST_NEW_ARTICLE': 
             return {
                 ...state,
                 savingNewArticle: true
             }
         case 'RESPONSE_NEW_ARTICLE': 
+            return {
+                ...state,
+                savingNewArticle: false
+            }
+        case 'ERROR_NEW_ARTICLE': 
             return {
                 ...state,
                 savingNewArticle: false
@@ -56,12 +66,22 @@ export const reducer: Reducer<ArticleState> = (state: ArticleState | undefined, 
                 ...state,
                 editingArticle: false
             }
+        case 'ERROR_EDIT_ARTICLE': 
+            return {
+                ...state,
+                editingArticle: false
+            }
         case 'REQUEST_DELETE_ARTICLE': 
             return {
                 ...state,
                 deletingArticle: true
             }
         case 'RESPONSE_DELETE_ARTICLE': 
+            return {
+                ...state, 
+                deletingArticle: false
+            }
+        case 'ERROR_DELETE_ARTICLE': 
             return {
                 ...state, 
                 deletingArticle: false

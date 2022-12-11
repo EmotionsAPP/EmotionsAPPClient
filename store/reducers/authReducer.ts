@@ -8,9 +8,17 @@ export interface AuthState {
     signedUp: boolean;
     user?: any;
     loginError: boolean;
+    updatingUser: boolean;
 }
 
-const unloadedState: AuthState = { loggedIn: false, signingUp: false, loggingIn: false, signedUp: false, loginError: false };
+const unloadedState: AuthState = { 
+    loggedIn: false, 
+    signingUp: false, 
+    loggingIn: false, 
+    signedUp: false, 
+    loginError: false,
+    updatingUser: false,
+};
 
 export const reducer: Reducer<AuthState> = (state: AuthState | undefined, incomingAction: Action): AuthState => {
     if (state === undefined) {
@@ -54,6 +62,22 @@ export const reducer: Reducer<AuthState> = (state: AuthState | undefined, incomi
                 ...state,
                 loggedIn: false, 
                 user: undefined,
+            }
+        case 'REQUEST_USER': 
+            return {
+                ...state, 
+                updatingUser: true
+            }
+        case 'RESPONSE_USER':
+            return {
+                ...state,
+                user: action.user,
+                updatingUser: false
+            }
+        case 'ERROR_USER': 
+            return {
+                ...state,
+                updatingUser: false
             }
     }
 

@@ -16,7 +16,7 @@ interface UserSmallCardProps {
 export const UserSmallCard: React.FC<UserSmallCardProps> = (props) => {
     
     const openUser = () => {
-        console.log(props.user);
+        props.navigation.navigate('Shell', { screen: 'PatientProfile', params: { patient: props.user } })
     }    
 
     const now = new Date();

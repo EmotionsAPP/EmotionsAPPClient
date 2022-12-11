@@ -99,7 +99,6 @@ export const CreateArticle: React.FC<AppointmentFormProps> = (props) => {
             height: 400,
             cropping: true,
         }).then((image) => {
-            console.log("Imagemime", image); 
             add(image)
         });
 
@@ -112,7 +111,7 @@ export const CreateArticle: React.FC<AppointmentFormProps> = (props) => {
                 );
             })
             .catch((err) => {
-            console.log("base64:Image:", err)
+                console.log("base64:Image:", err)
             })
         };
     }

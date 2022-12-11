@@ -26,3 +26,15 @@ export const signIn = (body: LoginBody): Promise<Response> => {
 
   return fetch(`${API}/auth/login`, requestInfo)
 }
+
+export const getUser = (userId: string): Promise<Response> => {
+  const requestHeaders: HeadersInit_ = new Headers();
+  requestHeaders.set('Content-Type', 'application/json');
+
+  const requestInfo: RequestInit = {
+    method: 'GET',
+    headers: requestHeaders,
+  }
+
+  return fetch(`${API}/users/${userId}`, requestInfo)
+}

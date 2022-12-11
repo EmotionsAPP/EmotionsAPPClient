@@ -14,6 +14,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+        marginBottom: 30
     },
     headerName: {
         fontSize: 22,
@@ -97,10 +98,42 @@ export const styles = StyleSheet.create({
         marginBottom: 20,
         paddingLeft: 5
     },
+    navBar: {
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        height: 40,
+    },
+    navItem: {
+        borderColor: '#DB6551',
+        paddingHorizontal: 10
+        // borderBottomWidth: 2
+    },
+    navItemText: {
+        fontSize: 14,
+        fontWeight: '500',
+        color: '#1C1B1F'
+    },
     profileImg: {
         height: 170,
         width: 170,
         marginBottom: 20,
         borderRadius: 100
+    },
+    goal: {
+        borderBottomColor: '#DB6551',
+        borderBottomWidth: 1,
+        paddingBottom: 10,
+        marginBottom: 10
+    },
+    workPlace: {
+        borderBottomColor: '#DB6551',
+        borderBottomWidth: 1,
+        paddingBottom: 10,
+        marginBottom: 10,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     }
 })

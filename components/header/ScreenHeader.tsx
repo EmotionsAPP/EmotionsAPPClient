@@ -7,12 +7,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { logOutAction } from "../../store/actions/authActions";
 import { ApplicationState } from "../../store";
 
-export const ScreenHeader = (props: any) => {
+interface ScreenHeaderProps {
+    navigation: any;
+    route: any;
+    goBack?: boolean;
+    title: string;
+    notOpenProfile?: boolean;
+    goBackHome?: boolean;
+}
+
+export const ScreenHeader = (props: ScreenHeaderProps) => {
     const appState = useSelector((state: ApplicationState) => state);
     
     const [visibleMenu, setVisibleMenu] = React.useState(false);
 
-    const back = () => {props.navigation.goBack(null)}
+    const back = () => {
+        props.navigation.goBack(null)
+    }
 
     return (
         <View style={ styles.header }>
@@ -34,7 +45,11 @@ export const ScreenHeader = (props: any) => {
                 icon="account-circle" 
                 size={30} 
                 style={{backgroundColor: 'white'}} 
-                onPress={() => props.navigation.push('Shell', { screen: 'PatientProfile', params: { patient: appState.auth, logout: true } })} 
+                onPress={() => props.notOpenProfile ? 
+                    {}
+                    : appState.auth?.user.hasOwnProperty('psychologist') ?
+                    props.navigation.push('Shell', { screen: 'PsychologistProfile', params: { psychologist: appState.auth?.user, parentScreen: props.navigation.getState() } })
+                    : props.navigation.push('Shell', { screen: 'PatientProfile', params: { patient: appState.auth?.user, logout: true } })  } 
             />
         </View>
     )
