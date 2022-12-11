@@ -108,7 +108,6 @@ export const styles = StyleSheet.create({
     navItem: {
         borderColor: '#DB6551',
         paddingHorizontal: 10
-        // borderBottomWidth: 2
     },
     navItemText: {
         fontSize: 14,
@@ -135,5 +134,21 @@ export const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between'
-    }
+    },
+    scheduleAction: {
+        backgroundColor: '#DB6551',
+        paddingHorizontal: 28,
+        paddingVertical: 10,
+        borderRadius: 10,
+        marginTop: 15,
+        marginBottom: 28,
+        position: 'absolute',
+        bottom: 0,
+        right: '23%'
+    }, 
+    scheduleActionText: {
+        color: 'white',
+        fontWeight: '400',
+        fontSize: 18,
+    },
 })

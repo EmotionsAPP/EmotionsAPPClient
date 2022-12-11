@@ -12,11 +12,11 @@ import { getArticlesAction } from "../../store/actions/articleActions";
 import { useIsFocused } from '@react-navigation/native';
 import { ScrollView } from "react-native-gesture-handler";
 
-interface CalendarProps {
+interface ArticleListProps {
     navigation: DrawerNavigationProp<ShellNavigatorParamList, 'Calendar'>;
 }
 
-export const ArticleListScreen: React.FC<CalendarProps> = ({ navigation }) => {
+export const ArticleListScreen: React.FC<ArticleListProps> = ({ navigation }) => {
     const [articleModal, visibleArticleModal] = React.useState(false);
     
     const showArticleModal = () => visibleArticleModal(true);

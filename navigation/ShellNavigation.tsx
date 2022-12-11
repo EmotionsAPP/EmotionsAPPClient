@@ -1,7 +1,7 @@
 import React from "react";
 import { createDrawerNavigator, DrawerContentComponentProps } from '@react-navigation/drawer';
 import { DrawerMenu } from "../components";
-import { CalendarScreen, HomeScreen, AppointmentHistoryScreen, AppointmentScreen, PatientProfileScreen, ArticleListScreen, ArticleScreen, EditPatientProfileScreen, PsychologistProfileScreen, EditPsychologistProfileScreen } from "../screens"; 
+import { CalendarScreen, HomeScreen, AppointmentHistoryScreen, AppointmentScreen, PatientProfileScreen, ArticleListScreen, ArticleScreen, EditPatientProfileScreen, PsychologistProfileScreen, EditPsychologistProfileScreen, PsychologistListScreen } from "../screens"; 
 import { Chat } from "../screens/chat";
 import { ScreenHeader } from "../components/header/ScreenHeader";
 
@@ -31,6 +31,7 @@ export type ShellNavigatorParamList = {
     EditPsychologistProfile: {
         patient: any
     },
+    PsychologistList: {},
 }
 
 const Drawer = createDrawerNavigator<ShellNavigatorParamList>();
@@ -79,19 +80,25 @@ export const ShellNavigator = () => {
             />
             <Drawer.Screen name="EditPatientProfile" component={EditPatientProfileScreen}
                 options={{
-                    header: (props) => <ScreenHeader {...props} title="Paciente" goBack={true} notOpenProfile={true} />
+                    header: (props) => <ScreenHeader {...props} title="Editar Perfil" goBack={true} notOpenProfile={true} />
                 }}
             />
             <Drawer.Screen name="PsychologistProfile" component={PsychologistProfileScreen}
                 options={{
-                    header: (props) => <ScreenHeader {...props} title="Psicologo" goBack={true} notOpenProfile={true} goBackHome={true} />
+                    header: (props) => <ScreenHeader {...props} title="Especialista" goBack={true} notOpenProfile={true} goBackHome={true} />
                 }}
             />
             <Drawer.Screen name="EditPsychologistProfile" component={EditPsychologistProfileScreen}
                 options={{
-                    header: (props) => <ScreenHeader {...props} title="Psicologo" goBack={true} notOpenProfile={true} />
+                    header: (props) => <ScreenHeader {...props} title="Editar Perfil" goBack={true} notOpenProfile={true} />
                 }}
             />
+            <Drawer.Screen name="PsychologistList" component={PsychologistListScreen}
+                options={{
+                    header: (props) => <ScreenHeader {...props} title="Especialistas" />
+                }}
+            />
+            
         </Drawer.Navigator>
       );
 }

@@ -3,9 +3,12 @@ import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem } from
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { View, Text, Image, ImageBackground } from "react-native";
 import { StyleSheet } from 'react-native';
+import { useSelector } from "react-redux";
+import { ApplicationState } from "../store";
 
 export const DrawerMenu = (props: DrawerContentComponentProps) => {
-
+    const appState = useSelector((state: ApplicationState) => state);
+    
     return (
         <View style={{height: '100%'}}>
             <ImageBackground
@@ -49,6 +52,21 @@ export const DrawerMenu = (props: DrawerContentComponentProps) => {
                         label="Calendario"
                         onPress={() => props.navigation.navigate('Shell', {screen: 'Calendar'})}
                     />
+                    {
+                        appState.auth?.user?.hasOwnProperty('patient') ? 
+                            <DrawerItem
+                                icon={({ color, size }) => (
+                                <MaterialCommunityIcons
+                                        name="clipboard-text"
+                                        color="#DB6551"
+                                        size={size}
+                                    />
+                                )}
+                                label="Especialistas"
+                                onPress={() => props.navigation.navigate('Shell', {screen: 'PsychologistList'})}
+                            />
+                        : <></>                
+                    }
                     <DrawerItem
                         icon={({ color, size }) => (
                         <MaterialCommunityIcons

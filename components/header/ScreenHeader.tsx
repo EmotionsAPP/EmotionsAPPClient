@@ -19,8 +19,6 @@ interface ScreenHeaderProps {
 export const ScreenHeader = (props: ScreenHeaderProps) => {
     const appState = useSelector((state: ApplicationState) => state);
     
-    const [visibleMenu, setVisibleMenu] = React.useState(false);
-
     const back = () => {
         props.navigation.goBack(null)
     }
@@ -48,7 +46,7 @@ export const ScreenHeader = (props: ScreenHeaderProps) => {
                 onPress={() => props.notOpenProfile ? 
                     {}
                     : appState.auth?.user.hasOwnProperty('psychologist') ?
-                    props.navigation.push('Shell', { screen: 'PsychologistProfile', params: { psychologist: appState.auth?.user, parentScreen: props.navigation.getState() } })
+                    props.navigation.push('Shell', { screen: 'PsychologistProfile', params: { psychologist: appState.auth?.user } })
                     : props.navigation.push('Shell', { screen: 'PatientProfile', params: { patient: appState.auth?.user, logout: true } })  } 
             />
         </View>

@@ -12,3 +12,4 @@ export * from './articleList/ArticleListScreen';
 export * from './article/ArticleScreen';
 export * from './psychologistProfile/PsychologistProfileScreen';
 export * from './editPsychologistProfile/EditPsychologistProfile';
+export * from './psychologistList/PsychologistListScreen';

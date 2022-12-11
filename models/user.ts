@@ -5,6 +5,7 @@ export interface User {
     lastName: string;
     taxId: string;
     physician: boolean;
+    profileImage?: string;
     patient?: {
         _id?: string;
         birthday?: Date;

@@ -8,10 +8,12 @@ import { ApplicationState } from "../../store";
 import { availablePhysiciansAction, newAppointmentAction } from "../../store/actions/appointmentActions";
 import { openNotificationSnackbar } from "../../store/actions/inAppActions";
 import { styles } from './style';
+import { useIsFocused } from '@react-navigation/native';
 
 interface AppointmentFormProps {
     visible: boolean;
     hide: () => void;
+    psychologistId?: string;
 }
 
 interface FormData {
@@ -28,6 +30,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
         endTime: undefined,
         description: ''
     })
+    const isFocused = useIsFocused();
 
     const [timePickerStart, visibleTimePickerStart] = useState(false); 
     const [timePickerEnd, visibleTimePickerEnd] = useState(false); 
@@ -38,9 +41,11 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if(formData.startTime && formData.endTime && !appState.appointment?.loadingPhysicians){
-            availablePhysiciansAction(new Date(`${formData.startTime.toLocaleDateString('en-US')} ${formData.startTime}`), dispatch, appState);
-        }
+        setPhysician(props.psychologistId ?? '')        
+    }, [props.psychologistId, props.visible])
+
+    useEffect(() => {
+        availablePhysiciansAction(new Date(), dispatch, appState);
     }, [formData]);
     
     useEffect(() => {
@@ -132,7 +137,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                             mode="text" 
                             color="#000" 
                             labelStyle={styles.headerButtons}
-                            disabled={physician ? false : true}
+                            disabled={(physician && formData.startTime && formData.endTime) ? false : true}
                             onPress={saveAppointment}
                         >
                             Completar

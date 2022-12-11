@@ -2,7 +2,7 @@ import { NativeStackNavigatorProps } from "@react-navigation/native-stack/lib/ty
 import { Dispatch } from "redux";
 import { ApplicationState } from "..";
 import { LoginBody, SignUpBody, User } from "../../models";
-import { getUser, signIn, signUp } from "../services/authService";
+import { getPsychologists, getUser, signIn, signUp } from "../services/authService";
 import { openNotificationSnackbar } from "./inAppActions";
 
 interface RequestLogin {
@@ -47,6 +47,20 @@ interface ErrorUser {
     type: 'ERROR_USER';
 }
 
+interface RequestPsychologists {
+    type: 'REQUEST_PSYS';
+    userId: string;
+}
+
+interface ResponsePsychologists {
+    type: 'RESPONSE_PSYS';
+    psychologists: User[];
+}
+
+interface ErrorPsychologists {
+    type: 'ERROR_PSYS';
+}
+
 export type KnownAction = RequestLogin 
 | ResponseLogin 
 | RequestSignUp 
@@ -55,7 +69,10 @@ export type KnownAction = RequestLogin
 | LogOut
 | RequestUser
 | ResponseUser
-| ErrorUser;
+| ErrorUser
+| RequestPsychologists
+| ResponsePsychologists
+| ErrorPsychologists;
 
 export const logInAction = (login: LoginBody, dispatch: Dispatch, appState: ApplicationState, navigation: any) => {    
     if (appState) {
@@ -110,4 +127,19 @@ export const getUserAction = (userId: string, dispatch: Dispatch) => {
         })
 
     dispatch({ type: 'REQUEST_USER', userId: userId });
+}
+
+export const getPsychologistsAction = (dispatch: Dispatch) => {
+    getPsychologists()
+        .then(response => response.json() as Promise<any>)
+        .then(data => {            
+            if(!data.statusCode){                    
+                dispatch({ type: 'RESPONSE_PSYS', psychologists: data });
+            }else{
+                dispatch({ type: 'ERROR_PSYS' });
+                openNotificationSnackbar("basic", dispatch, "error", "Ha ocurrido un error buscando los psicologos");
+            }
+        })
+
+    dispatch({ type: 'REQUEST_PSYS'});
 }

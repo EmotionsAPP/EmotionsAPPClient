@@ -38,3 +38,15 @@ export const getUser = (userId: string): Promise<Response> => {
 
   return fetch(`${API}/users/${userId}`, requestInfo)
 }
+
+export const getPsychologists = (): Promise<Response> => {
+  const requestHeaders: HeadersInit_ = new Headers();
+  requestHeaders.set('Content-Type', 'application/json');
+
+  const requestInfo: RequestInit = {
+    method: 'GET',
+    headers: requestHeaders,
+  }
+
+  return fetch(`${API}/users`, requestInfo)
+} 

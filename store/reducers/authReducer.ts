@@ -1,4 +1,5 @@
 import { Action, Reducer } from "redux";
+import { User } from "../../models";
 import { KnownAction } from "../actions/AuthActions";
 
 export interface AuthState {
@@ -9,6 +10,8 @@ export interface AuthState {
     user?: any;
     loginError: boolean;
     updatingUser: boolean;
+    searchingPsychologists: boolean;
+    psychologists: User[];
 }
 
 const unloadedState: AuthState = { 
@@ -18,6 +21,8 @@ const unloadedState: AuthState = {
     signedUp: false, 
     loginError: false,
     updatingUser: false,
+    searchingPsychologists: false,
+    psychologists: []
 };
 
 export const reducer: Reducer<AuthState> = (state: AuthState | undefined, incomingAction: Action): AuthState => {
@@ -78,6 +83,22 @@ export const reducer: Reducer<AuthState> = (state: AuthState | undefined, incomi
             return {
                 ...state,
                 updatingUser: false
+            }
+        case 'REQUEST_PSYS': 
+            return {
+                ...state, 
+                searchingPsychologists: true
+            }
+        case 'RESPONSE_PSYS':
+            return {
+                ...state,
+                psychologists: action.psychologists,
+                searchingPsychologists: false
+            }
+        case 'ERROR_PSYS': 
+            return {
+                ...state,
+                searchingPsychologists: false
             }
     }
 

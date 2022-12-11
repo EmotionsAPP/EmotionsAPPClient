@@ -9,6 +9,7 @@ import { styles } from './style';
 import { FAB, IconButton, TextInput } from "react-native-paper";
 import { logOutAction } from "../../store/actions/authActions";
 import { editPatientNoteAction, getPatientNoteAction } from "../../store/actions/profileActions";
+import { AppointmentForm } from "../../components";
 
 interface PsychologistProfileProps {
     navigation: any;
@@ -26,6 +27,9 @@ export const PsychologistProfileScreen: React.FC<PsychologistProfileProps> = (pr
     const dispatch = useDispatch();    
 
     const [activeTab, setActiveTab] = useState('info');
+    const [appointment, setAppointmentModal] = useState(false);
+
+    const hideAppointmentModal = () => setAppointmentModal(false);
 
     const openEdit = () => {        
         props.navigation.push('Shell', { screen: 'EditPsychologistProfile', params: { psychologist: props.route.params.psychologist } })
@@ -38,7 +42,7 @@ export const PsychologistProfileScreen: React.FC<PsychologistProfileProps> = (pr
 
     return (
         <View style={{minHeight: '93%', backgroundColor: 'white'}}>
-            <ScrollView>
+            <ScrollView style={{marginBottom: 50}}>
                 <ImageBackground 
                     source={
                         require('../../assets/images/Topographic.png')
@@ -171,18 +175,34 @@ export const PsychologistProfileScreen: React.FC<PsychologistProfileProps> = (pr
 
                 </ImageBackground>
             </ScrollView>
-        {
-            appState.auth?.user._id == props.route.params.psychologist?._id ?
-                <FAB 
-                    icon="pencil"
-                    style={ styles.fab }
-                    visible={true}
-                    color="white"
-                    onPress={() => openEdit()} 
-                />
-            : 
-            <></>
-        }
+            {
+                appState.auth?.user._id == props.route.params.psychologist?._id ?
+                    <FAB 
+                        icon="pencil"
+                        style={ styles.fab }
+                        visible={true}
+                        color="white"
+                        onPress={() => openEdit()} 
+                    />
+                : 
+                    <></>
+            }
+            {
+                appState.auth?.user?.hasOwnProperty('patient') ?
+                    <Pressable
+                        style={ styles.scheduleAction }
+                        onPress={() => { setAppointmentModal(true) } }
+                    >
+                        <Text style={ styles.scheduleActionText }>Agenda una reunion</Text>
+                    </Pressable>
+                :
+                    <></>
+            }
+            <AppointmentForm 
+                visible={appointment} 
+                hide={hideAppointmentModal} 
+                psychologistId={props.route.params.psychologist?._id}
+            />
         </View>
     )
 }
