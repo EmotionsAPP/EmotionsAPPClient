@@ -28,7 +28,7 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
   const showAppointmentModal = () => visibleAppointmentModal(true);
   const hideAppointmentModal = () => visibleAppointmentModal(false);
 
-  const [items, setItems] = useState<any>([]);
+  const [items, setItems] = useState<any>(Object);
   const currentDate = new Date();
   const dispatch = useDispatch();
 
@@ -44,7 +44,7 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
   );
 
   const onSelectDay = async (day: any) => {
-    let dateToGet = '';
+    let dateToGet = ''; 
     if(day.dateString === undefined){
       dateToGet = moment(day).format("MM-DD-YYYY"); 
     }else{
@@ -56,7 +56,10 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
       dateToGet,
       dispatch
     );  
-    if (!items[day.dateString]) {
+     
+    if(day.dateString === undefined ){
+      items[moment(day).format("YYYY-MM-DD")] = [];
+    }else {
       items[day.dateString] = [];
       appState.appointment?.userAppointments.map((appointmentItem: any, index: any) => {
         const newAppointment = {
@@ -70,11 +73,10 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
           newAppointment.with = `${appointmentItem.patient.firstName} ${appointmentItem.patient.lastName}`;
         }
         items[day.dateString].push(newAppointment);
-      });
-    }
+      }); 
  
     const newItems: any = {};
-    Object.keys(items).forEach((key) => {
+    Object?.keys(items).forEach((key) => {
       newItems[key] = items[key];
     }); 
     setItems(newItems);
@@ -83,7 +85,7 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
 
   useEffect(() => { 
     onSelectDay(currentDate.toISOString());
-  }, []);  
+   }, []);  
 
   const renderItem = (item: any) => {
     return (
@@ -106,12 +108,13 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
 
       <Agenda
         items={items} 
+        initialDate={currentDate.toJSON().slice(0, 10).toString()}
         selected={currentDate.toJSON().slice(0, 10).toString()}
         renderItem={renderItem}
         theme={{
-          agendaDayTextColor: "rgba(219, 101, 81, 0.99)",
+          agendaDayTextColor: "rgba(219, 101, 81, 0.99)", 
           agendaDayNumColor: "rgba(219, 101, 81, 0.99)",
-          agendaTodayColor: "#FFF0E4",
+          agendaTodayColor: "rgba(219, 101, 81, 0.99)",
           agendaKnobColor: "#F38673",
           dotColor: "#FFF0E4",
           selectedDayBackgroundColor: "#FFF0E4",
