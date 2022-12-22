@@ -22,11 +22,14 @@ export const styles = StyleSheet.create({
     footerButtons: {
         position: 'absolute',
         bottom: 40,
-        left: '42%'
+        left: '22%',
+        display: 'flex',
+        flexDirection: 'row',
+        zIndex: 1000
     },
     hangupButton: {
         borderRadius: 100,
-        backgroundColor: '#DB6551'
+        backgroundColor: '#DB6551',
     },
     personName: {
         textAlign: "center",
@@ -41,7 +44,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         width: '80%',
         height: '30%',
-        marginBottom: '30%'
+        marginBottom: '30%',
     },
     middleButtonView: {
         display: 'flex',

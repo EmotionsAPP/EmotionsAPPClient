@@ -1,7 +1,7 @@
 import React from "react";
 import { createDrawerNavigator, DrawerContentComponentProps } from '@react-navigation/drawer';
 import { DrawerMenu } from "../components";
-import { CalendarScreen, HomeScreen, AppointmentHistoryScreen, AppointmentScreen } from "../screens"; 
+import { CalendarScreen, HomeScreen, AppointmentHistoryScreen, AppointmentScreen, PatientProfileScreen, ArticleListScreen, ArticleScreen, EditPatientProfileScreen, PsychologistProfileScreen, EditPsychologistProfileScreen } from "../screens"; 
 import { Chat } from "../screens/chat";
 import { ScreenHeader } from "../components/header/ScreenHeader";
 
@@ -11,10 +11,26 @@ export type ShellNavigatorParamList = {
     AppointmentHistory: {},
     Chat: {
         room: string
-    }
+    },
     Appointment: {
         appointment: any
+    },
+    PatientProfile: {
+        patient: any
+    },
+    ArticleList: {},
+    Article: {
+        article: any
+    },
+    EditPatientProfile: {
+        patient: any
     }
+    PsychologistProfile: {
+        patient: any
+    },
+    EditPsychologistProfile: {
+        patient: any
+    },
 }
 
 const Drawer = createDrawerNavigator<ShellNavigatorParamList>();
@@ -44,6 +60,36 @@ export const ShellNavigator = () => {
             <Drawer.Screen name="Appointment" component={AppointmentScreen} 
                 options={{
                     header: (props) => <ScreenHeader {...props} title="Reunión" goBack={true} />
+                }}
+            />
+            <Drawer.Screen name="PatientProfile" component={PatientProfileScreen}
+                options={{
+                    header: (props) => <ScreenHeader {...props} title="Paciente" goBack={true} notOpenProfile={true} goBackHome={true} />
+                }}
+            />
+            <Drawer.Screen name="ArticleList" component={ArticleListScreen} 
+                options={{
+                    header: (props) => <ScreenHeader {...props} title="Articulos" />
+                }}
+            />
+            <Drawer.Screen name="Article" component={ArticleScreen} 
+                options={{
+                    header: (props) => <ScreenHeader {...props} title="Articulos" goBack={true} />
+                }}
+            />
+            <Drawer.Screen name="EditPatientProfile" component={EditPatientProfileScreen}
+                options={{
+                    header: (props) => <ScreenHeader {...props} title="Paciente" goBack={true} notOpenProfile={true} />
+                }}
+            />
+            <Drawer.Screen name="PsychologistProfile" component={PsychologistProfileScreen}
+                options={{
+                    header: (props) => <ScreenHeader {...props} title="Psicologo" goBack={true} notOpenProfile={true} goBackHome={true} />
+                }}
+            />
+            <Drawer.Screen name="EditPsychologistProfile" component={EditPsychologistProfileScreen}
+                options={{
+                    header: (props) => <ScreenHeader {...props} title="Psicologo" goBack={true} notOpenProfile={true} />
                 }}
             />
         </Drawer.Navigator>

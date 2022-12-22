@@ -1,8 +1,8 @@
 import { NativeStackNavigatorProps } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { Dispatch } from "redux";
 import { ApplicationState } from "..";
-import { LoginBody, SignUpBody } from "../../models";
-import { signIn, signUp } from "../services/authService";
+import { LoginBody, SignUpBody, User } from "../../models";
+import { getUser, signIn, signUp } from "../services/authService";
 import { openNotificationSnackbar } from "./inAppActions";
 
 interface RequestLogin {
@@ -33,7 +33,29 @@ interface LogOut {
     type: 'LOGOUT'
 }
 
-export type KnownAction = RequestLogin | ResponseLogin | RequestSignUp | ResponseSignUp | LoginError | LogOut;
+interface RequestUser {
+    type: 'REQUEST_USER';
+    userId: string;
+}
+
+interface ResponseUser {
+    type: 'RESPONSE_USER';
+    user: User;
+}
+
+interface ErrorUser {
+    type: 'ERROR_USER';
+}
+
+export type KnownAction = RequestLogin 
+| ResponseLogin 
+| RequestSignUp 
+| ResponseSignUp 
+| LoginError 
+| LogOut
+| RequestUser
+| ResponseUser
+| ErrorUser;
 
 export const logInAction = (login: LoginBody, dispatch: Dispatch, appState: ApplicationState, navigation: any) => {    
     if (appState) {
@@ -73,4 +95,19 @@ export const signUpAction = (user: SignUpBody, dispatch: Dispatch, appState: App
 export const logOutAction = (dispatch: Dispatch, navigation: any) => {
     dispatch({type: 'LOGOUT'});
     navigation.navigate('Landing', { screen: 'Landing' });    
+}
+
+export const getUserAction = (userId: string, dispatch: Dispatch) => {    
+    getUser(userId)
+        .then(response => response.json() as Promise<any>)
+        .then(data => {            
+            if(!data.statusCode){                    
+                dispatch({ type: 'RESPONSE_USER', user: data });
+            }else{
+                dispatch({ type: 'ERROR_USER' });
+                openNotificationSnackbar("basic", dispatch, "error", "Ha ocurrido un error actualizando el usuario logeado");
+            }
+        })
+
+    dispatch({ type: 'REQUEST_USER', userId: userId });
 }

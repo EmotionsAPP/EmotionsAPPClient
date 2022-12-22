@@ -3,16 +3,27 @@ import { Text, View } from 'react-native';
 import { Avatar, IconButton, Menu, Snackbar } from "react-native-paper";
 import { styles } from './style';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logOutAction } from "../../store/actions/authActions";
+import { ApplicationState } from "../../store";
 
-export const ScreenHeader = (props: any) => {
+interface ScreenHeaderProps {
+    navigation: any;
+    route: any;
+    goBack?: boolean;
+    title: string;
+    notOpenProfile?: boolean;
+    goBackHome?: boolean;
+}
+
+export const ScreenHeader = (props: ScreenHeaderProps) => {
+    const appState = useSelector((state: ApplicationState) => state);
+    
     const [visibleMenu, setVisibleMenu] = React.useState(false);
-    const openMenu = () => setVisibleMenu(true);
-    const closeMenu = () => setVisibleMenu(false);
-    const dispatch = useDispatch();
 
-    const back = () => {props.navigation.goBack(null)}
+    const back = () => {
+        props.navigation.goBack(null)
+    }
 
     return (
         <View style={ styles.header }>
@@ -30,20 +41,16 @@ export const ScreenHeader = (props: any) => {
                     />
             }
             <Text style={ styles.title }>{props.title ?? props.route.name}</Text>
-            <Menu
-                visible={visibleMenu}
-                onDismiss={closeMenu}
-                anchor={
-                    <IconButton
-                        icon="account-circle" 
-                        size={30} 
-                        style={{backgroundColor: 'white'}} 
-                        onPress={openMenu}
-                    />
-                }
-            >
-                <Menu.Item onPress={() => logOutAction(dispatch, props.navigation)} title="Cerrar sesion"/>
-            </Menu>
+            <IconButton
+                icon="account-circle" 
+                size={30} 
+                style={{backgroundColor: 'white'}} 
+                onPress={() => props.notOpenProfile ? 
+                    {}
+                    : appState.auth?.user.hasOwnProperty('psychologist') ?
+                    props.navigation.push('Shell', { screen: 'PsychologistProfile', params: { psychologist: appState.auth?.user, parentScreen: props.navigation.getState() } })
+                    : props.navigation.push('Shell', { screen: 'PatientProfile', params: { patient: appState.auth?.user, logout: true } })  } 
+            />
         </View>
     )
 }

@@ -305,7 +305,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
         }
 
         const accept = () => () => {            
-            acceptAudioCall();
+            acceptAudioCall(); 
         }
 
         setRequestModalOnCancel(cancel);
