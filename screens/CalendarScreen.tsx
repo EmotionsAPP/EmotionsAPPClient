@@ -74,11 +74,15 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
         }
         items[day.dateString].push(newAppointment);
       }); 
+
+    }
  
     const newItems: any = {};
+
     Object?.keys(items).forEach((key) => {
       newItems[key] = items[key];
     }); 
+
     setItems(newItems);
 
   };
