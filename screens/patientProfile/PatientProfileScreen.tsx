@@ -95,7 +95,7 @@ export const PatientProfileScreen: React.FC<PatientProfileProps> = (props: any) 
                         </View>
                         <View style={styles.bodyGeneralInfo}>
                             <Text style={styles.bodyGeneralInfoLeft}>Fecha de nacimiento</Text>
-                            <Text style={styles.bodyGeneralInfoRight}>{birthday ? birthday.toLocaleDateString() : '-' }</Text>
+                            <Text style={styles.bodyGeneralInfoRight}>{birthday.toString() != 'Invalid Date' ? birthday.toLocaleDateString() : '-' }</Text>
                         </View>
                         <View style={[styles.bodyGeneralInfo, {borderBottomWidth: 0}]}>
                             <Text style={styles.bodyGeneralInfoLeft}>Género</Text>

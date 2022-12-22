@@ -37,7 +37,6 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
     return date.toISOString().split("T")[0];
   };
   
-
   const titleStyle = StyleSheet.compose(styles.title, null);
   const participantTitleStyle = StyleSheet.compose(
     styles.participantTittle,
@@ -59,7 +58,7 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
     );  
     if (!items[day.dateString]) {
       items[day.dateString] = [];
-      appState.appointment?.userAppointments.map((appointmentItem, index) => {
+      appState.appointment?.userAppointments.map((appointmentItem: any, index: any) => {
         const newAppointment = {
           name: "Encuentro",
           with: "",
@@ -102,7 +101,7 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
   }; 
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
       <AppointmentForm visible={appointmentModal} hide={hideAppointmentModal} />
 
       <Agenda
@@ -117,6 +116,7 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
           dotColor: "#FFF0E4",
           selectedDayBackgroundColor: "#FFF0E4",
           selectedDayTextColor: "#DB6551",
+          todayDotColor: "#FFF0E4"
         }}
         onDayPress={(day) => {
           onSelectDay(day);

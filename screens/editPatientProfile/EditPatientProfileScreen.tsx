@@ -41,8 +41,8 @@ export const EditPatientProfileScreen: React.FC<EditPatientProfileProps> = (prop
         email: user.email,
         gender: user.gender,
         birthDate: birthday,
-        city: user.city._id,
-        information: user.patient.information,
+        city: user.city?._id,
+        information: user.patient?.information,
         profileImage: user.profileImage
     });    
 
@@ -215,7 +215,7 @@ export const EditPatientProfileScreen: React.FC<EditPatientProfileProps> = (prop
                         </View>
                         <View style={styles.customInput}>
                             {
-                                formData.birthDate ? <Text style={styles.customInputText}> Fecha de nacimiento </Text>
+                                formData.birthDate.toString() != 'Invalid Date' ? <Text style={styles.customInputText}> Fecha de nacimiento </Text>
                                 : <></>
                             }
                             <Pressable 
@@ -224,7 +224,7 @@ export const EditPatientProfileScreen: React.FC<EditPatientProfileProps> = (prop
                             >
                                 <Text style={{paddingLeft: 10}}>
                                     {
-                                        formData.birthDate ? 
+                                        formData.birthDate.toString() != 'Invalid Date' ? 
                                         formData.birthDate.toLocaleDateString()
                                         : 'Fecha de nacimiento'
                                     }
@@ -238,7 +238,7 @@ export const EditPatientProfileScreen: React.FC<EditPatientProfileProps> = (prop
                             <DatePicker
                                 modal
                                 mode="date"
-                                date={formData.birthDate ?? new Date()}
+                                date={formData.birthDate.toString() == 'Invalid Date' ? new Date() : formData.birthDate}
                                 open={showBirthDateModal}
                                 onConfirm={(date) => {
                                     setFormData({

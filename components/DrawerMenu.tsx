@@ -89,7 +89,7 @@ export const DrawerMenu = (props: DrawerContentComponentProps) => {
                         label="Articulos"
                         onPress={() => props.navigation.navigate('Shell', {screen: 'ArticleList'})}
                     />
-                                        {
+                                        {/* {
                         appState.auth?.user?.hasOwnProperty('patient') ? 
                             <DrawerItem
                                 icon={({ color, size }) => (
@@ -103,7 +103,7 @@ export const DrawerMenu = (props: DrawerContentComponentProps) => {
                                 onPress={() => props.navigation.navigate('Shell', {screen: 'EmergencyPsychologists'})}
                             />
                         : <></>                
-                    }
+                    } */}
                 </DrawerContentScrollView>
             </ImageBackground>
         </View>

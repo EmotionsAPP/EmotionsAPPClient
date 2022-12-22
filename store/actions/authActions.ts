@@ -98,16 +98,16 @@ export const logInAction = (login: LoginBody, dispatch: Dispatch, appState: Appl
             .then(response => response.json() as Promise<any>)
             .then(data => {
                 if(!data.statusCode){ 
-                    if(data.user.hasOwnProperty('psychologist') && !(data.user.psychologist.connectionId)){
-                        requestPushTokenAction().then((val: any) => {
-                            const user = {
-                                psychologist: {
-                                    connectionId: val
-                                }
-                            }
-                            editProfileAction(user, true, dispatch, (user) => dispatch({ type: 'RESPONSE_LOGIN', logged: {token: data.token, user: user} }), data.user._id)
-                        })
-                    }           
+                    // if(data.user.hasOwnProperty('psychologist') && !(data.user.psychologist.connectionId)){
+                    //     requestPushTokenAction().then((val: any) => {
+                    //         const user = {
+                    //             psychologist: {
+                    //                 connectionId: val
+                    //             }
+                    //         }
+                    //         editProfileAction(user, true, dispatch, (user) => dispatch({ type: 'RESPONSE_LOGIN', logged: {token: data.token, user: user} }), data.user._id)
+                    //     })
+                    // }           
                     dispatch({ type: 'RESPONSE_LOGIN', logged: data });
                     navigation.navigate('Shell', {screen: 'Home'});
                 }else{

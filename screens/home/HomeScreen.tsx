@@ -22,6 +22,14 @@ export const HomeScreen: React.FC<HomeProps> = ({ navigation }) => {
 
     const today = new Date();
 
+    const navigateToPsy = () =>{
+        navigation.push('Shell', {screen: 'PsychologistList'})
+    }
+    
+    const navigateToSched = () => {
+        navigation.push('Shell', {screen: 'Calendar'})
+    }
+
     useEffect(() => {
         navigation.addListener('beforeRemove', (e: any) => {
             e.preventDefault();
@@ -69,6 +77,7 @@ export const HomeScreen: React.FC<HomeProps> = ({ navigation }) => {
                                 <Text style={ styles.actionText }>{ appState.appointment?.userAppointments && appState.appointment?.userAppointments.length > 0 ? '¿Necesitas otra reunión?' : '¡Nada que mostrar por ahora! \n Agenda tu primera cita para ver información aquí. :)'}</Text>
                                 <Pressable
                                     style={ styles.newMeetingAction }
+                                    onPress={() => navigateToSched()}
                                 >
                                     <Text style={ styles.newMeetingActionText }>Agenda una cita</Text>
                                 </Pressable>
@@ -76,6 +85,7 @@ export const HomeScreen: React.FC<HomeProps> = ({ navigation }) => {
                             <View style={ [styles.action, {paddingTop: 20} ] }>
                                 <Text style={ styles.actionText }>¿Tienes una emergencia? {'\n'} Contactate con uno de nuestros expertos disponibles.</Text>
                                 <Pressable
+                                    onPress={() => navigateToPsy()}
                                     style={ styles.emergencyAction }
                                 >
                                     <Text style={ styles.emergencyActionText }>Ten una cita ahora</Text>
