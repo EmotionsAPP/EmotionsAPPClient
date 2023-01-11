@@ -10,6 +10,7 @@ import { ConfirmDialog } from "../confirmDialog/ConfirmDialog";
 import { styles } from './style';
 import RNFS from 'react-native-fs';
 import ImagePicker from "react-native-image-crop-picker";
+import { traduct } from "../../langs";
 
 interface AppointmentFormProps {
     visible: boolean;
@@ -49,7 +50,7 @@ export const CreateArticle: React.FC<AppointmentFormProps> = (props) => {
 
     const closeModal = () => {
         if(saveable){
-            setConfirmDialogText('Vas a perder tus cambios');
+            setConfirmDialogText(traduct("loseChanges"));
             setConfirmDialogOnAccept(onAcceptCancel);
             setConfirmDialogOnCancel(onCancel);
             setConfirmDialogVisible(true);
@@ -76,7 +77,7 @@ export const CreateArticle: React.FC<AppointmentFormProps> = (props) => {
     }
     
     const confirmEditArticle = () => {
-        setConfirmDialogText('¿Quieres guardar estos cambios?');
+        setConfirmDialogText(traduct("askSaveChanges"));
         setConfirmDialogOnAccept(onAcceptEdit);
         setConfirmDialogOnCancel(onCancel);
         setConfirmDialogVisible(true);
@@ -167,9 +168,9 @@ export const CreateArticle: React.FC<AppointmentFormProps> = (props) => {
                             labelStyle={styles.headerButtons}
                             onPress={closeModal}
                         >
-                            Cancelar
+                            {traduct("cancel")}
                         </Button>
-                        <Text>{ props.edit ? 'Editar articulo' : 'Nuevo artículo'}</Text>
+                        <Text>{ props.edit ? traduct("modifyArticle") : traduct("newArticle")}</Text>
                         <Button 
                             mode="text" 
                             color="#000" 
@@ -177,7 +178,7 @@ export const CreateArticle: React.FC<AppointmentFormProps> = (props) => {
                             labelStyle={styles.headerButtons}
                             onPress={() => props.edit ? confirmEditArticle() : saveArticle() }
                         >
-                            Completar
+                            {traduct("complete")}
                         </Button>
                     </View>
                     <View style={styles.divider}>
@@ -187,7 +188,7 @@ export const CreateArticle: React.FC<AppointmentFormProps> = (props) => {
                             color="#db6551"
                         />
                         <View style={styles.view}>
-                            <Text>Título</Text>
+                            <Text>{traduct("title")}</Text>
                             <TextInput 
                                 value={ formData.title }
                                 onChangeText={ (text) => setFormData({ ...formData, title: text }) }
@@ -232,7 +233,7 @@ export const CreateArticle: React.FC<AppointmentFormProps> = (props) => {
                         >
                             <View style={styles.waitingModalView}>
                                 <ActivityIndicator size="small" color="#DB6551" />
-                                <Text style={styles.waitingModalText}>Guardando...</Text>
+                                <Text style={styles.waitingModalText}>{traduct("saving")}...</Text>
                             </View>
                         </Modal>
                     </Portal>
@@ -242,4 +243,3 @@ export const CreateArticle: React.FC<AppointmentFormProps> = (props) => {
         </Portal>
     )
 }
-

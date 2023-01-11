@@ -11,6 +11,7 @@ import { ArticleSmallCard } from "../../components/articleSmallCard/ArticleSmall
 import { getArticlesAction } from "../../store/actions/articleActions";
 import { useIsFocused } from '@react-navigation/native';
 import { ScrollView } from "react-native-gesture-handler";
+import { traduct } from "../../langs";
 
 interface ArticleListProps {
     navigation: DrawerNavigationProp<ShellNavigatorParamList, 'Calendar'>;
@@ -53,7 +54,7 @@ export const ArticleListScreen: React.FC<ArticleListProps> = ({ navigation }) =>
                             visible={true}
                             color="white"
                             uppercase={false}
-                            label="Agregar Artículo"
+                            label={traduct("addArticle")}
                             onPress={() => showArticleModal()} 
                         />
                     : 

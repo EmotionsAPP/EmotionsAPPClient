@@ -8,6 +8,7 @@ import { ApplicationState } from "../../store";
 import { LandingNavigatorParamList } from "../../navigation";
 import { styles } from './style';
 import { ScrollView } from "react-native-gesture-handler";
+import { traduct } from "../../langs";
 
 interface LoginProps {
     navigation: NativeStackNavigationProp<LandingNavigatorParamList, 'Login'>;
@@ -38,7 +39,7 @@ export const LoginScreen: React.FC<LoginProps> = ({ navigation }) => {
                 </View>
             </View>
             <View style={ styles.centerInfo }>
-                <Text style={ styles.headText }>Iniciar sesión</Text>
+                <Text style={ styles.headText }>{traduct("login")}</Text>
                 <Image
                     style={ styles.centerImg }
                     source={
@@ -55,7 +56,7 @@ export const LoginScreen: React.FC<LoginProps> = ({ navigation }) => {
                             <Text
                                 style={ styles.loginErrorText }
                             >
-                                Su correo o contraseña son incorrectos. Inténtelo nuevamente.
+                                {traduct("loginIncorrect")}
                             </Text>
                         </View>
                     :
@@ -74,7 +75,7 @@ export const LoginScreen: React.FC<LoginProps> = ({ navigation }) => {
                                 outlineColor="#DB6551"
                                 activeOutlineColor="#DB6551"
                                 theme={{roundness: 30}}
-                                label="Correo electrónico"
+                                label={traduct("email")}
                             />
                             <TextInput 
                                 value={ password }
@@ -85,20 +86,20 @@ export const LoginScreen: React.FC<LoginProps> = ({ navigation }) => {
                                 outlineColor="#DB6551"
                                 activeOutlineColor="#DB6551"
                                 theme={{roundness: 30}}
-                                label="Contraseña"
+                                label={traduct("password")}
                             />
                             <Pressable
                                 style={ styles.mainButton }
                                 onPress={() => logInAction({email: email, password: password}, dispatch, appState, navigation)}
                             >
-                                <Text style={ styles.mainButtonText }>Inicia sesión</Text>
+                                <Text style={ styles.mainButtonText }>{traduct("login")}</Text>
                             </Pressable>
                             <View style={ styles.bottomTextView }>
                                 <Text style={ styles.bottomText }>
-                                    ¿No tienes una cuenta?&nbsp;
+                                    {traduct("doesNotHasAccount")}&nbsp;
                                 </Text>
                                 <Pressable>
-                                    <Text style={ styles.bottomTextLink }>Registrate</Text>
+                                    <Text style={ styles.bottomTextLink }>{traduct("register")}</Text>
                                 </Pressable>
                             </View>
                         </View>
@@ -107,4 +108,3 @@ export const LoginScreen: React.FC<LoginProps> = ({ navigation }) => {
         </ScrollView>
     )
 }
-

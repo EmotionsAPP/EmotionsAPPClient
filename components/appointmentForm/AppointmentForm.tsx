@@ -9,6 +9,7 @@ import { availablePhysiciansAction, newAppointmentAction } from "../../store/act
 import { openNotificationSnackbar } from "../../store/actions/inAppActions";
 import { styles } from './style';
 import { useIsFocused } from '@react-navigation/native';
+import { traduct } from "../../langs";
 
 interface AppointmentFormProps {
     visible: boolean;
@@ -67,7 +68,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                 (Math.abs(Math.round((formData.endTime.getTime() - date.getTime()) / 60000)) > 120 )
             )
         ){
-            openNotificationSnackbar("basic", dispatch, "error", "La hora de inicio debe ser menor a la de final, tener un minimo de 15 minutos de diferencia y no mayor a 2 horas.")
+            openNotificationSnackbar("basic", dispatch, "error", traduct("startEndDateError"))
             return;
         }
         setFormData({
@@ -84,7 +85,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                 (Math.abs(Math.round((formData.startTime.getTime() - date.getTime()) / 60000)) > 120 )
             )
         ){
-            openNotificationSnackbar("basic", dispatch, "error", "La hora de inicio debe ser menor a la de final, tener un minimo de 15 minutos de diferencia y no mayor a 2 horas.")
+            openNotificationSnackbar("basic", dispatch, "error", traduct("startEndDateError"))
             return;
         }
         setFormData({
@@ -130,9 +131,9 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                             labelStyle={styles.headerButtons}
                             onPress={closeModal}
                         >
-                            Cancelar
+                            {traduct("cancel")}
                         </Button>
-                        <Text>Nueva reunion</Text>
+                        <Text>{traduct("newMeeting")}</Text>
                         <Button 
                             mode="text" 
                             color="#000" 
@@ -140,7 +141,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                             disabled={(physician && formData.startTime && formData.endTime) ? false : true}
                             onPress={saveAppointment}
                         >
-                            Completar
+                            {traduct("complete")}
                         </Button>
                     </View>
                     <View style={styles.divider}>
@@ -153,7 +154,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                             style={[styles.pressView, { paddingBottom: 20 }]} 
                             onPress={() => visibleTimePickerStart(true)}
                         >
-                            <Text>Inicio</Text>
+                            <Text>{traduct("start")}</Text>
                             <Text>
                                 { formData.startTime ? (
                                     `${formData.startTime.toDateString()} ${String(((formData.startTime.getHours() % 12) || 12)).padStart(2,'0')}:${String(formData.startTime.getMinutes()).padStart(2,'0')} ${formData.startTime.getHours() > 12 ? 'PM' : 'AM'}`
@@ -176,7 +177,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                             style={styles.pressView} 
                             onPress={() => visibleTimePickerEnd(true)}
                         >
-                            <Text>Termina</Text>
+                            <Text>{traduct("end")}</Text>
                             <Text>
                                 { formData.endTime ? (
                                     `${formData.endTime.toDateString()} ${String(((formData.endTime.getHours() % 12) || 12)).padStart(2,'0')}:${String(formData.endTime.getMinutes()).padStart(2,'0')} ${formData.endTime.getHours() > 12 ? 'PM' : 'AM'}`
@@ -203,7 +204,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                             color="#db6551"
                         />
                         <View style={styles.view}>
-                            <Text>Especialista</Text>
+                            <Text>{traduct("specialist")}</Text>
                             <DropDownPicker
                                 open={showDropdown}
                                 value={physician}
@@ -224,7 +225,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                             color="#db6551"
                         />
                         <View style={styles.view}>
-                            <Text>Descripcion</Text>
+                            <Text>{traduct("appointmentDescription")}</Text>
                             <TextInput 
                                 value={ formData.description }
                                 onChangeText={ (text) => setFormData({ ...formData, description: text }) }
@@ -238,4 +239,3 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
         </Portal>
     )
 }
-

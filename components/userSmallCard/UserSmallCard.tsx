@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
 import { User } from "../../models";
 import { styles } from "./style";
+import { traduct } from "../../langs";
 
 interface UserSmallCardProps {
     user: User;
@@ -33,7 +34,7 @@ export const UserSmallCard: React.FC<UserSmallCardProps> = (props) => {
             />
             <View style={styles.description}>
                 <Text style={styles.descriptionName}>{ `${props.user.firstName} ${props.user.lastName}` }</Text>
-                <Text style={styles.descriptionAge}>{ `${age == now.getFullYear() ? '-' : age} años` }</Text>
+                <Text style={styles.descriptionAge}>{ `${age == now.getFullYear() ? '-' : age} ${traduct("years")}` }</Text>
             </View>
             <IconButton 
                 icon="chevron-right"

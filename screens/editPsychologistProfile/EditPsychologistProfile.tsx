@@ -16,6 +16,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import DatePicker from "react-native-date-picker";
 import { NavigationActions } from 'react-navigation';
 import { CommonActions } from '@react-navigation/native';
+import { traduct } from "../../langs";
 
 interface EditPsychologistProfileProps {
     navigation: any;
@@ -188,19 +189,19 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                                 style={[styles.navItem, { borderBottomWidth: activeTab == 'info' ? 3 : 0 } ]}
                                 onPress={() => setActiveTab('info')}
                             >
-                                <Text style={styles.navItemText}>Informacion</Text>
+                                <Text style={styles.navItemText}>{traduct("information")}</Text>
                             </Pressable>
                             <Pressable 
                                 style={[styles.navItem, { borderBottomWidth: activeTab == 'ach' ? 3 : 0 } ]}
                                 onPress={() => setActiveTab('ach')}
                             >
-                                <Text style={styles.navItemText}>Logros</Text>
+                                <Text style={styles.navItemText}>{traduct("goals")}</Text>
                             </Pressable>
                             <Pressable 
                                 style={[styles.navItem, { borderBottomWidth: activeTab == 'workP' ? 3 : 0 } ]}
                                 onPress={() => setActiveTab('workP')}
                             >
-                                <Text style={styles.navItemText}>Lugares de Trabajo</Text>
+                                <Text style={styles.navItemText}>{traduct("workPlaces")}</Text>
                             </Pressable>
                         </View>
                     </View>
@@ -215,7 +216,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                             outlineColor="#DB6551"
                             activeOutlineColor="#DB6551"
                             theme={{roundness: 30}}
-                            label="Nombre"
+                            label={traduct("name")}
                         />
                         <TextInput 
                             value={ formData.lastName }
@@ -225,7 +226,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                             outlineColor="#DB6551"
                             activeOutlineColor="#DB6551"
                             theme={{roundness: 30}}
-                            label="Apellido"
+                            label={traduct("lastName")}
                         />
                         <TextInput 
                             value={ formData.email }
@@ -235,11 +236,11 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                             outlineColor="#DB6551"
                             activeOutlineColor="#DB6551"
                             theme={{roundness: 30}}
-                            label="Correo electrónico"
+                            label={traduct("email")}
                         />
                         <View style={styles.dropInput}>
                             {
-                                formData.gender ? <Text style={styles.customInputText}> Genero </Text>
+                                formData.gender ? <Text style={styles.customInputText}> {traduct("gender")} </Text>
                                 : <></>
                             }
                             <DropDownPicker
@@ -248,15 +249,15 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                                 items={
                                     [
                                         {
-                                            label: 'Masculino',
+                                            label: traduct("male"),
                                             value: 'M'
                                         },
                                         {
-                                            label: 'Femenino',
+                                            label: traduct("female"),
                                             value: 'F'
                                         },
                                         {
-                                            label: 'Otro',
+                                            label: traduct("other"),
                                             value: 'O'
                                         }
                                     ]
@@ -266,13 +267,13 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                                 disableBorderRadius={true}
                                 style={styles.dropdown}
                                 containerStyle={styles.dropdownContainer}
-                                placeholder="Genero"
+                                placeholder={traduct("gender")}
                                 listMode="MODAL"
                             />
                         </View>
                         <View style={styles.customInput}>
                             {
-                                formData.birthDate.toString() !== 'Invalid Date' ? <Text style={styles.customInputText}> Fecha de nacimiento </Text>
+                                formData.birthDate.toString() !== 'Invalid Date' ? <Text style={styles.customInputText}> {traduct("birthDate")} </Text>
                                 : <></>
                             }
                             <Pressable 
@@ -283,7 +284,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                                     {
                                         formData.birthDate.toString() !== 'Invalid Date' ? 
                                         formData.birthDate.toLocaleDateString()
-                                        : 'Fecha de nacimiento'
+                                        : traduct("birthDate")
                                     }
                                 </Text>
                                 <IconButton
@@ -309,7 +310,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                         </View>
                         <View style={styles.customInput}>
                             {
-                                formData.firstWorkDate.toString() !== 'Invalid Date'  ? <Text style={styles.customInputText}> Fecha en que inicio a ejercer </Text>
+                                formData.firstWorkDate.toString() !== 'Invalid Date'  ? <Text style={styles.customInputText}> {traduct("startPracticingDate")} </Text>
                                 : <></>
                             }
                             <Pressable 
@@ -320,7 +321,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                                     {
                                         formData.firstWorkDate.toString() !== 'Invalid Date' ? 
                                         formData.firstWorkDate.toLocaleDateString()
-                                        : 'Fecha en que inicio a ejercer'
+                                        : traduct("startPracticingDate")
                                     }
                                 </Text>
                                 <IconButton
@@ -352,7 +353,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                             outlineColor="#DB6551"
                             activeOutlineColor="#DB6551"
                             theme={{roundness: 30}}
-                            label="Informacion adicional"
+                            label={traduct("aditionalInformation")}
                             multiline={true}
                         />
                     </View>
@@ -363,7 +364,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                                     return <View style={[styles.bodyView, {marginTop: 20, paddingBottom: 10}]} key={index}> 
                                             <View style={styles.customInput}>
                                                 {
-                                                    goal.date  ? <Text style={styles.customInputText}> Fecha obtenido </Text>
+                                                    goal.date  ? <Text style={styles.customInputText}> {traduct("obtainedDate")} </Text>
                                                     : <></>
                                                 }                                               
                                                 <Pressable 
@@ -374,7 +375,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                                                         {
                                                             goal.date ? 
                                                             getDate(goal.date).toLocaleDateString()
-                                                            : 'Fecha obtenido'
+                                                            : traduct("obtainedDate")
                                                         }
                                                     </Text>
                                                     <IconButton
@@ -411,7 +412,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                                                 outlineColor="#DB6551"
                                                 activeOutlineColor="#DB6551"
                                                 theme={{roundness: 30}}
-                                                label="Titulo"
+                                                label={traduct("title")}
                                             />
                                             <Pressable style={ {display: 'flex', flexDirection: 'row', alignItems: 'center', width: '50%'} } 
                                                 onPress={() => {
@@ -428,7 +429,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                                                     color="#DD0A35"
                                                     size={22}
                                                 />
-                                                <Text style={{fontWeight: 'bold', fontSize: 13}}>Borrar Logro</Text>
+                                                <Text style={{fontWeight: 'bold', fontSize: 13}}>{traduct("deleteGoal")}</Text>
                                             </Pressable>
                                         </View>
                                     })
@@ -442,7 +443,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                                             icon="plus"
                                             color="white"
                                         />
-                                        <Text style={ styles.emergencyActionText }>Agregar Logro</Text>
+                                        <Text style={ styles.emergencyActionText }>{traduct("addGoal")}</Text>
                                     </Pressable>
                                 </View>
                             </View>
@@ -465,7 +466,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                                                 outlineColor="#DB6551"
                                                 activeOutlineColor="#DB6551"
                                                 theme={{roundness: 30}}
-                                                label="Nombre del lugar"
+                                                label={traduct("placeName")}
                                             />
                                             <TextInput 
                                                 value={ workPlace.schedule }
@@ -481,7 +482,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                                                 outlineColor="#DB6551"
                                                 activeOutlineColor="#DB6551"
                                                 theme={{roundness: 30}}
-                                                label="Horario de Trabajo"
+                                                label={traduct("workingHour")}
                                             />
                                             <Pressable style={ {display: 'flex', flexDirection: 'row', alignItems: 'center'} } 
                                                 onPress={() => {
@@ -497,7 +498,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                                                     color="#DD0A35"
                                                     size={22}
                                                 />
-                                                <Text style={{fontWeight: 'bold', fontSize: 13}}>Borrar Lugar de Trabajo</Text>
+                                                <Text style={{fontWeight: 'bold', fontSize: 13}}>{traduct("deleteWorkPlace")}</Text>
                                             </Pressable>
                                         </View>
                                     })
@@ -511,7 +512,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                                             icon="plus"
                                             color="white"
                                         />
-                                        <Text style={ styles.emergencyActionText }>Agregar</Text>
+                                        <Text style={ styles.emergencyActionText }>{traduct("add")}</Text>
                                     </Pressable>
                                 </View>
                             </View>
@@ -534,7 +535,7 @@ export const EditPsychologistProfileScreen: React.FC<EditPsychologistProfileProp
                 >
                     <View style={styles.waitingModalView}>
                         <ActivityIndicator size="small" color="#DB6551" />
-                        <Text style={styles.waitingModalText}>Guardando...</Text>
+                        <Text style={styles.waitingModalText}>{traduct("saving")}...</Text>
                     </View>
                 </Modal>
             </Portal>

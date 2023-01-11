@@ -13,6 +13,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { ScrollView } from "react-native-gesture-handler";
 import { getPsychologistsAction } from "../../store/actions/authActions";
 import { User } from "../../models";
+import { traduct } from "../../langs";
 
 interface PsychologistListProps {
     navigation: any;
@@ -64,7 +65,7 @@ export const PsychologistListScreen: React.FC<PsychologistListProps> = ({ naviga
                     outlineColor="#DB6551"
                     activeOutlineColor="#DB6551"
                     theme={{roundness: 30}}
-                    label="Buscar"
+                    label={traduct("search")}
                 />
                 <ScrollView>
                     {
@@ -93,7 +94,7 @@ export const PsychologistListScreen: React.FC<PsychologistListProps> = ({ naviga
                                         }
                                         <View>
                                             <Text style={styles.psyName}>{`${psychologist.firstName} ${psychologist.lastName}`}</Text>
-                                            <Text>Lic. En Psicologia</Text>
+                                            <Text>{traduct("psychologistLicensed")}</Text>
                                         </View>
                                     </View>
                                     <IconButton 

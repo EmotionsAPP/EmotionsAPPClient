@@ -17,6 +17,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { styles } from './style';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { VideoCall } from '../videoCall/VideoCall';
+import { traduct } from '../../App';
 
 interface ChatProps {
     navigation: DrawerNavigationProp<ShellNavigatorParamList, 'Chat'>;
@@ -42,7 +43,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
     const [requestModalOnAccept, setRequestModalOnAccept] = useState<() => void>(() => () => {});
 
     const [waitingModal, setWaitingModalVisible] = useState(false);
-    const [waitingModalText, setWaitingModalText] = useState("Esperando que alguien mas se una...");
+    const [waitingModalText, setWaitingModalText] = useState(traduct("waitingForSomebody")+"...");
     
     const [audioCallStarted, setAudioCallStarted] = useState(false);
     const [videoCallStarted, setVideoCallStarted] = useState(false);
@@ -59,7 +60,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
 
             if(otherUser.current) {
                 setRequestModalButtons(['cancel', 'accept']);
-                setRequestModalText("¿Quieres terminar esta reunion?");
+                setRequestModalText(traduct("wantEndMeeting"));
                 setRequestModalCanDismiss(false);
         
                 const cancel = () => () => {            
@@ -91,16 +92,16 @@ export const Chat: React.FC<ChatProps> = (props) => {
             socketRef.current.emit('join room', roomId);
 
             setWaitingModalVisible(true);
-            setWaitingModalText("Esperando que alguien mas se una...");
+            setWaitingModalText(traduct("waitingForSomebody")+"...");
 
             socketRef.current.on('other user', (userId: string) => {
                 callUser(userId);
-                setWaitingModalText('Conectando...');
+                setWaitingModalText(traduct("connecting")+'...');
                 otherUser.current = userId;
             });
     
             socketRef.current.on('user joined', (userId: string) => {
-                setWaitingModalText('Conectando...');
+                setWaitingModalText(traduct("connecting")+'...');
                 otherUser.current = userId;
             });
     
@@ -121,7 +122,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
     
             const msg = {
                 _id: 1,
-                text: 'Los mensajes compartidos en este chat son confidenciales. Nadie fuera de la conversación puede leerlos o descifrarlos.',
+                text: traduct("chatAdvice"),
                 createdAt: new Date(),
                 system: true,
                 user: {
@@ -297,7 +298,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
         InCallManager.setSpeakerphoneOn(true);
 
         setRequestModalButtons(['cancel', 'accept']);
-        setRequestModalText("Llamada de audio entrante");
+        setRequestModalText(traduct("incomingAudiocall"));
         setRequestModalCanDismiss(false);
 
         const cancel = () => () => {    
@@ -319,7 +320,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
         InCallManager.setSpeakerphoneOn(true);
 
         setRequestModalButtons(['cancel', 'accept']);
-        setRequestModalText("Llamada de video entrante");
+        setRequestModalText(traduct("incomingVideocall"));
         setRequestModalCanDismiss(false);
 
         const cancel = () => () => {    
@@ -383,7 +384,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
 
     const handleUserLeft = (event: any) => {
         setRequestModalButtons(['ok']);
-        setRequestModalText("El usuario contraparte ha salido de esta reunion");
+        setRequestModalText(traduct("otherUserGotOut"));
         setRequestModalCanDismiss(false);
 
         const ok = () => () => {            
@@ -439,7 +440,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
                         </Send>
                 }}
                 renderAvatar={() => null}
-                placeholder="Escribe un mensaje..."
+                placeholder={traduct("writeAMessage")+"..."}
                 showAvatarForEveryMessage={true}
                 textInputProps={
                     {
@@ -483,7 +484,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
                                         size={size}
                                     />
                                 )}
-                                title="Llamada de audio" 
+                                title={traduct("audiocall")} 
                                 titleStyle={{color: '#DB6551'}}
                                 onPress={() => requestAudioCall()}
                             ></Menu.Item>
@@ -495,7 +496,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
                                         size={size}
                                     />
                                 )} 
-                                title="Videollamada" 
+                                title={traduct("videocall")} 
                                 titleStyle={{color: '#DB6551'}}
                                 onPress={() => requestVideoCall()}
                             ></Menu.Item>
@@ -559,11 +560,10 @@ export const Chat: React.FC<ChatProps> = (props) => {
                         onPress={() => {cancelJoin()}}
                         style={styles.okButton}
                     >
-                        <Text style={styles.okButtonText}>Cancelar</Text>
+                        <Text style={styles.okButtonText}>{traduct("cancel")}</Text>
                     </Pressable>
                 </Modal>
             </Portal>
         </View>
     )
 }
-

@@ -16,6 +16,7 @@ import { userAppointmentsAction } from "../store/actions/appointmentActions";
 import { ApplicationState } from "../store";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import { traduct } from "../langs";
 
 interface CalendarProps {
   navigation: DrawerNavigationProp<ShellNavigatorParamList, "Calendar">;
@@ -63,7 +64,7 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
       items[day.dateString] = [];
       appState.appointment?.userAppointments.map((appointmentItem: any, index: any) => {
         const newAppointment = {
-          name: "Encuentro",
+          name: traduct("meeting"),
           with: "",
         };
 

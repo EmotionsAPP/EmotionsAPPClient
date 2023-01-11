@@ -9,6 +9,7 @@ import { AppointmentSmallCard } from "../../components/appointmentSmallCard/Appo
 import { ScrollView } from "react-native-gesture-handler";
 import { styles } from './style';
 import { Avatar } from "react-native-paper";
+import { traduct } from "../../langs";
 
 interface AppointmentProps {
     navigation: DrawerNavigationProp<ShellNavigatorParamList, 'Appointment'>;
@@ -39,23 +40,23 @@ export const AppointmentScreen: React.FC<AppointmentProps> = (props: any) => {
                 imageStyle={{opacity: 0.8}}
             >
                 <View style={styles.header}>
-                    <Text style={styles.headerText}>Detalles de la reunión</Text>
+                    <Text style={styles.headerText}>{traduct("meetingDetails")}</Text>
                 </View>
                 <ScrollView style={styles.scroll}>
                     <View style={styles.infoView}>
-                        <Text style={styles.infoTitle}>Fecha</Text>
+                        <Text style={styles.infoTitle}>{traduct("date")}</Text>
                         <Text style={styles.infoText}>{dateStart.toDateString()}</Text>
                     </View>
                     <View style={styles.infoView}>
-                        <Text style={styles.infoTitle}>Tiempo de la sesión</Text>
+                        <Text style={styles.infoTitle}>{traduct("sessionTime")}</Text>
                         <Text style={styles.infoText}>{`${String(((dateStart.getHours() % 12) || 12)).padStart(2,'0')}:${String(dateStart.getMinutes()).padStart(2,'0')} ${dateStart.getHours() > 12 ? 'PM' : 'AM'} - ${String(((dateEnd.getHours() % 12) || 12)).padStart(2,'0')}:${String(dateEnd.getMinutes()).padStart(2,'0')} ${dateEnd.getHours() >= 12 ? 'PM' : 'AM'}`}</Text>
                     </View>
                     <View style={styles.infoView}>
-                        <Text style={styles.infoTitle}>Duración</Text>
-                        <Text style={styles.infoText}>{Math.round(diff / 60000)} Minutos</Text>
+                        <Text style={styles.infoTitle}>{traduct("duration")}</Text>
+                        <Text style={styles.infoText}>{Math.round(diff / 60000)} {traduct("minutes")}</Text>
                     </View>
                     <View style={styles.infoView}>
-                        <Text style={styles.infoTitle}>Participantes</Text>
+                        <Text style={styles.infoTitle}>{traduct("participants")}</Text>
                         <View style={ [styles.participantView, {paddingBottom: 10}] }>
                             <Avatar.Text size={24} label={`${props.route.params.appointment.psychologist.firstName[0]}${props.route.params.appointment.psychologist.lastName[0]}`} color="white" style={{backgroundColor: '#E5A186', marginRight: 10}}/>
                             <Text style={styles.infoText}>{`${props.route.params.appointment.psychologist.firstName} ${props.route.params.appointment.psychologist.lastName}`}</Text>
@@ -66,7 +67,7 @@ export const AppointmentScreen: React.FC<AppointmentProps> = (props: any) => {
                         </View>
                     </View>
                     <View style={styles.infoView}>
-                        <Text style={styles.infoTitle}>Descripción</Text>
+                        <Text style={styles.infoTitle}>{traduct("appointmentDescription")}</Text>
                         <Text style={styles.infoText}>{props.route.params.appointment.description}</Text>
                     </View>
                 </ScrollView>
@@ -78,7 +79,7 @@ export const AppointmentScreen: React.FC<AppointmentProps> = (props: any) => {
                                 style={ styles.emergencyAction }
                                 onPress={ openChat }
                             >
-                                <Text style={ styles.emergencyActionText }>Únete a la reunión</Text>
+                                <Text style={ styles.emergencyActionText }>{traduct("joinMeeting")}</Text>
                             </Pressable>
                         </View>
                     :

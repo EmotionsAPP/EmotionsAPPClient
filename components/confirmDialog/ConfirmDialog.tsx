@@ -4,6 +4,7 @@ import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { styles } from './style';
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
+import { traduct } from "../../langs";
 
 interface RequestModal {
     text: string;
@@ -42,7 +43,7 @@ export const ConfirmDialog: React.FC<RequestModal> = (props) => {
                                     onPress={() => props.onCancel()}
                                     style={styles.cancelButton}
                                 >
-                                    <Text style={styles.cancelButtonText}>{props.cancelButtonText ?? 'Cancelar'}</Text>
+                                    <Text style={styles.cancelButtonText}>{props.cancelButtonText ?? traduct("cancel")}</Text>
                                 </Pressable>
                                 : <></>
                             }
@@ -52,7 +53,7 @@ export const ConfirmDialog: React.FC<RequestModal> = (props) => {
                                     onPress={() => props.onAccept()}
                                     style={styles.okButton}
                                 >
-                                    <Text style={styles.okButtonText}>{props.acceptButtonText ?? 'Aceptar'}</Text>
+                                    <Text style={styles.okButtonText}>{props.acceptButtonText ?? traduct("accept")}</Text>
                                 </Pressable>
                                 : <></>
                             }
@@ -62,4 +63,3 @@ export const ConfirmDialog: React.FC<RequestModal> = (props) => {
         </Portal>
     )
 }
-

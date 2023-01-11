@@ -10,6 +10,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { styles } from './style';
 import { useIsFocused } from '@react-navigation/native';
 import { UserSmallCard } from "../../components/userSmallCard/UserSmallCard";
+import { traduct } from "../../langs";
 
 interface HomeProps {
     navigation: DrawerNavigationProp<ShellNavigatorParamList, 'Home'>;
@@ -49,7 +50,7 @@ export const HomeScreen: React.FC<HomeProps> = ({ navigation }) => {
             {
                 appState.appointment?.userAppointments && appState.appointment?.userAppointments.length > 0 ? 
                     <View style={styles.scroll}>
-                        <Text style={styles.title}>Reuniones</Text>
+                        <Text style={styles.title}>{traduct("reunions")}</Text>
                         <ScrollView>
                             <View>
                                 {
@@ -74,21 +75,21 @@ export const HomeScreen: React.FC<HomeProps> = ({ navigation }) => {
                             style={ [styles.actionBgImage, { justifyContent: 'center' } ] }
                         >
                             <View style={ styles.action }>
-                                <Text style={ styles.actionText }>{ appState.appointment?.userAppointments && appState.appointment?.userAppointments.length > 0 ? '¿Necesitas otra reunión?' : '¡Nada que mostrar por ahora! \n Agenda tu primera cita para ver información aquí. :)'}</Text>
+                                <Text style={ styles.actionText }>{ appState.appointment?.userAppointments && appState.appointment?.userAppointments.length > 0 ? traduct("needReunion") : traduct("firstAppointment")}</Text>
                                 <Pressable
                                     style={ styles.newMeetingAction }
                                     onPress={() => navigateToSched()}
                                 >
-                                    <Text style={ styles.newMeetingActionText }>Agenda una cita</Text>
+                                    <Text style={ styles.newMeetingActionText }>{traduct("scheduleAppointment")}</Text>
                                 </Pressable>
                             </View>
                             <View style={ [styles.action, {paddingTop: 20} ] }>
-                                <Text style={ styles.actionText }>¿Tienes una emergencia? {'\n'} Contactate con uno de nuestros expertos disponibles.</Text>
+                                <Text style={ styles.actionText }>{traduct("hasEmergency")}</Text>
                                 <Pressable
                                     onPress={() => navigateToPsy()}
                                     style={ styles.emergencyAction }
                                 >
-                                    <Text style={ styles.emergencyActionText }>Ten una cita ahora</Text>
+                                    <Text style={ styles.emergencyActionText }>{traduct("takeAppointmentNow")}</Text>
                                 </Pressable>
                             </View>
                         </ImageBackground>
@@ -103,7 +104,7 @@ export const HomeScreen: React.FC<HomeProps> = ({ navigation }) => {
                                 resizeMode='cover'
                                 style={ styles.actionBgImage }
                             >
-                                <Text style={styles.title}>Pacientes</Text>
+                                <Text style={styles.title}>{traduct("patient")}s</Text>
                                 <ScrollView>
                                     {
                                         appState.appointment.lastContactedUsers.map((user) => {
@@ -129,7 +130,7 @@ export const HomeScreen: React.FC<HomeProps> = ({ navigation }) => {
                                             require('../../assets/images/NothingToShowImage.png')
                                         }
                                     />
-                                    <Text style={styles.actionText}>{`¡Nada que mostrar por ahora! \nSi no lo has hecho, completa tu perfil para que los pacientes sepan mas sobre ti y agenden citas.`}</Text>
+                                    <Text style={styles.actionText}>{traduct("nothingToSee")}</Text>
                                 </View>
                             </ImageBackground>
                         </View>
@@ -137,4 +138,3 @@ export const HomeScreen: React.FC<HomeProps> = ({ navigation }) => {
         </View>
     )
 }
-

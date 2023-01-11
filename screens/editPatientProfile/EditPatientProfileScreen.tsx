@@ -13,6 +13,7 @@ import RNFS from 'react-native-fs';
 import ImagePicker from "react-native-image-crop-picker";
 import { editProfileAction, getCitiesAction } from "../../store/actions/profileActions";
 import { User } from "../../models";
+import { traduct } from "../../langs";
 
 interface EditPatientProfileProps {
     navigation: any;
@@ -158,7 +159,7 @@ export const EditPatientProfileScreen: React.FC<EditPatientProfileProps> = (prop
                             outlineColor="#DB6551"
                             activeOutlineColor="#DB6551"
                             theme={{roundness: 30}}
-                            label="Nombre"
+                            label={traduct("name")}
                         />
                         <TextInput 
                             value={ formData.lastName }
@@ -168,7 +169,7 @@ export const EditPatientProfileScreen: React.FC<EditPatientProfileProps> = (prop
                             outlineColor="#DB6551"
                             activeOutlineColor="#DB6551"
                             theme={{roundness: 30}}
-                            label="Apellido"
+                            label={traduct("lastName")}
                         />
                         <TextInput 
                             value={ formData.email }
@@ -178,11 +179,11 @@ export const EditPatientProfileScreen: React.FC<EditPatientProfileProps> = (prop
                             outlineColor="#DB6551"
                             activeOutlineColor="#DB6551"
                             theme={{roundness: 30}}
-                            label="Correo electrónico"
+                            label={traduct("email")}
                         />
                         <View style={styles.dropInput}>
                             {
-                                formData.gender ? <Text style={styles.customInputText}> Genero </Text>
+                                formData.gender ? <Text style={styles.customInputText}> {traduct("gender")} </Text>
                                 : <></>
                             }
                             <DropDownPicker
@@ -191,15 +192,15 @@ export const EditPatientProfileScreen: React.FC<EditPatientProfileProps> = (prop
                                 items={
                                     [
                                         {
-                                            label: 'Masculino',
+                                            label: traduct("male"),
                                             value: 'M'
                                         },
                                         {
-                                            label: 'Femenino',
+                                            label: traduct("female"),
                                             value: 'F'
                                         },
                                         {
-                                            label: 'Otro',
+                                            label: traduct("other"),
                                             value: 'O'
                                         }
                                     ]
@@ -209,13 +210,13 @@ export const EditPatientProfileScreen: React.FC<EditPatientProfileProps> = (prop
                                 disableBorderRadius={true}
                                 style={styles.dropdown}
                                 containerStyle={styles.dropdownContainer}
-                                placeholder="Genero"
+                                placeholder={traduct("gender")}
                                 listMode="MODAL"
                             />
                         </View>
                         <View style={styles.customInput}>
                             {
-                                formData.birthDate.toString() != 'Invalid Date' ? <Text style={styles.customInputText}> Fecha de nacimiento </Text>
+                                formData.birthDate.toString() != 'Invalid Date' ? <Text style={styles.customInputText}> {traduct("birthDate")} </Text>
                                 : <></>
                             }
                             <Pressable 
@@ -226,7 +227,7 @@ export const EditPatientProfileScreen: React.FC<EditPatientProfileProps> = (prop
                                     {
                                         formData.birthDate.toString() != 'Invalid Date' ? 
                                         formData.birthDate.toLocaleDateString()
-                                        : 'Fecha de nacimiento'
+                                        : traduct("birthDate")
                                     }
                                 </Text>
                                 <IconButton
@@ -252,7 +253,7 @@ export const EditPatientProfileScreen: React.FC<EditPatientProfileProps> = (prop
                         </View>
                         <View style={styles.dropInput}>
                             {
-                                formData.city ? <Text style={styles.customInputText}> Ciudad </Text>
+                                formData.city ? <Text style={styles.customInputText}> {traduct("city")} </Text>
                                 : <></>
                             }
                             <DropDownPicker
@@ -264,7 +265,7 @@ export const EditPatientProfileScreen: React.FC<EditPatientProfileProps> = (prop
                                 disableBorderRadius={true}
                                 style={styles.dropdown}
                                 containerStyle={styles.dropdownContainer}
-                                placeholder="Ciudad"
+                                placeholder={traduct("city")}
                                 searchable={true}
                                 listMode="MODAL"
                             />
@@ -277,7 +278,7 @@ export const EditPatientProfileScreen: React.FC<EditPatientProfileProps> = (prop
                             outlineColor="#DB6551"
                             activeOutlineColor="#DB6551"
                             theme={{roundness: 30}}
-                            label="Informacion"
+                            label={traduct("information")}
                             multiline={true}
                         />
                     </View>
@@ -299,7 +300,7 @@ export const EditPatientProfileScreen: React.FC<EditPatientProfileProps> = (prop
                 >
                     <View style={styles.waitingModalView}>
                         <ActivityIndicator size="small" color="#DB6551" />
-                        <Text style={styles.waitingModalText}>Guardando...</Text>
+                        <Text style={styles.waitingModalText}>{traduct("saving")}...</Text>
                     </View>
                 </Modal>
             </Portal>

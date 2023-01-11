@@ -11,6 +11,7 @@ import { styles } from './style';
 import { ScrollView } from "react-native-gesture-handler";
 import { openNotificationSnackbar } from "../../store/actions/inAppActions";
 import { NotificationSnackbar } from "../../components";
+import { traduct } from "../../langs";
 
 interface SignUpProps {
     navigation: NativeStackNavigationProp<LandingNavigatorParamList, 'SignUp'>;
@@ -62,7 +63,7 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                 </View>
             </View>
             <View style={ styles.centerInfo }>
-                <Text style={ styles.headText }>Registro de { physicianFlag ? 'especialista' : 'paciente'}</Text>
+                <Text style={ styles.headText }>{traduct("registerOf")} { physicianFlag ? traduct("specialist") : traduct("pacient")}</Text>
                 <TextInput 
                     value={ formData.firstName }
                     onChangeText={ (text) => setFormData({ ...formData, firstName: text}) }
@@ -71,7 +72,7 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                     outlineColor="#DB6551"
                     activeOutlineColor="#DB6551"
                     theme={{roundness: 30}}
-                    label="Nombre"
+                    label={traduct("name")}
                 />
                 <TextInput 
                     value={ formData.lastName }
@@ -81,7 +82,7 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                     outlineColor="#DB6551"
                     activeOutlineColor="#DB6551"
                     theme={{roundness: 30}}
-                    label="Apellido"
+                    label={traduct("lastName")}
                 />
                 {
                     physicianFlag ? 
@@ -94,7 +95,7 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                             activeOutlineColor="#DB6551"
                             theme={{roundness: 30}}
                             maxLength={11}
-                            label="Cédula"
+                            label={traduct("idCard")}
                         />
                     : 
                         <></>
@@ -106,7 +107,7 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                             visible={physicianFlag && taxId.length < 11 && taxId.length > 0}
                             style={ { marginTop: -20 } } 
                         >
-                            Debe contener 11 numeros.
+                            {traduct("mustContainIdCard")}
                         </HelperText>
                     :
                         <></>
@@ -119,7 +120,7 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                     outlineColor="#DB6551"
                     activeOutlineColor="#DB6551"
                     theme={{roundness: 30}}
-                    label="Correo electrónico"
+                    label={traduct("email")}
                 />
                 {
                     validEmail() && formData.email.length > 0 ?
@@ -128,7 +129,7 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                             visible={validEmail()}
                             style={ { marginTop: -20 } } 
                         >
-                            Correo electrónico incorrecto.
+                            {traduct("incorrectEmail")}
                         </HelperText>
                     :
                         <></>
@@ -142,7 +143,7 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                     outlineColor="#DB6551"
                     activeOutlineColor="#DB6551"
                     theme={{roundness: 30}}
-                    label="Contraseña"
+                    label={traduct("password")}
                 />
                 {
                     (validPassword() && formData.password.length > 0) ?
@@ -152,8 +153,8 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                         visible={validPassword() || (formData.password.length < 8)}
                     >
                         {
-                            formData.password.length < 8 ? 'Debe de incluir mas de 8 caracteres.'
-                            : 'Debe incluir almenos una letra mayuscula [A-Z], una letra minuscula [a-z], un numero [0-9] y un signo especial [@$!%*?&].'
+                            formData.password.length < 8 ? traduct("includePassword")
+                            : traduct("mustContainPassword")
                         }
                     </HelperText> 
                     : 
@@ -168,7 +169,7 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                     outlineColor="#DB6551"
                     activeOutlineColor="#DB6551"
                     theme={{roundness: 30}}
-                    label="Confirma la contraseña"
+                    label={traduct("confirmPassword")}
                 />
                 {
                     confirmPassowrd.length > 0 && formData.password != confirmPassowrd ?
@@ -177,7 +178,7 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                             style={ { marginTop: -20 } } 
                             visible={formData.password != confirmPassowrd}
                         >
-                            Contraseñas no coinciden.
+                            {traduct("noCoincidencePassword")}
                         </HelperText>
                     :
                         <></>
@@ -205,14 +206,14 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
                                 )
                             }}
                         >
-                            <Text style={ styles.mainButtonText }>Registrate</Text>
+                            <Text style={ styles.mainButtonText }>{traduct("register")}</Text>
                         </Pressable>
                         <View style={ styles.bottomTextView }>
                             <Text style={ styles.bottomText }>
-                                ¿Ya tienes una cuenta?&nbsp;
+                                {traduct("hasAccount")}&nbsp;
                             </Text>
                             <Pressable>
-                                <Text style={ styles.bottomTextLink }>Inicia sesión</Text>
+                                <Text style={ styles.bottomTextLink }>{traduct("login")}</Text>
                             </Pressable>
                         </View>
                     </View>
@@ -221,4 +222,3 @@ export const SignUpScreen: React.FC<SignUpProps> = (props: any) => {
         </ScrollView>
     )
 }
-

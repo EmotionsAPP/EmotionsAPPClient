@@ -5,6 +5,7 @@ import { View, Text, Image, ImageBackground } from "react-native";
 import { StyleSheet } from 'react-native';
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../store";
+import { traduct } from "../langs";
 
 export const DrawerMenu = (props: DrawerContentComponentProps) => {
     const appState = useSelector((state: ApplicationState) => state);
@@ -49,7 +50,7 @@ export const DrawerMenu = (props: DrawerContentComponentProps) => {
                                 size={size}
                             />
                         )}
-                        label="Calendario"
+                        label={traduct("calendar")}
                         onPress={() => props.navigation.navigate('Shell', {screen: 'Calendar'})}
                     />
                     {
@@ -62,7 +63,7 @@ export const DrawerMenu = (props: DrawerContentComponentProps) => {
                                         size={size}
                                     />
                                 )}
-                                label="Especialistas"
+                                label={traduct("specialist")+"s"}
                                 onPress={() => props.navigation.navigate('Shell', {screen: 'PsychologistList'})}
                             />
                         : <></>                
@@ -75,7 +76,7 @@ export const DrawerMenu = (props: DrawerContentComponentProps) => {
                                 size={size}
                             />
                         )}
-                        label="Historial de citas"
+                        label={traduct("appointmentsHistory")}
                         onPress={() => props.navigation.navigate('Shell', {screen: 'AppointmentHistory'})}
                     />
                     <DrawerItem

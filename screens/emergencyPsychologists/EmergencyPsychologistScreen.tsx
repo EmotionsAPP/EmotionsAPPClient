@@ -13,6 +13,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { ScrollView } from "react-native-gesture-handler";
 import { getEmergencyPsychologistsAction, getPsychologistsAction } from "../../store/actions/authActions";
 import { User } from "../../models";
+import { traduct } from "../../langs";
 
 interface EmergencyPsychologistProps {
     navigation: any;
@@ -64,7 +65,7 @@ export const EmergencyPsychologistScreen: React.FC<EmergencyPsychologistProps> =
                     outlineColor="#DB6551"
                     activeOutlineColor="#DB6551"
                     theme={{roundness: 30}}
-                    label="Buscar"
+                    label={traduct("search")}
                 />
                 <ScrollView>
                     {
@@ -93,7 +94,7 @@ export const EmergencyPsychologistScreen: React.FC<EmergencyPsychologistProps> =
                                         }
                                         <View>
                                             <Text style={styles.psyName}>{`${psychologist.firstName} ${psychologist.lastName}`}</Text>
-                                            <Text>Envia un mensaje...</Text>
+                                            <Text>{traduct("sendMessage")}...</Text>
                                         </View>
                                     </View>
                                     <IconButton 

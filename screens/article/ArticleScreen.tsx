@@ -14,6 +14,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { WebView } from 'react-native-webview';
 import { ConfirmDialog } from "../../components/confirmDialog/ConfirmDialog";
 import { Article } from "../../models";
+import { traduct } from "../../langs";
 
 interface ArticleProps {
     navigation: DrawerNavigationProp<ShellNavigatorParamList, 'Article'>;
@@ -53,7 +54,7 @@ export const ArticleScreen: React.FC<ArticleProps> = (props) => {
     const onCancel = () => () => setConfirmDialogVisible(false);
 
     const deleteArticle = () => {
-        setConfirmDialogText('¿Quieres borrar este artículo?');
+        setConfirmDialogText(traduct("askDeleteArticle"));
         setConfirmDialogOnAccept(onAcceptDelete);
         setConfirmDialogOnCancel(onCancel);
         setConfirmDialogVisible(true);
@@ -110,7 +111,7 @@ export const ArticleScreen: React.FC<ArticleProps> = (props) => {
                                 color="#DD0A35"
                                 size={22}
                             />
-                            <Text style={{fontWeight: 'bold', fontSize: 13}}>Borrar Artículo</Text>
+                            <Text style={{fontWeight: 'bold', fontSize: 13}}>{traduct("deleteArticle")}</Text>
                         </Pressable>
                         <Pressable style={ styles.action } onPress={() => showArticleModal()}>
                             <IconButton 
@@ -118,7 +119,7 @@ export const ArticleScreen: React.FC<ArticleProps> = (props) => {
                                 color="#DB6551FC"
                                 size={22}
                             />
-                            <Text style={{fontWeight: 'bold', fontSize: 13}}>Editar Artículo</Text>
+                            <Text style={{fontWeight: 'bold', fontSize: 13}}>{traduct("modifyArticle")}</Text>
                         </Pressable>
                         <ConfirmDialog 
                             text={confirmDialogText} 

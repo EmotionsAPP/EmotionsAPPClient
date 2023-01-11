@@ -10,6 +10,7 @@ import { FAB, IconButton, TextInput } from "react-native-paper";
 import { logOutAction } from "../../store/actions/authActions";
 import { editPatientNoteAction, getPatientNoteAction } from "../../store/actions/profileActions";
 import { AppointmentForm } from "../../components";
+import { traduct } from "../../langs";
 
 interface PsychologistProfileProps {
     navigation: any;
@@ -67,26 +68,26 @@ export const PsychologistProfileScreen: React.FC<PsychologistProfileProps> = (pr
                         }
                         <View style={styles.headerText}>
                             <Text style={styles.headerName}>{`${props.route.params.psychologist.firstName} ${props.route.params.psychologist.lastName}`}</Text>
-                            <Text style={{paddingTop: 5}}>Psicologo</Text>
+                            <Text style={{paddingTop: 5}}>{traduct("psychologist")}</Text>
                         </View>
                         <View style={styles.navBar}>
                             <Pressable 
                                 style={[styles.navItem, { borderBottomWidth: activeTab == 'info' ? 3 : 0 } ]}
                                 onPress={() => setActiveTab('info')}
                             >
-                                <Text style={styles.navItemText}>Informacion</Text>
+                                <Text style={styles.navItemText}>{traduct("information")}</Text>
                             </Pressable>
                             <Pressable 
                                 style={[styles.navItem, { borderBottomWidth: activeTab == 'ach' ? 3 : 0 } ]}
                                 onPress={() => setActiveTab('ach')}
                             >
-                                <Text style={styles.navItemText}>Logros</Text>
+                                <Text style={styles.navItemText}>{traduct("goals")}</Text>
                             </Pressable>
                             <Pressable 
                                 style={[styles.navItem, { borderBottomWidth: activeTab == 'workP' ? 3 : 0 } ]}
                                 onPress={() => setActiveTab('workP')}
                             >
-                                <Text style={styles.navItemText}>Lugares de Trabajo</Text>
+                                <Text style={styles.navItemText}>{traduct("workPlaces")}</Text>
                             </Pressable>
                         </View>
                     </View>
@@ -96,28 +97,28 @@ export const PsychologistProfileScreen: React.FC<PsychologistProfileProps> = (pr
                                 <View style={[styles.bodyView, {marginTop: 20}]}>
                                     <Text style={styles.bodyInfoHeader}>General</Text>
                                     <View style={styles.bodyGeneralInfo}>
-                                        <Text style={styles.bodyGeneralInfoLeft}>Nombre</Text>
+                                        <Text style={styles.bodyGeneralInfoLeft}>{traduct("name")}</Text>
                                         <Text style={styles.bodyGeneralInfoRight}>{props.route.params.psychologist.firstName}</Text>
                                     </View>
                                     <View style={styles.bodyGeneralInfo}>
-                                        <Text style={styles.bodyGeneralInfoLeft}>Apellido</Text>
+                                        <Text style={styles.bodyGeneralInfoLeft}>{traduct("lastName")}</Text>
                                         <Text style={styles.bodyGeneralInfoRight}>{props.route.params.psychologist.lastName}</Text>
                                     </View>
                                     <View style={styles.bodyGeneralInfo}>
-                                        <Text style={styles.bodyGeneralInfoLeft}>Fecha de nacimiento</Text>
+                                        <Text style={styles.bodyGeneralInfoLeft}>{traduct("birthDate")}</Text>
                                     </View>
                                     <View style={styles.bodyGeneralInfo}>
-                                        <Text style={styles.bodyGeneralInfoLeft}>Género</Text>
+                                        <Text style={styles.bodyGeneralInfoLeft}>{traduct("gender")}</Text>
                                         <Text style={styles.bodyGeneralInfoRight}>{props.route.params.psychologist.gender ?? '-'}</Text>
                                     </View>
                                     <View style={[styles.bodyGeneralInfo, {borderBottomWidth: 0}]}>
-                                        <Text style={styles.bodyGeneralInfoLeft}>Años de experiencia</Text>
+                                        <Text style={styles.bodyGeneralInfoLeft}>{traduct("experienceYears")}</Text>
                                         <Text style={styles.bodyGeneralInfoRight}>{String(yearsExperience) == 'NaN' ? '-' : yearsExperience}</Text>
                                     </View>
                                 </View>
                                 <View style={styles.bodyView}>
                                     <View style={{paddingBottom: 10}}>
-                                        <Text style={styles.bodyInfoHeader}>Información adicional</Text>
+                                        <Text style={styles.bodyInfoHeader}>{traduct("aditionalInformation")}</Text>
                                         <Text style={styles.bodyText}>{props.route.params.psychologist.psychologist?.about ?? '-'}</Text>
                                     </View>
                                 </View>
@@ -128,7 +129,7 @@ export const PsychologistProfileScreen: React.FC<PsychologistProfileProps> = (pr
                                                 style={ styles.emergencyAction }
                                                 onPress={() => { logOutAction(dispatch, props.navigation) } }
                                             >
-                                                <Text style={ styles.emergencyActionText }>Cerrar sesión</Text>
+                                                <Text style={ styles.emergencyActionText }>{traduct("logout")}</Text>
                                             </Pressable>
                                         </View>
                                     : <></>
@@ -137,7 +138,7 @@ export const PsychologistProfileScreen: React.FC<PsychologistProfileProps> = (pr
                         : activeTab == 'ach' ?
                             <View style={{minHeight: 400}}>
                                 <View style={[styles.bodyView, {marginTop: 20, paddingBottom: 10}]}>
-                                    <Text style={styles.bodyInfoHeader}>Reconocimientos</Text>
+                                    <Text style={styles.bodyInfoHeader}>{traduct("acknowledgments")}</Text>
                                     {
                                         props.route.params.psychologist.psychologist?.goals ?
                                             props.route.params.psychologist.psychologist?.goals.map((goal: any, index: number) => {
@@ -194,7 +195,7 @@ export const PsychologistProfileScreen: React.FC<PsychologistProfileProps> = (pr
                         style={ styles.scheduleAction }
                         onPress={() => { setAppointmentModal(true) } }
                     >
-                        <Text style={ styles.scheduleActionText }>Agenda una reunion</Text>
+                        <Text style={ styles.scheduleActionText }>{traduct("scheduleAppointment")}</Text>
                     </Pressable>
                 :
                     <></>

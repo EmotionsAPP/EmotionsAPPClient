@@ -9,6 +9,7 @@ import { styles } from './style';
 import { FAB, IconButton, TextInput } from "react-native-paper";
 import { logOutAction } from "../../store/actions/authActions";
 import { editPatientNoteAction, getPatientNoteAction } from "../../store/actions/profileActions";
+import { traduct } from "../../langs";
 
 interface PatientProfileProps {
     navigation: any;
@@ -86,30 +87,30 @@ export const PatientProfileScreen: React.FC<PatientProfileProps> = (props: any) 
                     <View style={[styles.bodyView, {marginTop: 20}]}>
                         <Text style={styles.bodyInfoHeader}>General</Text>
                         <View style={styles.bodyGeneralInfo}>
-                            <Text style={styles.bodyGeneralInfoLeft}>Nombre</Text>
+                            <Text style={styles.bodyGeneralInfoLeft}>{traduct("name")}</Text>
                             <Text style={styles.bodyGeneralInfoRight}>{props.route.params.patient.firstName}</Text>
                         </View>
                         <View style={styles.bodyGeneralInfo}>
-                            <Text style={styles.bodyGeneralInfoLeft}>Apellido</Text>
+                            <Text style={styles.bodyGeneralInfoLeft}>{traduct("lastName")}</Text>
                             <Text style={styles.bodyGeneralInfoRight}>{props.route.params.patient.lastName}</Text>
                         </View>
                         <View style={styles.bodyGeneralInfo}>
-                            <Text style={styles.bodyGeneralInfoLeft}>Fecha de nacimiento</Text>
+                            <Text style={styles.bodyGeneralInfoLeft}>{traduct("birthDate")}</Text>
                             <Text style={styles.bodyGeneralInfoRight}>{birthday.toString() != 'Invalid Date' ? birthday.toLocaleDateString() : '-' }</Text>
                         </View>
                         <View style={[styles.bodyGeneralInfo, {borderBottomWidth: 0}]}>
-                            <Text style={styles.bodyGeneralInfoLeft}>Género</Text>
+                            <Text style={styles.bodyGeneralInfoLeft}>{traduct("gender")}</Text>
                             <Text style={styles.bodyGeneralInfoRight}>{
                             props.route.params.patient.gender ? 
-                            props.route.params.patient.gender == 'M' ? "Masculino" 
-                            : props.route.params.patient.gender == 'F' ?  "Femenino" 
-                            : props.route.params.patient.gender == 'O' ?  "Otro"
+                            props.route.params.patient.gender == 'M' ? traduct("male") 
+                            : props.route.params.patient.gender == 'F' ?  traduct("female") 
+                            : props.route.params.patient.gender == 'O' ?  traduct("other")
                             : '-' : '-'}</Text>
                         </View>
                     </View>
                     <View style={styles.bodyView}>
                         <View style={{paddingBottom: 10}}>
-                            <Text style={styles.bodyInfoHeader}>Información</Text>
+                            <Text style={styles.bodyInfoHeader}>{traduct("information")}</Text>
                             <Text style={styles.bodyText}>{props.route.params.patient.patient?.information ?? '-'}</Text>
                         </View>
                     </View>
@@ -118,7 +119,7 @@ export const PatientProfileScreen: React.FC<PatientProfileProps> = (props: any) 
                             <View style={styles.bodyView}>
                                 <View style={{paddingBottom: 10}}>
                                     <View style={styles.notesHeaderView}>
-                                        <Text style={styles.bodyInfoHeader}>Notas</Text>
+                                        <Text style={styles.bodyInfoHeader}>{traduct("notes")}</Text>
                                         {
                                             appState.profile?.loadingNote || appState.profile?.savingNote ?
                                                 <></>
@@ -158,7 +159,7 @@ export const PatientProfileScreen: React.FC<PatientProfileProps> = (props: any) 
                                     style={ styles.emergencyAction }
                                     onPress={() => { logOutAction(dispatch, props.navigation) } }
                                 >
-                                    <Text style={ styles.emergencyActionText }>Cerrar sesión</Text>
+                                    <Text style={ styles.emergencyActionText }>{traduct("logout")}</Text>
                                 </Pressable>
                             </View>
                         : <></>
