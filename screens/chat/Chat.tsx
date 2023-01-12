@@ -85,7 +85,7 @@ export const Chat: React.FC<ChatProps> = (props) => {
     
     useEffect(() => {
         if(isFocused) {
-            const manager = new Manager('https://2da9-152-166-181-244.ngrok.io'+'/socket.io/socket.io.js')
+            const manager = new Manager(API+'/socket.io/socket.io.js')
             const socket = manager.socket('/');
     
             socketRef.current = socket.connect();

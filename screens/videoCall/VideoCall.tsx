@@ -44,9 +44,9 @@ export const VideoCall: React.FC<VideoCallProps> = (props) => {
     
     useEffect(() => { 
         if (modal) {
-            const manager = new Manager('https://2da9-152-166-181-244.ngrok.io'+'/socket.io/socket.io.js')
+            const manager = new Manager(API+'/socket.io/socket.io.js')
             const socketVideo = manager.socket('/');
-            
+
             InCallManager.start({media: 'audio'});
             InCallManager.setForceSpeakerphoneOn(true);
             socketRefVideo.current = socketVideo.connect();
