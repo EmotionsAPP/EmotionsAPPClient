@@ -23,8 +23,6 @@ export const VideoCall: React.FC<VideoCallProps> = (props) => {
     
     const [remoteStream, setRemoteStream] = useState<MediaStream>();
     const [localStream, setLocalStream] = useState<MediaStream>();
-    const manager = new Manager(API+'/socket.io/socket.io.js');
-    const socketVideo = manager.socket('/');
     const peerRefVideo = useRef<any>();
     const otherPeer = useRef<any>();
     const socketRefVideo = useRef<any>();
@@ -44,42 +42,51 @@ export const VideoCall: React.FC<VideoCallProps> = (props) => {
     
     const remote = new MediaStream(undefined);
     
-    useEffect(() => {    
-        InCallManager.start({media: 'audio'});
-        InCallManager.setForceSpeakerphoneOn(true);
-        socketRefVideo.current = socketVideo.connect();
-        socketRefVideo.current.emit('join room', props.roomId+'Video');
-
-        socketRefVideo.current.on('other user', (userId: string) => {
-            callUser(userId);
-            otherUserVideo.current = userId;
-            setCounterText('Conectando...');
-        });
-
-        socketRefVideo.current.on('user joined', (userId: string) => {
-            otherUserVideo.current = userId;
-            setCounterText('Conectando...');
-        });
-
-        socketRefVideo.current.on('offer', handleOffer);
-
-        socketRefVideo.current.on('answer', handleAnswer);
-
-        socketRefVideo.current.on('offer-other', handleOtherOffer);
-
-        socketRefVideo.current.on('answer-other', handleOtherAnswer);
-
-        socketRefVideo.current.on('ice-candidate', handleNewICECandidateMsg);
-
-        socketRefVideo.current.on('ice-candidate-other', handleOtherNewICECandidateMsg);
-
-        socketRefVideo.current.on('other user left', handleUserLeft);
-
-        props.socketConnection.on('accept video call', videoCallAccepted);
-
-        props.socketConnection.on('reject video call', videoCallRejected);
-
-    }, []);
+    useEffect(() => { 
+        if (modal) {
+            const manager = new Manager('https://2da9-152-166-181-244.ngrok.io'+'/socket.io/socket.io.js')
+            const socketVideo = manager.socket('/');
+            
+            InCallManager.start({media: 'audio'});
+            InCallManager.setForceSpeakerphoneOn(true);
+            socketRefVideo.current = socketVideo.connect();
+    
+            socketRefVideo.current.on("connect", () => {
+                console.log(socketRefVideo.current.id, props.roomId+'Video');
+                socketRefVideo.current.emit('join room',  { roomID: props.roomId+'Video' });
+            })
+            
+    
+            socketRefVideo.current.on('other user', (userId: string) => {
+                callUser(userId);
+                otherUserVideo.current = userId;
+                setCounterText('Conectando...');
+            });
+    
+            socketRefVideo.current.on('user joined', (userId: string) => {
+                otherUserVideo.current = userId;
+                setCounterText('Conectando...');
+            });
+    
+            socketRefVideo.current.on('offer', handleOffer);
+    
+            socketRefVideo.current.on('answer', handleAnswer);
+    
+            socketRefVideo.current.on('offer-other', handleOtherOffer);
+    
+            socketRefVideo.current.on('answer-other', handleOtherAnswer);
+    
+            socketRefVideo.current.on('ice-candidate', handleNewICECandidateMsg);
+    
+            socketRefVideo.current.on('ice-candidate-other', handleOtherNewICECandidateMsg);
+    
+            socketRefVideo.current.on('other user left', handleUserLeft);
+    
+            props.socketConnection.on('accept video call', videoCallAccepted);
+    
+            props.socketConnection.on('reject video call', videoCallRejected);
+        }   
+    }, [modal]);
 
     useEffect(() => {
         let local = peerRefVideo.current?.getLocalStreams()[0];

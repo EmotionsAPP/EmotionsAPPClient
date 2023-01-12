@@ -23,8 +23,7 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     
     const [remoteStream, setRemoteStream] = useState<MediaStream>();
     const [localStream, setLocalStream] = useState<MediaStream>();
-    const manager = new Manager(API+'/socket.io/socket.io.js');
-    const socketAudio = manager.socket('/');
+
     const peerRefAudio = useRef<any>();
     const otherPeer = useRef<any>();
     const socketRefAudio = useRef<any>();
@@ -44,41 +43,48 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     const remote = new MediaStream(undefined);
     
     useEffect(() => {    
-
-        InCallManager.start({media: 'audio'})
-        socketRefAudio.current = socketAudio.connect();
-        socketRefAudio.current.emit('join room', props.roomId+'Audio');
-
-        socketRefAudio.current.on('other user', (userId: string) => {
-            callUser(userId);
-            otherUserAudio.current = userId;
-            setCounterText('Conectando...');
-        });
-
-        socketRefAudio.current.on('user joined', (userId: string) => {
-            otherUserAudio.current = userId;
-            setCounterText('Conectando...');
-        });
-
-        socketRefAudio.current.on('offer', handleOffer);
-
-        socketRefAudio.current.on('answer', handleAnswer);
-
-        socketRefAudio.current.on('offer-other', handleOtherOffer);
-
-        socketRefAudio.current.on('answer-other', handleOtherAnswer);
-
-        socketRefAudio.current.on('ice-candidate', handleNewICECandidateMsg);
-
-        socketRefAudio.current.on('ice-candidate-other', handleOtherNewICECandidateMsg);
-
-        socketRefAudio.current.on('other user left', handleUserLeft);
-
-        props.socketConnection.on('accept audio call', audioCallAccepted);
-
-        props.socketConnection.on('reject audio call', audioCallRejected);
-
-    }, []);
+        if(modal) {
+            const manager = new Manager('https://2da9-152-166-181-244.ngrok.io'+'/socket.io/socket.io.js')
+            const socketAudio = manager.socket('/');
+            
+            InCallManager.start({media: 'audio'})
+            socketRefAudio.current = socketAudio.connect();            
+    
+            socketRefAudio.current.on("connect", () => {
+                console.log(socketRefAudio.current.id, props.roomId+'Audio' );
+                socketRefAudio.current.emit('join room', { roomID: props.roomId+'Audio' });
+            })
+    
+            socketRefAudio.current.on('other user', (userId: string) => {
+                callUser(userId);
+                otherUserAudio.current = userId;
+                setCounterText('Conectando...');
+            });
+    
+            socketRefAudio.current.on('user joined', (userId: string) => {
+                otherUserAudio.current = userId;
+                setCounterText('Conectando...');
+            });
+    
+            socketRefAudio.current.on('offer', handleOffer);
+    
+            socketRefAudio.current.on('answer', handleAnswer);
+    
+            socketRefAudio.current.on('offer-other', handleOtherOffer);
+    
+            socketRefAudio.current.on('answer-other', handleOtherAnswer);
+    
+            socketRefAudio.current.on('ice-candidate', handleNewICECandidateMsg);
+    
+            socketRefAudio.current.on('ice-candidate-other', handleOtherNewICECandidateMsg);
+    
+            socketRefAudio.current.on('other user left', handleUserLeft);
+    
+            props.socketConnection.on('accept audio call', audioCallAccepted);
+    
+            props.socketConnection.on('reject audio call', audioCallRejected);
+        }
+    }, [modal]);
 
     useEffect(() => {
         let local = peerRefAudio.current?.getLocalStreams()[0];

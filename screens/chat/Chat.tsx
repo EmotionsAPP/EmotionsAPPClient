@@ -85,13 +85,18 @@ export const Chat: React.FC<ChatProps> = (props) => {
     
     useEffect(() => {
         if(isFocused) {
-            const manager = new Manager(API+'/socket.io/socket.io.js');
-
+            const manager = new Manager('https://2da9-152-166-181-244.ngrok.io'+'/socket.io/socket.io.js')
             const socket = manager.socket('/');
     
             socketRef.current = socket.connect();
+            
+            console.log('chat ');
+            
+            socketRef.current.on("connect", () => {
+                console.log(socketRef.current.id, roomId);
+                socketRef.current.emit('join room', {roomID: roomId});
+            })
     
-            socketRef.current.emit('join room', roomId);
 
             setWaitingModalVisible(true);
             setWaitingModalText(traduct("waitingForSomebody")+"...");
@@ -187,6 +192,8 @@ export const Chat: React.FC<ChatProps> = (props) => {
                 caller: socketRef.current.id,
                 sdp: peerRef.current.localDescription
             };            
+            console.log(userId);
+            
             socketRef.current.emit('offer', payload);
         }).catch((error: any) => {
             console.log('Error handling negotiation needed', error);
