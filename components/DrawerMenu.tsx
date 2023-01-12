@@ -87,7 +87,7 @@ export const DrawerMenu = (props: DrawerContentComponentProps) => {
                                 size={size}
                             />
                         )}
-                        label="Articulos"
+                        label={traduct("article")+"s"}
                         onPress={() => props.navigation.navigate('Shell', {screen: 'ArticleList'})}
                     />
                                         {/* {

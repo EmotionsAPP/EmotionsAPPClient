@@ -16,7 +16,7 @@ interface HomeProps {
     navigation: DrawerNavigationProp<ShellNavigatorParamList, 'Home'>;
 }
 
-export const HomeScreen: React.FC<HomeProps> = ({ navigation }) => {
+export const HomeScreen: React.FC<any> = ({ navigation }) => {
     const appState = useSelector((state: ApplicationState) => state);
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
@@ -83,15 +83,6 @@ export const HomeScreen: React.FC<HomeProps> = ({ navigation }) => {
                                     <Text style={ styles.newMeetingActionText }>{traduct("scheduleAppointment")}</Text>
                                 </Pressable>
                             </View>
-                            <View style={ [styles.action, {paddingTop: 20} ] }>
-                                <Text style={ styles.actionText }>{traduct("hasEmergency")}</Text>
-                                <Pressable
-                                    onPress={() => navigateToPsy()}
-                                    style={ styles.emergencyAction }
-                                >
-                                    <Text style={ styles.emergencyActionText }>{traduct("takeAppointmentNow")}</Text>
-                                </Pressable>
-                            </View>
                         </ImageBackground>
                     </View>
                 :   
@@ -104,7 +95,7 @@ export const HomeScreen: React.FC<HomeProps> = ({ navigation }) => {
                                 resizeMode='cover'
                                 style={ styles.actionBgImage }
                             >
-                                <Text style={styles.title}>{traduct("patient")}s</Text>
+                                <Text style={styles.title}>{traduct("pacient")}s</Text>
                                 <ScrollView>
                                     {
                                         appState.appointment.lastContactedUsers.map((user) => {

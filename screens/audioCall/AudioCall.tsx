@@ -3,8 +3,8 @@ import { Text, View, StyleSheet, SafeAreaView, Modal } from "react-native"
 import { IconButton, Portal } from "react-native-paper"
 import { mediaDevices, MediaStream, RTCView, RTCPeerConnection, RTCSessionDescription, RTCIceCandidate } from "react-native-webrtc";
 import InCallManager from 'react-native-incall-manager';
-import { io } from "socket.io-client";
-import { WS } from "../../store/services";
+import { io, Manager } from "socket.io-client";
+import { API, WS } from "../../store/services";
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
 import { styles } from './style';
@@ -23,7 +23,8 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
     
     const [remoteStream, setRemoteStream] = useState<MediaStream>();
     const [localStream, setLocalStream] = useState<MediaStream>();
-    const socketAudio = io(WS);
+    const manager = new Manager(API+'/socket.io/socket.io.js');
+    const socketAudio = manager.socket('/');
     const peerRefAudio = useRef<any>();
     const otherPeer = useRef<any>();
     const socketRefAudio = useRef<any>();

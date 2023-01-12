@@ -4,7 +4,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack/lib/ty
 import { LandingNavigatorParamList } from '../../navigation';
 import { styles } from './style';
 import { ScrollView } from 'react-native-gesture-handler';
-import { traduct } from '../../App';
+import { traduct } from '../../langs';
 
 interface LandingProps {
     navigation: NativeStackNavigationProp<LandingNavigatorParamList, 'Landing'>;

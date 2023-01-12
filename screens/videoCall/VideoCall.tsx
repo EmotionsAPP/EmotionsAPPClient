@@ -3,8 +3,8 @@ import { Text, View, StyleSheet, SafeAreaView, Modal, KeyboardAvoidingView } fro
 import { IconButton, Portal } from "react-native-paper"
 import { mediaDevices, MediaStream, RTCView, RTCPeerConnection, RTCSessionDescription, RTCIceCandidate } from "react-native-webrtc";
 import InCallManager from 'react-native-incall-manager';
-import { io } from "socket.io-client";
-import { WS } from "../../store/services";
+import { io, Manager } from "socket.io-client";
+import { API, WS } from "../../store/services";
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
 import { styles } from './style';
@@ -23,7 +23,8 @@ export const VideoCall: React.FC<VideoCallProps> = (props) => {
     
     const [remoteStream, setRemoteStream] = useState<MediaStream>();
     const [localStream, setLocalStream] = useState<MediaStream>();
-    const socketVideo = io(WS);
+    const manager = new Manager(API+'/socket.io/socket.io.js');
+    const socketVideo = manager.socket('/');
     const peerRefVideo = useRef<any>();
     const otherPeer = useRef<any>();
     const socketRefVideo = useRef<any>();

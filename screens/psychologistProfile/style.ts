@@ -144,11 +144,13 @@ export const styles = StyleSheet.create({
         marginBottom: 28,
         position: 'absolute',
         bottom: 0,
-        right: '23%'
+        right: 40,
+        left: 40,
     }, 
     scheduleActionText: {
         color: 'white',
         fontWeight: '400',
         fontSize: 18,
+        textAlign: 'center'
     },
 })

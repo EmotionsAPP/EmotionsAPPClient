@@ -4,7 +4,7 @@ import { DrawerMenu } from "../components";
 import { CalendarScreen, HomeScreen, AppointmentHistoryScreen, AppointmentScreen, PatientProfileScreen, ArticleListScreen, ArticleScreen, EditPatientProfileScreen, PsychologistProfileScreen, EditPsychologistProfileScreen, PsychologistListScreen, EmergencyPsychologistScreen } from "../screens"; 
 import { Chat } from "../screens/chat";
 import { ScreenHeader } from "../components/header/ScreenHeader";
-import { traduct } from "../../langs";
+import { traduct } from '../langs'
 
 export type ShellNavigatorParamList = {
     Home: {},

@@ -1,10 +1,10 @@
 import React, {useState, useRef, useEffect} from 'react';
 import { RTCPeerConnection, RTCSessionDescription, RTCIceCandidate } from 'react-native-webrtc'
 import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
-import io from "socket.io-client";
+import io, { Manager } from "socket.io-client";
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { ShellNavigatorParamList } from '../../navigation';
-import { WS } from '../../store/services';
+import { API, WS } from '../../store/services';
 import { useSelector } from 'react-redux';
 import { ApplicationState } from '../../store';
 import InCallManager from 'react-native-incall-manager';
@@ -17,7 +17,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { styles } from './style';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { VideoCall } from '../videoCall/VideoCall';
-import { traduct } from '../../App';
+import { traduct } from '../../langs';
 
 interface ChatProps {
     navigation: DrawerNavigationProp<ShellNavigatorParamList, 'Chat'>;
@@ -85,7 +85,9 @@ export const Chat: React.FC<ChatProps> = (props) => {
     
     useEffect(() => {
         if(isFocused) {
-            const socket = io(WS);
+            const manager = new Manager(API+'/socket.io/socket.io.js');
+
+            const socket = manager.socket('/');
     
             socketRef.current = socket.connect();
     
