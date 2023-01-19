@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { TextInput, Button, IconButton } from "react-native-paper";
-import { View, Image, Text, Pressable, ActivityIndicator } from 'react-native';
+import { View, Image, Text, Pressable, ActivityIndicator, TouchableWithoutFeedback, Keyboard, Platform, KeyboardAvoidingView } from 'react-native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack/lib/typescript/src/types";
 import { logInAction } from "../../store/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
@@ -66,43 +66,51 @@ export const LoginScreen: React.FC<LoginProps> = ({ navigation }) => {
                     appState.auth?.loggingIn ? 
                         <ActivityIndicator size="large" color="#DB6551" />
                     :
-                        <View style={ styles.formView }>
-                            <TextInput 
-                                value={ email }
-                                onChangeText={ (text) => setEmail(text) }
-                                style={ styles.textInput } 
-                                mode="outlined"
-                                outlineColor="#DB6551"
-                                activeOutlineColor="#DB6551"
-                                theme={{roundness: 30}}
-                                label={traduct("email")}
-                            />
-                            <TextInput 
-                                value={ password }
-                                onChangeText={ (text) => setPassword(text) }
-                                style={ styles.textInput } 
-                                mode="outlined"
-                                secureTextEntry
-                                outlineColor="#DB6551"
-                                activeOutlineColor="#DB6551"
-                                theme={{roundness: 30}}
-                                label={traduct("password")}
-                            />
-                            <Pressable
-                                style={ styles.mainButton }
-                                onPress={() => logInAction({email: email, password: password}, dispatch, appState, navigation)}
-                            >
-                                <Text style={ styles.mainButtonText }>{traduct("login")}</Text>
-                            </Pressable>
-                            <View style={ styles.bottomTextView }>
-                                <Text style={ styles.bottomText }>
-                                    {traduct("doesNotHasAccount")}&nbsp;
-                                </Text>
-                                <Pressable>
-                                    <Text style={ styles.bottomTextLink }>{traduct("register")}</Text>
-                                </Pressable>
-                            </View>
-                        </View>
+                    <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    style={{width: '100%'}}
+                    >
+                   
+                    <View style={ styles.formView }>
+                               
+                               <TextInput 
+                                   value={ email }
+                                   onChangeText={ (text) => setEmail(text) }
+                                   style={ styles.textInput } 
+                                   mode="outlined"
+                                   outlineColor="#DB6551"
+                                   activeOutlineColor="#DB6551"
+                                   theme={{roundness: 30}}
+                                   label={traduct("email")}
+                               />
+                               <TextInput 
+                                   value={ password }
+                                   onChangeText={ (text) => setPassword(text) }
+                                   style={ styles.textInput } 
+                                   mode="outlined"
+                                   secureTextEntry
+                                   outlineColor="#DB6551"
+                                   activeOutlineColor="#DB6551"
+                                   theme={{roundness: 30}}
+                                   label={traduct("password")}
+                               />
+                               <Pressable
+                                   style={ styles.mainButton }
+                                   onPress={() => logInAction({email: email, password: password}, dispatch, appState, navigation)}
+                               >
+                                   <Text style={ styles.mainButtonText }>{traduct("login")}</Text>
+                               </Pressable>
+                               <View style={ styles.bottomTextView }>
+                                   <Text style={ styles.bottomText }>
+                                       {traduct("doesNotHasAccount")}&nbsp;
+                                   </Text>
+                                   <Pressable>
+                                       <Text style={ styles.bottomTextLink }>{traduct("register")}</Text>
+                                   </Pressable>
+                               </View>
+                           </View> 
+                    </KeyboardAvoidingView>
+                        
                 }
             </View>
         </ScrollView>

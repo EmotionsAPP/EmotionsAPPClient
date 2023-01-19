@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Pressable, SafeAreaView, StyleSheet, View, TextInput } from "react-native";
+import { Pressable, SafeAreaView, StyleSheet, View, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import DatePicker from "react-native-date-picker";
 import DropDownPicker from "react-native-dropdown-picker";
 import { Button, IconButton, Modal, Portal, Provider, Text } from "react-native-paper";
@@ -123,7 +123,11 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                 contentContainerStyle={styles.modal} 
                 onDismiss={closeModal}
             >
-                <SafeAreaView>
+                  <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    style={{width: '100%'}}
+                    >
+ <SafeAreaView>
                     <View style={styles.header}>
                         <Button 
                             mode="text" 
@@ -235,6 +239,9 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                         </View>
                     </View>
                 </SafeAreaView>
+                        
+                    </KeyboardAvoidingView>
+               
             </Modal>
         </Portal>
     )

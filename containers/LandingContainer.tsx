@@ -15,7 +15,7 @@ export const LandingContainer = () => {
     }
     
     return (
-        <PaperProvider>
+        <PaperProvider >
             <LandingNavigation/>
             <NotificationSnackbar 
                 visible={appState.inApp?.notificationSnackbarVisible ?? false}

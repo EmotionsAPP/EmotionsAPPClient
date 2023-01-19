@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "TestProject",
-    "slug": "TestProject",
+    "name": "Emotions App",
+    "slug": "emotion-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,7 +19,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "android.expo.client"
+      "bundleIdentifier": "ios.expo.client"
     },
     "android": {
       "adaptiveIcon": {

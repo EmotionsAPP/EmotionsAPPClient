@@ -12,7 +12,7 @@ import {Text} from 'react-native';
 export default function App() {  
   return (
     <Provider store={configureStore()}> 
-     <Text style={{ marginTop:45}}>
+     <Text style={{ marginTop:25}}>
     
 
       </Text>

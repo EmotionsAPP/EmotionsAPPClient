@@ -49,6 +49,7 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
   );
   const loadItems = (day: any) => {
     setTimeout(() => {
+      setItems({});//setting items to empty
       //Este es el .map de los appoinments
       if (appState?.appointment?.allUserAppointments?.length !== undefined) {
         for (
@@ -86,6 +87,7 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
       });
       // console.log(newItems);
       setItems(newItems);
+
     }, 1000);
   };
  
