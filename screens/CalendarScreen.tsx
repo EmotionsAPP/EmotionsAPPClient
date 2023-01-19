@@ -48,52 +48,42 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
     null
   );
   const loadItems = (day: any) => {
-    setTimeout(() => {
-      setItems({});//setting items to empty
-      //Este es el .map de los appoinments
-      if (appState?.appointment?.allUserAppointments?.length !== undefined) {
-        for (
-          let i = 0;
-          i < appState?.appointment?.allUserAppointments?.length;
-          i++
-        ) {
-          const time = day.timestamp + i * 24 * 60 * 60 * 1000;
+    console.log(day);
+    setItems({}); //setting items to empty
+    //Este es el .map de los appoinments   vc 
+    if (appState?.appointment?.allUserAppointments?.length !== undefined) {
+      const filtered_appointments =
+        appState.appointment.allUserAppointments.reduce(
+          (filtered, appointment) => {
+            if (timeToString(appointment.start) == day.dateString) {
+              let withName = "";
+              console.log("appointment.start", appointment.start);
+              if (appState.auth?.user.role === "Patient") {
+                withName = `${appointment.psychologist.firstName} ${appointment.psychologist.lastName}`;
+              } else {
+                withName = `${appointment.patient.firstName} ${appointment.patient.lastName}`;
+              }
 
-          const strTime = timeToString(time);
+              filtered.push({
+                name: traduct("meeting"),
+                height: Math.max(50, Math.floor(Math.random() * 150)),
+                with: withName,
+                status: appointment?.status,
+              });
+            }
 
-          if (!items[strTime]) {
-            items[strTime] = [];
-          }
-          let withName = "";
-          if (appState.auth?.user.role === "Patient") {
-            withName = `${appState?.appointment?.allUserAppointments[i]?.psychologist.firstName} ${appState?.appointment?.allUserAppointments[i]?.psychologist.lastName}`;
-          } else {
-            withName = `${appState?.appointment?.allUserAppointments[i]?.patient.firstName} ${appState?.appointment?.allUserAppointments[i]?.patient.lastName}`;
-          }
+            return filtered;
+          },
+          []
+        );
 
-          items[strTime].push({
-            name: traduct("meeting"),
-            height: Math.max(50, Math.floor(Math.random() * 150)),
-            with: withName,
-            status: appState?.appointment?.allUserAppointments[i]?.status
-          });
-        }
-      }
-
-      // console.log(items);
-      const newItems: any = {};
-      Object.keys(items).forEach((key) => {
-        newItems[key] = items[key];
+      setItems({
+        [day.dateString]: filtered_appointments
       });
-      // console.log(newItems);
-      setItems(newItems);
-
-    }, 1000);
+    }
   };
- 
 
-  useEffect(() => {
-   }, []);
+  useEffect(() => {}, []);
 
   const renderItem = (item: any) => {
     return (
@@ -103,7 +93,9 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
             <View>
               <Text style={titleStyle}>{item.name}</Text>
               <Text style={participantTitleStyle}>{item.with}</Text>
-              <Text style={{marginLeft:226, color: "#FFFF", marginTop:-16}}>{item.status}</Text>
+              <Text style={{ marginLeft: 226, color: "#FFFF", marginTop: -16 }}>
+                {item.status}
+              </Text>
             </View>
           </Card.Content>
         </Card>
@@ -117,7 +109,7 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
       {items.length}
       <Agenda
         items={items}
-        loadItemsForMonth={loadItems} 
+        loadItemsForMonth={(month) => {loadItems(month)}}
         renderItem={renderItem}
         theme={{
           agendaDayTextColor: "rgba(219, 101, 81, 0.99)",
@@ -128,7 +120,7 @@ export const CalendarScreen: React.FC<CalendarProps> = ({ navigation }) => {
           selectedDayBackgroundColor: "#FFF0E4",
           selectedDayTextColor: "#DB6551",
           todayDotColor: "#FFF0E4",
-        }}
+        }} 
       />
 
       <View>
