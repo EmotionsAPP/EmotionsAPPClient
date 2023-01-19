@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 import { ApplicationState } from "..";
 import { Appointment, User } from "../../models";
-import { availablePhysicians, getAppointmentHistory, getUserAppointments, lastContactedUsers, saveNewAppointment } from "../services/appointmentService";
+import { availablePhysicians, getAllUserAppointments, getAppointmentHistory, getUserAppointments, lastContactedUsers, saveNewAppointment } from "../services/appointmentService";
 import { openNotificationSnackbar } from "./inAppActions";
 
 interface RequestAvailablePhysicians {
@@ -30,9 +30,19 @@ interface RequestUserAppointments {
     user_id: string;
 }
 
+interface RequestAllUserAppointments {
+    type: 'REQUEST_USER_APPOINTMENTS_LIST';
+    user_id: string;
+}
+
 interface ResponseUserAppointments {
     type: 'RESPONSE_USER_APPOINTMENTS';
     appointments: Appointment[];
+}
+
+interface ResponseAllUserAppointments {
+    type: 'RESPONSE_USER_APPOINTMENTS_LIST';
+    allAppointments: Appointment[];
 }
 
 interface RequestLastContactedUsers {
@@ -63,6 +73,8 @@ export type KnownAction = RequestAvailablePhysicians
 | RequestNewAppointment 
 | ResponseNewAppointment 
 | RequestUserAppointments 
+| RequestAllUserAppointments 
+| ResponseAllUserAppointments 
 | ResponseUserAppointments 
 | RequestLastContactedUsers 
 | ResponseLastContactedUsers
@@ -106,6 +118,16 @@ export const userAppointmentsAction = (user_id: string, date: string, dispatch: 
         })
 
     dispatch({ type: 'REQUEST_USER_APPOINTMENTS', user_id: user_id });
+}
+
+export const userAppointmentsListAction = (user_id: string, dispatch: Dispatch) => {
+    getAllUserAppointments(user_id)
+        .then(response => response.json() as Promise<boolean>)
+        .then(data => {                      
+            dispatch({ type: 'RESPONSE_USER_APPOINTMENTS_LIST', allAppointments: data });
+        })
+
+    dispatch({ type: 'REQUEST_USER_APPOINTMENTS_LIST', user_id: user_id });
 }
 
 export const lastContactedUsersAction = (user_id: string, dispatch: Dispatch) => {

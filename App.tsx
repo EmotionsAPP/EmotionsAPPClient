@@ -6,11 +6,17 @@ import { LandingNavigation } from './navigation';
 import { ApplicationState } from './store';
 import { dismissNotificationSnackbar } from './store/actions/inAppActions';
 import { configureStore } from './store/configureStore';
+import {Text} from 'react-native';
+
 
 export default function App() {  
   return (
-    <Provider store={configureStore()}>
-      <LandingContainer/>
+    <Provider store={configureStore()}> 
+     <Text style={{ marginTop:45}}>
+    
+
+      </Text>
+    <LandingContainer/> 
     </Provider>
   );
 }

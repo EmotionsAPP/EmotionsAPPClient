@@ -42,6 +42,20 @@ export const getUserAppointments = (id: string, date: string) => {
   return fetch(url, requestInfo);
 }
 
+export const getAllUserAppointments = (id: string) => {
+  const requestHeaders: HeadersInit_ = new Headers();
+  requestHeaders.set('Content-Type', 'application/json');
+
+  const requestInfo: RequestInit = {
+    method: 'GET',
+    headers: requestHeaders,
+  }
+
+  const url = new URL(`${API}/appointments/user/${id}`);
+
+  return fetch(url, requestInfo);
+}
+
 export const lastContactedUsers = (id: string) => {
   const requestHeaders: HeadersInit_ = new Headers();
   requestHeaders.set('Content-Type', 'application/json');

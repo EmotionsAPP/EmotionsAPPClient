@@ -4,7 +4,7 @@ import { ShellNavigatorParamList } from "../../navigation";
 import { DrawerNavigationProp } from "@react-navigation/drawer/lib/typescript/src/types";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
-import { lastContactedUsersAction, userAppointmentsAction } from "../../store/actions/appointmentActions";
+import { lastContactedUsersAction, userAppointmentsAction, userAppointmentsListAction } from "../../store/actions/appointmentActions";
 import { AppointmentSmallCard } from "../../components/appointmentSmallCard/AppointmentSmallCard";
 import { ScrollView } from "react-native-gesture-handler";
 import { styles } from './style';
@@ -39,7 +39,8 @@ export const HomeScreen: React.FC<any> = ({ navigation }) => {
     }, [navigation])
 
     useEffect(() => {
-        isFocused && userAppointmentsAction(appState.auth?.user?._id ?? '', today.toISOString(), dispatch);
+        isFocused && userAppointmentsAction(appState.auth?.user?._id ?? '', today.toISOString(), dispatch),     userAppointmentsListAction(appState.auth?.user?._id ?? "", dispatch);
+        ; 
         if(!appState.auth?.user?.hasOwnProperty('patient'))
             lastContactedUsersAction(appState.auth?.user?._id, dispatch)
         
