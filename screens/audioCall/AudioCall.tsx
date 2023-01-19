@@ -8,6 +8,7 @@ import { API, WS } from "../../store/services";
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
 import { styles } from './style';
+import { traduct } from "../../langs";
 
 interface AudioCallProps {
     peerConnection: any;
@@ -32,7 +33,7 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
 
     const [modal, setModal] = useState(true);
     
-    const [counterText, setCounterText] = useState("Llamando...");
+    const [counterText, setCounterText] = useState(traduct('calling')+'...');
     const [counter, setCounter] = useState('00:00');
     const [callStarted, setCallStarted] = useState(false);
     const counterIntervalId = useRef<any>();
@@ -58,12 +59,12 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
             socketRefAudio.current.on('other user', (userId: string) => {
                 callUser(userId);
                 otherUserAudio.current = userId;
-                setCounterText('Conectando...');
+                setCounterText(traduct('connecting')+'...');
             });
     
             socketRefAudio.current.on('user joined', (userId: string) => {
                 otherUserAudio.current = userId;
-                setCounterText('Conectando...');
+                setCounterText(traduct('connecting')+'...');
             });
     
             socketRefAudio.current.on('offer', handleOffer);
@@ -394,7 +395,7 @@ export const AudioCall: React.FC<AudioCallProps> = (props) => {
 
     const handleUserLeft = (event: any) => {
         setCallStarted(false);
-        setCounterText("Salió de la llamada")  
+        setCounterText(traduct('closedCall'))  
         clearInterval(counterIntervalId.current);       
         setTimeout(() => {
             setRemoteStream(undefined);

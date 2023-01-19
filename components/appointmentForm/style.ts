@@ -62,5 +62,31 @@ export const styles = StyleSheet.create({
         width: '72%',
         marginLeft: 10,
         height: 20
-    }
+    },
+    waitingModal: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    waitingModalContainer: {
+        backgroundColor: 'white',
+        width: '90%',
+        height: '20%',
+        padding: 20,
+        borderRadius: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    waitingModalText: {
+        paddingLeft: 10,
+    },
+    waitingModalView: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 })

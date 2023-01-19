@@ -12,5 +12,14 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         paddingBottom: 20
-    }
+    },
+    waitingModalText: {
+        paddingLeft: 10,
+    },
+    waitingModalView: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });

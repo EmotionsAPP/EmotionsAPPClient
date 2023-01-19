@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Pressable, View, Image, Text, ImageBackground } from "react-native"
+import { Pressable, View, Image, Text, ImageBackground, ActivityIndicator } from "react-native"
 import { ShellNavigatorParamList } from "../../navigation";
 import { DrawerNavigationProp } from "@react-navigation/drawer/lib/typescript/src/types";
 import { FAB, IconButton, Provider, TextInput } from "react-native-paper";
@@ -67,6 +67,15 @@ export const PsychologistListScreen: React.FC<PsychologistListProps> = ({ naviga
                     theme={{roundness: 30}}
                     label={traduct("search")}
                 />
+                {
+                    appState.auth?.searchingPsychologists ? 
+                        <View style={styles.waitingModalView}>
+                            <ActivityIndicator size="small" color="#DB6551" />
+                            <Text style={styles.waitingModalText}>{traduct("loading")}...</Text>
+                        </View>
+                    : 
+                        <></>
+                }
                 <ScrollView>
                     {
                         psychologists ? psychologists.map((psychologist) => {

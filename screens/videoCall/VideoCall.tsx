@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
-import { Text, View, StyleSheet, SafeAreaView, Modal, KeyboardAvoidingView } from "react-native"
-import { IconButton, Portal } from "react-native-paper"
+import { Text, View, StyleSheet, SafeAreaView, KeyboardAvoidingView, ActivityIndicator } from "react-native"
+import { IconButton, Portal, Modal } from "react-native-paper"
 import { mediaDevices, MediaStream, RTCView, RTCPeerConnection, RTCSessionDescription, RTCIceCandidate } from "react-native-webrtc";
 import InCallManager from 'react-native-incall-manager';
 import { io, Manager } from "socket.io-client";
@@ -8,6 +8,7 @@ import { API, WS } from "../../store/services";
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
 import { styles } from './style';
+import { traduct } from "../../langs";
 
 interface VideoCallProps {
     peerConnection: any;
@@ -31,14 +32,13 @@ export const VideoCall: React.FC<VideoCallProps> = (props) => {
 
     const [modal, setModal] = useState(true);
     
-    const [counterText, setCounterText] = useState("Llamando...");
+    const [counterText, setCounterText] = useState(traduct("connecting"));
     const [counter, setCounter] = useState('00:00');
     const [callStarted, setCallStarted] = useState(false);
     const counterIntervalId = useRef<any>();
 
     const [muteAudio, setMute] = useState(false);
     const [frontCamera, setFrontCamera] = useState(false);
-
     
     const remote = new MediaStream(undefined);
     
@@ -60,12 +60,12 @@ export const VideoCall: React.FC<VideoCallProps> = (props) => {
             socketRefVideo.current.on('other user', (userId: string) => {
                 callUser(userId);
                 otherUserVideo.current = userId;
-                setCounterText('Conectando...');
+                setCounterText(traduct('connecting')+'...');
             });
     
             socketRefVideo.current.on('user joined', (userId: string) => {
                 otherUserVideo.current = userId;
-                setCounterText('Conectando...');
+                setCounterText(traduct('connecting')+'...');
             });
     
             socketRefVideo.current.on('offer', handleOffer);
@@ -265,7 +265,7 @@ export const VideoCall: React.FC<VideoCallProps> = (props) => {
          
         const description = new RTCSessionDescription(message.sdp);
         peerRefVideo.current.setRemoteDescription(description)
-        .then(() => { counterStart() })
+        .then(() => { setCallStarted(true) })
         .catch((error: any) => console.log('Error handling answer', error));
     }
 
@@ -334,7 +334,7 @@ export const VideoCall: React.FC<VideoCallProps> = (props) => {
          
         const description = new RTCSessionDescription(message.sdp);
         otherPeer.current.setRemoteDescription(description)
-        .then(() => { counterStart() })
+        .then(() => { setCallStarted(true) })
         .catch((error: any) => console.log('Error handling answer', error));
     }
 
@@ -405,7 +405,7 @@ export const VideoCall: React.FC<VideoCallProps> = (props) => {
 
     const handleUserLeft = (event: any) => {
         setCallStarted(false);
-        setCounterText("Salió de la llamada")  
+        setCounterText(traduct('closedCall'))   
         clearInterval(counterIntervalId.current);       
         setTimeout(() => {
             setRemoteStream(undefined);
@@ -424,6 +424,13 @@ export const VideoCall: React.FC<VideoCallProps> = (props) => {
             <Modal
                 visible={modal}
                 onDismiss={() => setModal(false)}
+                style={
+                    {
+                        height: '100%',
+                        marginTop: -2,
+                        backgroundColor: 'white'
+                    }
+                }
             >
                 <SafeAreaView>
                     {remoteStream && (
@@ -465,6 +472,17 @@ export const VideoCall: React.FC<VideoCallProps> = (props) => {
                         size={40}
                         onPress={() => setFrontCamera(!frontCamera)}
                     />
+                </View>
+            </Modal>
+            <Modal 
+                visible={ !callStarted as boolean}
+                dismissable={false}
+                style={styles.waitingModal}
+                contentContainerStyle={styles.waitingModalContainer}
+            >
+                <View style={styles.waitingModalView}>
+                    <ActivityIndicator size="small" color="#DB6551" />
+                    <Text style={styles.waitingModalText}>{counterText}</Text>
                 </View>
             </Modal>
         </Portal>

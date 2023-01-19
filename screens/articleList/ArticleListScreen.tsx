@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { View } from "react-native"
+import { ActivityIndicator, View, Text } from "react-native"
 import { ShellNavigatorParamList } from "../../navigation";
 import { DrawerNavigationProp } from "@react-navigation/drawer/lib/typescript/src/types";
 import { FAB, Provider } from "react-native-paper";
@@ -39,6 +39,15 @@ export const ArticleListScreen: React.FC<ArticleListProps> = ({ navigation }) =>
         <Provider>
             <CreateArticle visible={articleModal} hide={hideArticleModal} />
             <View style={ styles.view }>
+                {
+                appState.article?.loadingArticles ? 
+                    <View style={styles.waitingModalView}>
+                        <ActivityIndicator size="small" color="#DB6551" />
+                        <Text style={styles.waitingModalText}>{traduct("loading")}...</Text>
+                    </View>
+                : 
+                    <></>
+                }
                 <ScrollView>
                     {
                         appState.article?.articles.map((article) => {

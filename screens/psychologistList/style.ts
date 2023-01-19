@@ -38,4 +38,13 @@ export const styles = StyleSheet.create({
         height: 50,
         backgroundColor: 'white',
     },
+    waitingModalText: {
+        paddingLeft: 10,
+    },
+    waitingModalView: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });

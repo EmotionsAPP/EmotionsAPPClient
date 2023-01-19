@@ -82,7 +82,7 @@ export const reducer: Reducer<AppointmentState> = (state: AppointmentState | und
         case 'REQUEST_HISTORY_APPOINTMENTS':
             return {
                 ...state,
-                fetchingUserAppointments: true,
+                fetchingAppointmentHistory: true,
             }
         case 'RESPONSE_HISTORY_APPOINTMENTS':
             return {

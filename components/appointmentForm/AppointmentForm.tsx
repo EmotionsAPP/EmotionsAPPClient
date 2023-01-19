@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Pressable, SafeAreaView, StyleSheet, View, TextInput } from "react-native";
+import { Pressable, SafeAreaView, StyleSheet, View, TextInput, ActivityIndicator } from "react-native";
 import DatePicker from "react-native-date-picker";
 import DropDownPicker from "react-native-dropdown-picker";
 import { Button, IconButton, Modal, Portal, Provider, Text } from "react-native-paper";
@@ -236,6 +236,19 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = (props) => {
                     </View>
                 </SafeAreaView>
             </Modal>
+            <Portal>
+                <Modal 
+                    visible={ (appState.appointment?.savingNewAppointment) as boolean}
+                    dismissable={false}
+                    style={styles.waitingModal}
+                    contentContainerStyle={styles.waitingModalContainer}
+                >
+                    <View style={styles.waitingModalView}>
+                        <ActivityIndicator size="small" color="#DB6551" />
+                        <Text style={styles.waitingModalText}>{traduct("saving")}...</Text>
+                    </View>
+                </Modal>
+            </Portal>
         </Portal>
     )
 }

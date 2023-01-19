@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { ImageBackground, Text, View } from "react-native"
+import { ActivityIndicator, ImageBackground, Text, View } from "react-native"
 import { ShellNavigatorParamList } from "../../navigation";
 import { DrawerNavigationProp } from "@react-navigation/drawer/lib/typescript/src/types";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +9,7 @@ import { getAppointmentHistoryAction } from "../../store/actions/appointmentActi
 import { styles } from './style';
 import { ScrollView } from "react-native-gesture-handler";
 import { AppointmentSmallCard } from "../../components/appointmentSmallCard/AppointmentSmallCard";
+import { traduct } from "../../langs";
 
 interface AppointmentHistoryProps {
     navigation: DrawerNavigationProp<ShellNavigatorParamList, 'AppointmentHistory'>;
@@ -41,6 +42,15 @@ export const AppointmentHistoryScreen: React.FC<AppointmentHistoryProps> = ({ na
             resizeMode='cover'
             style={styles.view}
         >
+            {
+                appState.appointment?.fetchingAppointmentHistory ? 
+                    <View style={styles.waitingModalView}>
+                        <ActivityIndicator size="small" color="#DB6551" />
+                        <Text style={styles.waitingModalText}>{traduct("loading")}...</Text>
+                    </View>
+                : 
+                    <></>
+            }
             <ScrollView>
                 {
                     appState.appointment?.appointmentHistory.map((history: any, index: any) => {

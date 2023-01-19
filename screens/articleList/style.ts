@@ -13,5 +13,14 @@ export const styles = StyleSheet.create({
         bottom: 0,
         margin: 16,
         backgroundColor: '#DB6551'
-    }
+    },
+    waitingModalText: {
+        paddingLeft: 10,
+    },
+    waitingModalView: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });

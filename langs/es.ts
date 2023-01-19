@@ -104,4 +104,7 @@ export const es = {
   askSaveChanges: "¿Quieres guardar estos cambios?",
   years: "años",
   example: "El ejemplo funciona correctamente",
+  loading: "Cargando",
+  calling: "Llamando",
+  closedCall: "Salió de la llamada"
 };
